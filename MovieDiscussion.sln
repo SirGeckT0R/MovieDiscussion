@@ -30,19 +30,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieServiceWebAPI", "Serve
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscussionServiceWebAPI", "Server\DiscussionService\DiscussionServiceWebAPI\DiscussionServiceWebAPI.csproj", "{DEDCFD51-6234-4E66-B85B-497DFB6A4F37}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscussionServiceDomain", "Server\DiscussionService\DiscussionServiceDomain\DiscussionServiceDomain.csproj", "{9E7E560F-9DDD-4E32-B03C-8DEDF579457E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscussionServiceDomain", "Server\DiscussionService\DiscussionServiceDomain\DiscussionServiceDomain.csproj", "{9E7E560F-9DDD-4E32-B03C-8DEDF579457E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscussionServiceDataAccess", "Server\DiscussionService\DiscussionServiceDataAccess\DiscussionServiceDataAccess.csproj", "{96686084-9180-46A5-9A09-901D9307B49D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscussionServiceDataAccess", "Server\DiscussionService\DiscussionServiceDataAccess\DiscussionServiceDataAccess.csproj", "{96686084-9180-46A5-9A09-901D9307B49D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscussionServiceApplication", "Server\DiscussionService\DiscussionServiceApplication\DiscussionServiceApplication.csproj", "{F415387D-2969-477E-8763-751E0C66B890}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscussionServiceApplication", "Server\DiscussionService\DiscussionServiceApplication\DiscussionServiceApplication.csproj", "{F415387D-2969-477E-8763-751E0C66B890}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGateway", "Server\ApiGateway\ApiGateway\ApiGateway.csproj", "{5EBF8DF6-7E9A-4978-AF1F-62C6156D9F5A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserServiceWebAPI", "Server\UserService\UserServiceWebAPI\UserServiceWebAPI.csproj", "{204EB39A-73B8-4208-80EB-37645305F165}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserServiceApplication", "Server\UserService\UserServiceApplication\UserServiceApplication.csproj", "{3B905DC6-2EE9-4B8F-8A27-85B037D03923}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserServiceApplication", "Server\UserService\UserServiceApplication\UserServiceApplication.csproj", "{3B905DC6-2EE9-4B8F-8A27-85B037D03923}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserServiceDataAccess", "..\UserServiceDataAccess\UserServiceDataAccess.csproj", "{F929E325-4D87-479B-A9DA-038A7C18F78D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserServiceDataAccess", "Server\UserService\UserServiceDataAccess\UserServiceDataAccess.csproj", "{7E3C0FE1-B557-451F-911E-1EA4FBCF230F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -98,10 +98,10 @@ Global
 		{3B905DC6-2EE9-4B8F-8A27-85B037D03923}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B905DC6-2EE9-4B8F-8A27-85B037D03923}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B905DC6-2EE9-4B8F-8A27-85B037D03923}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F929E325-4D87-479B-A9DA-038A7C18F78D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F929E325-4D87-479B-A9DA-038A7C18F78D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F929E325-4D87-479B-A9DA-038A7C18F78D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F929E325-4D87-479B-A9DA-038A7C18F78D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E3C0FE1-B557-451F-911E-1EA4FBCF230F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E3C0FE1-B557-451F-911E-1EA4FBCF230F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E3C0FE1-B557-451F-911E-1EA4FBCF230F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E3C0FE1-B557-451F-911E-1EA4FBCF230F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -118,7 +118,7 @@ Global
 		{5EBF8DF6-7E9A-4978-AF1F-62C6156D9F5A} = {2605E7DA-8DAC-472C-B37B-3A7D2195C937}
 		{204EB39A-73B8-4208-80EB-37645305F165} = {93C6BA69-C346-4862-978E-35D42A8DB285}
 		{3B905DC6-2EE9-4B8F-8A27-85B037D03923} = {93C6BA69-C346-4862-978E-35D42A8DB285}
-		{F929E325-4D87-479B-A9DA-038A7C18F78D} = {93C6BA69-C346-4862-978E-35D42A8DB285}
+		{7E3C0FE1-B557-451F-911E-1EA4FBCF230F} = {93C6BA69-C346-4862-978E-35D42A8DB285}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A962B6D7-2EAA-4EF5-B6DD-8B62A32AB1C1}
