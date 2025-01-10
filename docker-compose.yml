@@ -1,0 +1,91 @@
+version: '3.4'
+
+services:
+  userservicewebapi:
+    image: ${DOCKER_REGISTRY-}userservicewebapi
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    build:
+      context: .
+      dockerfile: UserServiceWebAPI/Dockerfile
+    ports:
+      - ${USER_SERVICE_PORTS}
+
+  movieservicewebapi:
+    image: ${DOCKER_REGISTRY-}movieservicewebapi
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    build:
+      context: .
+      dockerfile: MovieServiceWebAPI/Dockerfile
+    ports:
+      - ${MOVIE_SERVICE_PORTS}
+
+  discussionservicewebapi:
+    image: ${DOCKER_REGISTRY-}discussionservicewebapi
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    build:
+      context: .
+      dockerfile: DiscussionServiceWebAPI/Dockerfile
+    ports:
+      - ${DISCUSSION_SERVICE_PORTS}
+
+  redis:
+    image: redis:latest
+    env_file:
+      - .env
+    ports:
+      - ${REDIS_PORTS}
+
+  postgres:
+    image: postgres:latest
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - ${POSTGRES_PORTS}
+
+  moviemongodb:
+    image: mongo
+    restart: always
+    env_file:
+      - .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    ports:
+      - ${MOVIE_MONGO_PORTS}
+
+  discussionmongodb:
+    image: mongo
+    restart: always
+    env_file:
+      - .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_DISCUSSION_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DISCUSSION_PASSWORD}
+    ports:
+      - ${MONGO_DISCUSSION_PORTS}
+
+  apigateway:
+    image: ${DOCKER_REGISTRY-}apigateway
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    build:
+      context: .
+      dockerfile: ApiGateway/Dockerfile
+    ports:
+      - ${API_GATEWAY_PORTS}
+

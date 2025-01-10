@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "userservicewebapi": "StartDebugging",
+        "movieservicewebapi": "StartDebugging",
+        "discussionservicewebapi": "StartDebugging",
+        "apigateway": "StartDebugging"
+      }
+    }
+  }
+}
