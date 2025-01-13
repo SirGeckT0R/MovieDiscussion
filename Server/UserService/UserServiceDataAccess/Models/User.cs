@@ -1,0 +1,27 @@
+﻿using UserServiceDataAccess.Enums;
+using UserServiceDataAccess.Interfaces;
+
+namespace UserServiceDataAccess.Models
+{
+    public class User : IdModel, ISoftDelete
+    {
+        public string Email { get; private set;} = string.Empty;
+        public string Username { get; private set; } = string.Empty;
+        public string Password { get; private set; } = string.Empty;
+        public E_Role Role { get; set; } = E_Role.Guest;
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedAt { get; set; }
+
+        public User() { 
+
+        }
+
+        public User(string email, string username, string password, E_Role role)
+        {
+            Email = email;
+            Username = username;
+            Password = password;
+            Role = role;
+        }
+    }
+}
