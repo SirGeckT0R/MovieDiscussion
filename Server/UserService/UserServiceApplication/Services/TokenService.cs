@@ -18,11 +18,11 @@ namespace UserServiceApplication.Services
         {
             cancellationToken.ThrowIfCancellationRequested();
             var refreshTokenId = Guid.NewGuid();
-            var (accessToken, _) = _jwtProvider.GenerateToken(user.Id, E_TokenType.Access);
-            var (refreshToken, expiresRefresh) = _jwtProvider.GenerateToken(user.Id, E_TokenType.Refresh, refreshTokenId);
+            var (accessToken, _) = _jwtProvider.GenerateToken(user.Id,user.Role.ToString(), E_TokenType.Access);
+            var (refreshToken, expiresRefresh) = _jwtProvider.GenerateToken(user.Id, user.Role.ToString(), E_TokenType.Refresh, refreshTokenId);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.TokenRepository.AddAsync(new Token(refreshTokenId, E_TokenType.Refresh, user, refreshToken, expiresRefresh), cancellationToken);
+            await _unitOfWork.TokenRepository.AddAsync(new Token(refreshTokenId, E_TokenType.Refresh, user.Id, refreshToken, expiresRefresh), cancellationToken);
 
             return (accessToken, refreshToken);
         }
@@ -53,29 +53,34 @@ namespace UserServiceApplication.Services
             _unitOfWork.TokenRepository.Update(token, cancellationToken);
         }
 
-        public async Task<string> RefreshTokenAsync(string inputToken, CancellationToken cancellationToken)
+        public async Task<string> RefreshTokenAsync(string? inputToken, CancellationToken cancellationToken)
         {
-            var (tokenId, userId) = ExtractClaims(inputToken);
+            if(inputToken == null)
+            {
+                throw new TokenException("Token is null");
+            }
+            var (tokenId, userId, role) = ExtractClaims(inputToken);
 
             cancellationToken.ThrowIfCancellationRequested();
             var token = await _unitOfWork.TokenRepository.GetByIdAsync(tokenId, cancellationToken);
 
             ValidateToken(token, inputToken);
             cancellationToken.ThrowIfCancellationRequested();
-            var (accessToken, _) = _jwtProvider.GenerateToken(userId, E_TokenType.Access);
+            var (accessToken, _) = _jwtProvider.GenerateToken(userId, role, E_TokenType.Access);
             return accessToken;
         }
 
-        private (Guid, Guid) ExtractClaims(string token)
+        private (Guid, Guid, string) ExtractClaims(string token)
         {
             var principal = _jwtProvider.GetPrincipalFromToken(token);
             var userId = principal.Claims.FirstOrDefault(c => c.Type.Equals(E_ClaimType.UserId.ToString(), StringComparison.CurrentCultureIgnoreCase))?.Value;
             var tokenId = principal.Claims.FirstOrDefault(c => c.Type.Equals(E_ClaimType.Id.ToString(), StringComparison.CurrentCultureIgnoreCase))?.Value;
-            if (tokenId == null || userId == null)
+            var role = principal.Claims.FirstOrDefault(c => c.Type.Equals(E_ClaimType.Role.ToString(), StringComparison.CurrentCultureIgnoreCase))?.Value;
+            if (tokenId == null || userId == null || role == null)
             {
                 throw new TokenException("Invalid token");
             }
-            return (Guid.Parse(tokenId), Guid.Parse(userId));
+            return (Guid.Parse(tokenId), Guid.Parse(userId), role);
         }
 
         private static void ValidateToken(Token? token, string inputToken)

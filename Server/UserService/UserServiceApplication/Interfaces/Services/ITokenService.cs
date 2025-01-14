@@ -9,6 +9,6 @@ namespace UserServiceApplication.Interfaces.Services
         Task<Guid> AddTokenAsync(Token token, CancellationToken cancellationToken);
         Task DeleteTokenAsync(Guid tokenId, CancellationToken cancellationToken);
         void UpdateToken(Token token, CancellationToken cancellationToken);
-        Task<string> RefreshTokenAsync(string inputToken, CancellationToken cancellationToken);
+        Task<string> RefreshTokenAsync(string? inputToken, CancellationToken cancellationToken);
     }
 }

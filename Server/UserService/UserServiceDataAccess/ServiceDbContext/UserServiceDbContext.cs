@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using UserServiceDataAccess.Configurations;
 using UserServiceDataAccess.Interceptors;
 using UserServiceDataAccess.Models;
 
@@ -22,6 +23,8 @@ namespace UserServiceDataAccess.ServiceDbContext
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserServiceDbContext).Assembly);
+            new UserConfiguration().Configure(modelBuilder.Entity<User>());
+            new TokenConfiguration().Configure(modelBuilder.Entity<Token>());
         }
     }
 }

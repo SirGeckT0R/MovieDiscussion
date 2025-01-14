@@ -11,8 +11,7 @@ namespace UserServiceDataAccess.Configurations
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).IsRequired();
             builder.Property(x => x.TokenType).IsRequired();
-            builder.Property(x => x.User).IsRequired();
-            builder.HasIndex(x => x.User);
+            builder.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId);
             builder.Property(x => x.TokenValue).IsRequired();
             builder.Property(x => x.ExpiresAt).IsRequired();
             builder.Property(x => x.CreatedAt).IsRequired();

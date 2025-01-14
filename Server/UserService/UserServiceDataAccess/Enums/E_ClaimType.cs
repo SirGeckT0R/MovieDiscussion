@@ -4,6 +4,7 @@
     {
         None,
         Id,
-        UserId
+        UserId,
+        Role
     }
 }
