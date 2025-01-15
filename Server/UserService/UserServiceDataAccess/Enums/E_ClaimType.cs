@@ -5,6 +5,7 @@
         None,
         Id,
         UserId,
+        Email,
         Role
     }
 }

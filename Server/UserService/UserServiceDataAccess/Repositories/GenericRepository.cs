@@ -45,6 +45,13 @@ namespace UserServiceDataAccess.Repositories
             return await _dbSet.FirstOrDefaultAsync(user => user.Id == id, cancellationToken);
         }
 
+        public async Task<T?> GetWithSpecificationAsync(Specification<T> specification, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return await ApplySpecification(specification).FirstOrDefaultAsync(cancellationToken);
+        }
+
         public void Update(T model, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();

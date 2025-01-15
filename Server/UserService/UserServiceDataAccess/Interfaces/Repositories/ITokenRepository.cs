@@ -1,4 +1,5 @@
 ﻿using UserServiceDataAccess.Models;
+using UserServiceDataAccess.Specifications;
 
 namespace UserServiceDataAccess.Interfaces.Repositories
 {

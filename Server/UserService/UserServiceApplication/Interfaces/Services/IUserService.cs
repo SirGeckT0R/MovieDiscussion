@@ -10,5 +10,7 @@ namespace UserServiceApplication.Interfaces.Services
         Task<(string ,string)> LoginAsync(LoginRequest loginRequest, CancellationToken cancellationToken);
         Task UpdateUserAsync(UpdateUserRequest updateUserRequest, CancellationToken cancellationToken);
         Task DeleteAsync(Guid id, CancellationToken cancellationToken);
+        Task<string> ConfirmEmailSendAsync(string? accessToken, string callbackUrl, CancellationToken cancellationToken);
+        Task<string> ConfirmEmailRecieveAsync(ConfirmEmailRequest confirmEmailRequest, CancellationToken cancellationToken);
     }
 }

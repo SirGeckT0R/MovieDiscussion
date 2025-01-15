@@ -31,6 +31,7 @@ namespace UserServiceWebAPI
             services.AddDbContext<UserServiceDbContext>(options => options.UseNpgsql(connection));
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITokenRepository, TokenRepository>();
             services.AddScoped<IUserUnitOfWork, UserUnitOfWork>();

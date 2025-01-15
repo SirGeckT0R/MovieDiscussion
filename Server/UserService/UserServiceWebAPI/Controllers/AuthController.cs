@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
 using UserServiceApplication.Dto;
 using UserServiceApplication.Interfaces.Services;
 
@@ -43,6 +42,27 @@ namespace UserServiceWebAPI.Controllers
                 HttpContext.Response.Cookies.Append("refreshToken", "", new CookieOptions { Domain = "localhost", Expires = DateTime.Now.AddDays(-1) });
             }
             return NoContent();
+        }
+
+        [HttpGet("confirm")]
+        [Authorize]
+        public async Task<IActionResult>ConfirmEmailSend(CancellationToken cancellationToken)
+        {
+            var accessToken = HttpContext.Request.Cookies["accessToken"];
+            var callbackUrl = Url.RouteUrl(
+                "ConfirmEmail",
+                values: null,
+                protocol: Request.Scheme);
+
+            var token =await _userService.ConfirmEmailSendAsync(accessToken, callbackUrl!, cancellationToken);
+            return Ok(token);
+        }
+
+        [HttpGet("confirmRecieve", Name = "ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmailRecieve([FromQuery] ConfirmEmailRequest confirmEmailRequest, CancellationToken cancellationToken)
+        {
+            await _userService.ConfirmEmailRecieveAsync(confirmEmailRequest, cancellationToken);
+            return Ok("Email confirmed");
         }
 
         [HttpDelete("")]

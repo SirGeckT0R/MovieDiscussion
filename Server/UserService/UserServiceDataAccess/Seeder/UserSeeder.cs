@@ -12,10 +12,11 @@ namespace UserServiceDataAccess.Seeder
 
         public void Seed()
         {
-            List<User> users = new List<User> {
-                    new User("example@example.com", "Jake", _passwordHasher.Generate("cool"), E_Role.User),
-                    new User("admin@example.com", "Mark", _passwordHasher.Generate("admin"), E_Role.Admin),
-                    new User("great@example.com", "Victor", _passwordHasher.Generate("very"),  E_Role.User),
+            List<User> users = new()
+            {
+                    new User("example@example.com", "Jake", _passwordHasher.Generate("cool"), E_Role.User, true),
+                    new User("admin@example.com", "Mark", _passwordHasher.Generate("admin"), E_Role.Admin, true),
+                    new User("great@example.com", "Victor", _passwordHasher.Generate("very"),  E_Role.User, true),
                 };
 
             if (!_context.Users.Any())

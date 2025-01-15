@@ -4,10 +4,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using UserServiceDataAccess.Dto;
 using UserServiceDataAccess.Enums;
 using UserServiceDataAccess.Exceptions;
 using UserServiceDataAccess.Interfaces;
-using UserServiceDataAccess.Models;
 
 namespace UserServiceDataAccess.Handlers
 {
@@ -16,15 +16,17 @@ namespace UserServiceDataAccess.Handlers
         private readonly JwtOptions _options = options.Value;
         private readonly string secretKey = configuration["JWTSecretKey"]!;
 
-        public (string, DateTime) GenerateToken(Guid userId, string role, E_TokenType tokenType, Guid tokenId = default)
+        public (string, DateTime) GenerateToken(UserClaimsDto userClaims, E_TokenType tokenType, Guid tokenId = default)
         {
             Claim[] claims = tokenId == Guid.Empty ?
-                [new Claim(E_ClaimType.UserId.ToString(), userId.ToString()),
-                new Claim(E_ClaimType.Role.ToString(), role.ToString())] 
+                [new Claim(E_ClaimType.UserId.ToString(), userClaims.Id.ToString()),
+                new Claim(E_ClaimType.Email.ToString(), userClaims.Email.ToString()),
+                new Claim(E_ClaimType.Role.ToString(), userClaims.Role.ToString())] 
                 :
-                [new Claim(E_ClaimType.Id.ToString().ToLower(), tokenId.ToString()),
-                new Claim(E_ClaimType.UserId.ToString().ToLower(), userId.ToString()),
-                new Claim(E_ClaimType.Role.ToString(), role.ToString())];
+                [new Claim(E_ClaimType.Id.ToString(), tokenId.ToString()),
+                new Claim(E_ClaimType.UserId.ToString(), userClaims.Id.ToString()),
+                new Claim(E_ClaimType.Email.ToString(), userClaims.Email.ToString()),
+                new Claim(E_ClaimType.Role.ToString(), userClaims.Role.ToString())];
 
             var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
                 SecurityAlgorithms.HmacSha256);

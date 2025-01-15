@@ -9,6 +9,7 @@ namespace UserServiceDataAccess.Models
         public string Username { get; private set; } = string.Empty;
         public string Password { get; private set; } = string.Empty;
         public E_Role Role { get; set; } = E_Role.Guest;
+        public bool IsEmailConfirmed { get; set; } = false;
         public bool IsDeleted { get; set; }
         public DateTime? DeletedAt { get; set; }
 
@@ -16,12 +17,13 @@ namespace UserServiceDataAccess.Models
 
         }
 
-        public User(string email, string username, string password, E_Role role)
+        public User(string email, string username, string password, E_Role role, bool isEmailConfirmed = false)
         {
             Email = email;
             Username = username;
             Password = password;
             Role = role;
+            IsEmailConfirmed = isEmailConfirmed;
         }
     }
 }
