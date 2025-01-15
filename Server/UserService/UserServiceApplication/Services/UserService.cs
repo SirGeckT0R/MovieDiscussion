@@ -140,5 +140,32 @@ namespace UserServiceApplication.Services
             _emailService.SendEmailAsync(email, title,
                 $"Please go through the link {callbackUrl}.", cancellationToken);
         }
+
+        public async Task<string> ForgotPasswordAsync(string? accessToken, string callbackUrl, CancellationToken cancellationToken)
+        {
+            var (resetToken, email) = await _tokenService.GenerateResetPasswordTokenAsync(accessToken, cancellationToken);
+            resetToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(resetToken));
+            SendEmail(email, resetToken, "Reset Password", callbackUrl, cancellationToken);
+            _unitOfWork.Save();
+            return resetToken;
+        }
+
+        public async Task<string> ResetPasswordAsync(ResetPasswordRequest resetPasswordRequest, CancellationToken cancellationToken)
+        {
+            var candidate = await _unitOfWork.UserRepository.GetByEmailTrackingAsync(resetPasswordRequest.Email, cancellationToken);
+            if (candidate == null)
+            {
+                throw new NotFoundException("No user found");
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+            var confirmToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetPasswordRequest.Token));
+            await _tokenService.ValidateResetTokenAsync(confirmToken, cancellationToken);
+
+            cancellationToken.ThrowIfCancellationRequested();
+            candidate.Password = _passwordHasher.Generate(resetPasswordRequest.NewPassword);
+
+            _unitOfWork.Save();
+            return confirmToken;
+        }
     }
 }

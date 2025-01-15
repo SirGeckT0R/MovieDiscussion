@@ -52,6 +52,29 @@ namespace UserServiceApplication.Services
             return (confirmEmailToken, userClaims.Email);
         }
 
+        public async Task<(string, string)> GenerateResetPasswordTokenAsync(string? accessToken, CancellationToken cancellationToken)
+        {
+            if (accessToken == null)
+            {
+                throw new TokenException("Token is null");
+            }
+            var (_, userClaims) = ExtractClaims(accessToken);
+
+            var candidate = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(new UserIdAndTypeSpecification(E_TokenType.ResetPassword, userClaims.Id), cancellationToken);
+            if (candidate != null)
+            {
+                await _unitOfWork.TokenRepository.DeleteAsync(candidate.Id, cancellationToken);
+            }
+            var confirmTokenId = Guid.NewGuid();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            cancellationToken.ThrowIfCancellationRequested();
+            var (confirmEmailToken, expiresConfirm) = _jwtProvider.GenerateToken(userClaims, E_TokenType.ResetPassword, confirmTokenId);
+
+            await _unitOfWork.TokenRepository.AddAsync(new Token(confirmTokenId, E_TokenType.ResetPassword, userClaims.Id, confirmEmailToken, expiresConfirm), cancellationToken);
+            return (confirmEmailToken, userClaims.Email);
+        }
+
         public async Task ValidateConfirmTokenAsync(string? confirmToken, CancellationToken cancellationToken)
         {
             if (confirmToken == null)
@@ -65,6 +88,24 @@ namespace UserServiceApplication.Services
             if (candidate == null)
             {
                 throw new NotFoundException("Confirm token not found");
+            }
+
+            await _unitOfWork.TokenRepository.DeleteAsync(candidate.Id, cancellationToken);
+        }
+
+        public async Task ValidateResetTokenAsync(string? resetToken, CancellationToken cancellationToken)
+        {
+            if (resetToken == null)
+            {
+                throw new TokenException("Token is null");
+            }
+            var (_, userClaims) = ExtractClaims(resetToken);
+
+
+            var candidate = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(new UserIdAndTypeSpecification(E_TokenType.ResetPassword, userClaims.Id), cancellationToken);
+            if (candidate == null)
+            {
+                throw new NotFoundException("Reset token not found");
             }
 
             await _unitOfWork.TokenRepository.DeleteAsync(candidate.Id, cancellationToken);

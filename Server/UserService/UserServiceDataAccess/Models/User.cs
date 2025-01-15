@@ -7,7 +7,7 @@ namespace UserServiceDataAccess.Models
     {
         public string Email { get; private set;} = string.Empty;
         public string Username { get; private set; } = string.Empty;
-        public string Password { get; private set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
         public E_Role Role { get; set; } = E_Role.Guest;
         public bool IsEmailConfirmed { get; set; } = false;
         public bool IsDeleted { get; set; }

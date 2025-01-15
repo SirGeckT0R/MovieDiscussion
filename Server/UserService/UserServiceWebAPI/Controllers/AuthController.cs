@@ -44,7 +44,7 @@ namespace UserServiceWebAPI.Controllers
             return NoContent();
         }
 
-        [HttpGet("confirm")]
+        [HttpPost("confirm")]
         [Authorize]
         public async Task<IActionResult>ConfirmEmailSend(CancellationToken cancellationToken)
         {
@@ -58,11 +58,32 @@ namespace UserServiceWebAPI.Controllers
             return Ok(token);
         }
 
-        [HttpGet("confirmRecieve", Name = "ConfirmEmail")]
+        [HttpPost("confirmRecieve", Name = "ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmailRecieve([FromQuery] ConfirmEmailRequest confirmEmailRequest, CancellationToken cancellationToken)
         {
             await _userService.ConfirmEmailRecieveAsync(confirmEmailRequest, cancellationToken);
             return Ok("Email confirmed");
+        }
+
+        [HttpPost("forgot")]
+        [Authorize]
+        public async Task<IActionResult> ForgotPassword(CancellationToken cancellationToken)
+        {
+            var accessToken = HttpContext.Request.Cookies["accessToken"];
+            var callbackUrl = Url.RouteUrl(
+                "ResetPassword",
+                values: null,
+                protocol: Request.Scheme);
+
+            var token = await _userService.ForgotPasswordAsync(accessToken, callbackUrl!, cancellationToken);
+            return Ok(token);
+        }
+
+        [HttpPost("reset", Name = "ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordRequest resetPasswordRequest, CancellationToken cancellationToken)
+        {
+            await _userService.ResetPasswordAsync(resetPasswordRequest, cancellationToken);
+            return Ok("Password was reset");
         }
 
         [HttpDelete("")]
