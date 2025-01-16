@@ -1,6 +1,6 @@
 ﻿namespace UserServiceDataAccess.Enums
 {
-    public enum ERole
+    public enum Role
     {
         Guest,
         User,

@@ -1,6 +1,6 @@
 ﻿namespace UserServiceDataAccess.Enums
 {
-    public enum EClaimType
+    public enum ClaimType
     {
         None,
         Id,
