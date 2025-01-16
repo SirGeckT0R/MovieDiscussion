@@ -7,14 +7,14 @@ namespace UserServiceApplication.Dto
     {
         public string Email { get; } = string.Empty;
         public string Username { get; } = string.Empty;
-        public E_Role Role { get; } = E_Role.Guest;
+        public ERole Role { get; } = ERole.Guest;
         public bool IsEmailConfirmed { get; } = false;
         public UserDto()
         {
 
         }
 
-        public UserDto(Guid id, string email, string username, E_Role role, bool isEmailConfirmed)
+        public UserDto(Guid id, string email, string username, ERole role, bool isEmailConfirmed)
         {
             Id = id;
             Email = email;

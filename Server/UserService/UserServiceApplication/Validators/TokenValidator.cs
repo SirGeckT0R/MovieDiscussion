@@ -15,7 +15,7 @@ namespace UserServiceApplication.Validators
 
             RuleFor(x => x.TokenType)
                 .NotEmpty()
-                .NotEqual(E_TokenType.None);
+                .NotEqual(ETokenType.None);
 
             RuleFor(x => x.TokenValue)
                 .NotEmpty();

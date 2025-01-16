@@ -6,7 +6,7 @@ namespace UserServiceDataAccess.Interfaces
 {
     public interface IJwtProvider
     {
-        (string, DateTime) GenerateToken(UserClaimsDto userClaims, E_TokenType tokenType, Guid tokenId = default);
+        (string, DateTime) GenerateToken(UserClaimsDto userClaims, ETokenType tokenType, Guid tokenId = default);
         ClaimsPrincipal GetPrincipalFromToken(string token);
     }
 }

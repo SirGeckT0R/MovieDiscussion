@@ -1,6 +1,6 @@
 ﻿namespace UserServiceDataAccess.Enums
 {
-    public enum E_TokenType
+    public enum ETokenType
     {
         None,
         Access,

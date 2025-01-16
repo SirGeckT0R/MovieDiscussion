@@ -19,7 +19,7 @@ namespace UserServiceApplication.Services
         public async Task<(string, string)> GenerateAuthTokensAsync(UserClaimsDto userClaims, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var candidate = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(new UserIdAndTypeSpecification(E_TokenType.Refresh, userClaims.Id), cancellationToken);
+            var candidate = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(new UserIdAndTypeSpecification(ETokenType.Refresh, userClaims.Id), cancellationToken);
             if (candidate != null)
             {
                 _unitOfWork.TokenRepository.Delete(candidate, cancellationToken);
@@ -27,16 +27,16 @@ namespace UserServiceApplication.Services
 
             cancellationToken.ThrowIfCancellationRequested();
             var refreshTokenId = Guid.NewGuid();
-            var (accessToken, _) = _jwtProvider.GenerateToken(userClaims, E_TokenType.Access);
-            var (refreshToken, expiresRefresh) = _jwtProvider.GenerateToken(userClaims, E_TokenType.Refresh, refreshTokenId);
+            var (accessToken, _) = _jwtProvider.GenerateToken(userClaims, ETokenType.Access);
+            var (refreshToken, expiresRefresh) = _jwtProvider.GenerateToken(userClaims, ETokenType.Refresh, refreshTokenId);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.TokenRepository.AddAsync(new Token(refreshTokenId, E_TokenType.Refresh, userClaims.Id, refreshToken, expiresRefresh), cancellationToken);
+            await _unitOfWork.TokenRepository.AddAsync(new Token(refreshTokenId, ETokenType.Refresh, userClaims.Id, refreshToken, expiresRefresh), cancellationToken);
 
             return (accessToken, refreshToken);
         }
 
-        public async Task<(string, string)> GenerateTokenAndExtractEmailAsync(string? accessToken, E_TokenType tokenType, CancellationToken cancellationToken, bool isAuth = false)
+        public async Task<(string, string)> GenerateTokenAndExtractEmailAsync(string? accessToken, ETokenType tokenType, CancellationToken cancellationToken, bool isAuth = false)
         {
             if (accessToken == null && !isAuth)
             {
@@ -59,7 +59,7 @@ namespace UserServiceApplication.Services
             return (tokenValue, userClaims.Email);
         }
 
-        public async Task FindAndDeleteTokenAsync(string? confirmToken, E_TokenType tokenType, CancellationToken cancellationToken)
+        public async Task FindAndDeleteTokenAsync(string? confirmToken, ETokenType tokenType, CancellationToken cancellationToken)
         {
             if (confirmToken == null)
             {
@@ -111,7 +111,7 @@ namespace UserServiceApplication.Services
 
             CompareWithEntity(candidate, inputToken);
             cancellationToken.ThrowIfCancellationRequested();
-            var (accessToken, _) = _jwtProvider.GenerateToken(userClaims, E_TokenType.Access);
+            var (accessToken, _) = _jwtProvider.GenerateToken(userClaims, ETokenType.Access);
             return accessToken;
         }
 
@@ -119,17 +119,17 @@ namespace UserServiceApplication.Services
         {
             var principal = _jwtProvider.GetPrincipalFromToken(token);
 
-            var tokenId = principal.Claims.FirstOrDefault(c => c.Type.Equals(E_ClaimType.Id.ToString(), StringComparison.CurrentCultureIgnoreCase))?.Value;
-            var userId = principal.Claims.FirstOrDefault(c => c.Type.Equals(E_ClaimType.UserId.ToString(), StringComparison.CurrentCultureIgnoreCase))?.Value;
-            var email = principal.Claims.FirstOrDefault(c => c.Type.Equals(E_ClaimType.Email.ToString(), StringComparison.CurrentCultureIgnoreCase))?.Value;
-            var role = principal.Claims.FirstOrDefault(c => c.Type.Equals(E_ClaimType.Role.ToString(), StringComparison.CurrentCultureIgnoreCase))?.Value;
+            var tokenId = principal.Claims.FirstOrDefault(c => c.Type.Equals(EClaimType.Id.ToString(), StringComparison.CurrentCultureIgnoreCase))?.Value;
+            var userId = principal.Claims.FirstOrDefault(c => c.Type.Equals(EClaimType.UserId.ToString(), StringComparison.CurrentCultureIgnoreCase))?.Value;
+            var email = principal.Claims.FirstOrDefault(c => c.Type.Equals(EClaimType.Email.ToString(), StringComparison.CurrentCultureIgnoreCase))?.Value;
+            var role = principal.Claims.FirstOrDefault(c => c.Type.Equals(EClaimType.Role.ToString(), StringComparison.CurrentCultureIgnoreCase))?.Value;
             if (userId == null|| email == null || role == null)
             {
                 throw new TokenException("Invalid token");
             }
 
             _ = Guid.TryParse(tokenId, out Guid tokenIdGuid);
-            return (tokenIdGuid, new UserClaimsDto(Guid.Parse(userId), email, (E_Role)Enum.Parse(typeof(E_Role), role)));
+            return (tokenIdGuid, new UserClaimsDto(Guid.Parse(userId), email, (ERole)Enum.Parse(typeof(ERole), role)));
         }
 
         private void CompareWithEntity(Token? token, string inputToken)

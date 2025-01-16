@@ -9,13 +9,13 @@ namespace UserServiceWebAPI.RoleAuthorization
         {
             IEnumerable<IAuthorizationRequirement> requirements = context.Requirements;
 
-            if (!context.User.Claims.Any(x => x.Type == E_ClaimType.Role.ToString()))
+            if (!context.User.Claims.Any(x => x.Type == EClaimType.Role.ToString()))
             {
                 context.Fail(new AuthorizationFailureReason(this, "User token has no role"));
                 return Task.CompletedTask;
             }
 
-            var role = context.User.FindFirst(x => x.Type == E_ClaimType.Role.ToString())!.Value;
+            var role = context.User.FindFirst(x => x.Type == EClaimType.Role.ToString())!.Value;
 
             string[] roles = role.Split(',');
 

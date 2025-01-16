@@ -9,7 +9,7 @@ namespace UserServiceApplication.MappingProfiles
     {
         public RegisterRequestMappingProfile() {
             CreateMap<RegisterRequest, User>()
-                .AfterMap((com, user) => user.Role = E_Role.User);
+                .AfterMap((com, user) => user.Role = ERole.User);
         }
     }
 }

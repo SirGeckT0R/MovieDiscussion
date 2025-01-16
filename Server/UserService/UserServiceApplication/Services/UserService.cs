@@ -108,7 +108,7 @@ namespace UserServiceApplication.Services
 
         public async Task<string> ConfirmEmailSendAsync(string? accessToken, string callbackUrl, CancellationToken cancellationToken)
         {
-            var (confirmToken, email) = await _tokenService.GenerateTokenAndExtractEmailAsync(accessToken, E_TokenType.ConfirmEmail ,cancellationToken);
+            var (confirmToken, email) = await _tokenService.GenerateTokenAndExtractEmailAsync(accessToken, ETokenType.ConfirmEmail ,cancellationToken);
             confirmToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(confirmToken));
             SendEmail(email, confirmToken, "Confirm Email", callbackUrl, cancellationToken);
             _unitOfWork.Save();
@@ -120,7 +120,7 @@ namespace UserServiceApplication.Services
             var candidate = await _unitOfWork.UserRepository.GetByEmailTrackingAsync(confirmEmailRequest.Email, cancellationToken) ?? throw new NotFoundException("No user found");
             cancellationToken.ThrowIfCancellationRequested();
             var confirmToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(confirmEmailRequest.Token));
-            await _tokenService.FindAndDeleteTokenAsync(confirmToken, E_TokenType.ConfirmEmail, cancellationToken);
+            await _tokenService.FindAndDeleteTokenAsync(confirmToken, ETokenType.ConfirmEmail, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
             candidate.IsEmailConfirmed = true;
@@ -132,7 +132,7 @@ namespace UserServiceApplication.Services
 
         public async Task<string> ForgotPasswordAsync(string? accessToken, string callbackUrl, CancellationToken cancellationToken)
         {
-            var (resetToken, email) = await _tokenService.GenerateTokenAndExtractEmailAsync(accessToken, E_TokenType.ResetPassword, cancellationToken);
+            var (resetToken, email) = await _tokenService.GenerateTokenAndExtractEmailAsync(accessToken, ETokenType.ResetPassword, cancellationToken);
             resetToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(resetToken));
             SendEmail(email, resetToken, "Reset Password", callbackUrl, cancellationToken);
             _unitOfWork.Save();
@@ -144,7 +144,7 @@ namespace UserServiceApplication.Services
             var candidate = await _unitOfWork.UserRepository.GetByEmailTrackingAsync(resetPasswordRequest.Email, cancellationToken) ?? throw new NotFoundException("No user found");
             cancellationToken.ThrowIfCancellationRequested();
             var resetToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetPasswordRequest.Token));
-            await _tokenService.FindAndDeleteTokenAsync(resetToken,E_TokenType.ResetPassword, cancellationToken);
+            await _tokenService.FindAndDeleteTokenAsync(resetToken,ETokenType.ResetPassword, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
             candidate.Password = _passwordHasher.Generate(resetPasswordRequest.NewPassword);
