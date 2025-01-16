@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using UserServiceDataAccess.Models;
 
-namespace UserServiceDataAccess.Configurations
+namespace UserServiceDataAccess.DatabaseHandlers.Configurations
 {
     public class TokenConfiguration : IEntityTypeConfiguration<Token>
     {
@@ -15,6 +15,7 @@ namespace UserServiceDataAccess.Configurations
             builder.Property(x => x.TokenValue).IsRequired();
             builder.Property(x => x.ExpiresAt).IsRequired();
             builder.Property(x => x.CreatedAt).IsRequired();
+            builder.HasQueryFilter(x => !x.User.IsDeleted);
         }
     }
 }

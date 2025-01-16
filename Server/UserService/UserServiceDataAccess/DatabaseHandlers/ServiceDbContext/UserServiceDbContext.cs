@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using UserServiceDataAccess.Configurations;
-using UserServiceDataAccess.Interceptors;
+using UserServiceDataAccess.DatabaseHandlers.Configurations;
+using UserServiceDataAccess.DatabaseHandlers.Interceptors;
 using UserServiceDataAccess.Models;
 
-namespace UserServiceDataAccess.ServiceDbContext
+namespace UserServiceDataAccess.DatabaseHandlers.ServiceDbContext
 {
     public class UserServiceDbContext : DbContext
     {

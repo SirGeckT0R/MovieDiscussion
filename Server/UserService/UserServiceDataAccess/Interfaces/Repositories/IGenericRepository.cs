@@ -1,5 +1,5 @@
-﻿using UserServiceDataAccess.Models;
-using UserServiceDataAccess.Specifications;
+﻿using UserServiceDataAccess.DatabaseHandlers.Specifications;
+using UserServiceDataAccess.Models;
 
 namespace UserServiceDataAccess.Interfaces.Repositories
 {
@@ -10,7 +10,7 @@ namespace UserServiceDataAccess.Interfaces.Repositories
         Task<T?> GetByIdTrackingAsync(Guid id, CancellationToken cancellationToken);
         Task<T?> GetWithSpecificationAsync(Specification<T> specification, CancellationToken cancellationToken);
         Task<Guid> AddAsync(T model, CancellationToken cancellationToken);
-        Task DeleteAsync(Guid id, CancellationToken cancellationToken);
+        void Delete(T model, CancellationToken cancellationToken);
         void Update(T model, CancellationToken cancellationToken);
     }
 }

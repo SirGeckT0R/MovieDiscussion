@@ -1,7 +1,6 @@
 ﻿using System.Security.Claims;
 using UserServiceDataAccess.Dto;
 using UserServiceDataAccess.Enums;
-using UserServiceDataAccess.Models;
 
 namespace UserServiceDataAccess.Interfaces
 {

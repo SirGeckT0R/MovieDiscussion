@@ -1,6 +1,6 @@
 ﻿using UserServiceDataAccess.Interfaces;
 
-namespace UserServiceDataAccess.Handlers
+namespace UserServiceDataAccess.PasswordHasher
 {
     public class PasswordHasher : IPasswordHasher
     {

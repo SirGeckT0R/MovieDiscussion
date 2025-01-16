@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
 using UserServiceApplication.Interfaces.Services;
+using UserServiceDataAccess.DatabaseHandlers.Specifications;
 using UserServiceDataAccess.Dto;
 using UserServiceDataAccess.Enums;
 using UserServiceDataAccess.Exceptions;
 using UserServiceDataAccess.Interfaces;
 using UserServiceDataAccess.Models;
-using UserServiceDataAccess.Specifications;
 
 namespace UserServiceApplication.Services
 {
@@ -19,6 +19,13 @@ namespace UserServiceApplication.Services
         public async Task<(string, string)> GenerateAuthTokensAsync(UserClaimsDto userClaims, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            var candidate = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(new UserIdAndTypeSpecification(E_TokenType.Refresh, userClaims.Id), cancellationToken);
+            if (candidate != null)
+            {
+                _unitOfWork.TokenRepository.Delete(candidate, cancellationToken);
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
             var refreshTokenId = Guid.NewGuid();
             var (accessToken, _) = _jwtProvider.GenerateToken(userClaims, E_TokenType.Access);
             var (refreshToken, expiresRefresh) = _jwtProvider.GenerateToken(userClaims, E_TokenType.Refresh, refreshTokenId);
@@ -29,53 +36,30 @@ namespace UserServiceApplication.Services
             return (accessToken, refreshToken);
         }
 
-        public async Task<(string,string)> GenerateConfirmEmailTokenAsync(string? accessToken, CancellationToken cancellationToken)
+        public async Task<(string, string)> GenerateTokenAndExtractEmailAsync(string? accessToken, E_TokenType tokenType, CancellationToken cancellationToken, bool isAuth = false)
         {
-            if (accessToken == null)
+            if (accessToken == null && !isAuth)
             {
                 throw new TokenException("Token is null");
             }
             var (_, userClaims) = ExtractClaims(accessToken);
 
-            var candidate = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(new UserIdAndTypeSpecification(E_TokenType.ConfirmEmail, userClaims.Id), cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+            var candidate = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(new UserIdAndTypeSpecification(tokenType, userClaims.Id), cancellationToken);
             if (candidate != null)
             {
-                await _unitOfWork.TokenRepository.DeleteAsync(candidate.Id, cancellationToken);
+                _unitOfWork.TokenRepository.Delete(candidate, cancellationToken);
             }
-            var confirmTokenId = Guid.NewGuid();
-            cancellationToken.ThrowIfCancellationRequested();
-            
-            cancellationToken.ThrowIfCancellationRequested();
-            var (confirmEmailToken, expiresConfirm) = _jwtProvider.GenerateToken(userClaims, E_TokenType.ConfirmEmail, confirmTokenId);
 
-            await _unitOfWork.TokenRepository.AddAsync(new Token(confirmTokenId, E_TokenType.ConfirmEmail, userClaims.Id, confirmEmailToken, expiresConfirm), cancellationToken);
-            return (confirmEmailToken, userClaims.Email);
+            cancellationToken.ThrowIfCancellationRequested();
+            var tokenId = Guid.NewGuid();
+            var (tokenValue, expiresTime) = _jwtProvider.GenerateToken(userClaims, tokenType, tokenId);
+
+            await _unitOfWork.TokenRepository.AddAsync(new Token(tokenId, tokenType, userClaims.Id, tokenValue, expiresTime), cancellationToken);
+            return (tokenValue, userClaims.Email);
         }
 
-        public async Task<(string, string)> GenerateResetPasswordTokenAsync(string? accessToken, CancellationToken cancellationToken)
-        {
-            if (accessToken == null)
-            {
-                throw new TokenException("Token is null");
-            }
-            var (_, userClaims) = ExtractClaims(accessToken);
-
-            var candidate = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(new UserIdAndTypeSpecification(E_TokenType.ResetPassword, userClaims.Id), cancellationToken);
-            if (candidate != null)
-            {
-                await _unitOfWork.TokenRepository.DeleteAsync(candidate.Id, cancellationToken);
-            }
-            var confirmTokenId = Guid.NewGuid();
-            cancellationToken.ThrowIfCancellationRequested();
-
-            cancellationToken.ThrowIfCancellationRequested();
-            var (confirmEmailToken, expiresConfirm) = _jwtProvider.GenerateToken(userClaims, E_TokenType.ResetPassword, confirmTokenId);
-
-            await _unitOfWork.TokenRepository.AddAsync(new Token(confirmTokenId, E_TokenType.ResetPassword, userClaims.Id, confirmEmailToken, expiresConfirm), cancellationToken);
-            return (confirmEmailToken, userClaims.Email);
-        }
-
-        public async Task ValidateConfirmTokenAsync(string? confirmToken, CancellationToken cancellationToken)
+        public async Task FindAndDeleteTokenAsync(string? confirmToken, E_TokenType tokenType, CancellationToken cancellationToken)
         {
             if (confirmToken == null)
             {
@@ -83,32 +67,8 @@ namespace UserServiceApplication.Services
             }
             var (_, userClaims) = ExtractClaims(confirmToken);
 
-
-            var candidate = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(new UserIdAndTypeSpecification(E_TokenType.ConfirmEmail, userClaims.Id), cancellationToken);
-            if (candidate == null)
-            {
-                throw new NotFoundException("Confirm token not found");
-            }
-
-            await _unitOfWork.TokenRepository.DeleteAsync(candidate.Id, cancellationToken);
-        }
-
-        public async Task ValidateResetTokenAsync(string? resetToken, CancellationToken cancellationToken)
-        {
-            if (resetToken == null)
-            {
-                throw new TokenException("Token is null");
-            }
-            var (_, userClaims) = ExtractClaims(resetToken);
-
-
-            var candidate = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(new UserIdAndTypeSpecification(E_TokenType.ResetPassword, userClaims.Id), cancellationToken);
-            if (candidate == null)
-            {
-                throw new NotFoundException("Reset token not found");
-            }
-
-            await _unitOfWork.TokenRepository.DeleteAsync(candidate.Id, cancellationToken);
+            var candidate = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(new UserIdAndTypeSpecification(tokenType, userClaims.Id), cancellationToken) ?? throw new NotFoundException("Token not found");
+            _unitOfWork.TokenRepository.Delete(candidate, cancellationToken);
         }
 
         public async Task<Token?> GetTokenAsync(Guid tokenId, CancellationToken cancellationToken)
@@ -127,7 +87,8 @@ namespace UserServiceApplication.Services
         public async Task DeleteTokenAsync(Guid tokenId, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.TokenRepository.DeleteAsync(tokenId, cancellationToken);
+            var candidate = await GetTokenAsync(tokenId, cancellationToken) ?? throw new NotFoundException("No user was found");
+            _unitOfWork.TokenRepository.Delete(candidate, cancellationToken);
         }
 
         public void UpdateToken(Token token, CancellationToken cancellationToken)
@@ -148,14 +109,13 @@ namespace UserServiceApplication.Services
             cancellationToken.ThrowIfCancellationRequested();
             var candidate = await _unitOfWork.TokenRepository.GetByIdAsync(tokenId, cancellationToken);
 
-            ValidateToken(candidate, inputToken);
+            CompareWithEntity(candidate, inputToken);
             cancellationToken.ThrowIfCancellationRequested();
             var (accessToken, _) = _jwtProvider.GenerateToken(userClaims, E_TokenType.Access);
-            await _unitOfWork.TokenRepository.DeleteAsync(tokenId, cancellationToken);
             return accessToken;
         }
 
-        private (Guid, UserClaimsDto) ExtractClaims(string token)
+        public (Guid, UserClaimsDto) ExtractClaims(string token)
         {
             var principal = _jwtProvider.GetPrincipalFromToken(token);
 
@@ -167,12 +127,12 @@ namespace UserServiceApplication.Services
             {
                 throw new TokenException("Invalid token");
             }
-            var tokenIdGuid = Guid.Empty;
-            _ = Guid.TryParse(tokenId, out tokenIdGuid);
+
+            _ = Guid.TryParse(tokenId, out Guid tokenIdGuid);
             return (tokenIdGuid, new UserClaimsDto(Guid.Parse(userId), email, (E_Role)Enum.Parse(typeof(E_Role), role)));
         }
 
-        private static void ValidateToken(Token? token, string inputToken)
+        private void CompareWithEntity(Token? token, string inputToken)
         {
             if(token == null && token?.TokenValue != inputToken)
             {
@@ -181,7 +141,7 @@ namespace UserServiceApplication.Services
 
             if(token.ExpiresAt <= DateTime.UtcNow)
             {
-                throw new TokenException("Refresh token is expired");
+                throw new TokenException("Token is expired");
             }
         }
     }

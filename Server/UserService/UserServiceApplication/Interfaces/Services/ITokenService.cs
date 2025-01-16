@@ -1,4 +1,5 @@
 ﻿using UserServiceDataAccess.Dto;
+using UserServiceDataAccess.Enums;
 using UserServiceDataAccess.Models;
 
 namespace UserServiceApplication.Interfaces.Services
@@ -6,10 +7,8 @@ namespace UserServiceApplication.Interfaces.Services
     public interface ITokenService
     {
         Task<(string, string)> GenerateAuthTokensAsync(UserClaimsDto userClaims, CancellationToken cancellationToken);
-        Task<(string, string)> GenerateConfirmEmailTokenAsync(string? accessToken, CancellationToken cancellationToken);
-        Task<(string, string)> GenerateResetPasswordTokenAsync(string? accessToken, CancellationToken cancellationToken);
-        Task ValidateConfirmTokenAsync(string? confirmToken, CancellationToken cancellationToken);
-        Task ValidateResetTokenAsync(string? resetToken, CancellationToken cancellationToken);
+        Task<(string, string)> GenerateTokenAndExtractEmailAsync(string? accessToken, E_TokenType tokenType, CancellationToken cancellationToken, bool isAuth = false);
+        Task FindAndDeleteTokenAsync(string? confirmToken, E_TokenType tokenType, CancellationToken cancellationToken);
         Task<Token?> GetTokenAsync(Guid tokenId, CancellationToken cancellationToken);
         Task<Guid> AddTokenAsync(Token token, CancellationToken cancellationToken);
         Task DeleteTokenAsync(Guid tokenId, CancellationToken cancellationToken);

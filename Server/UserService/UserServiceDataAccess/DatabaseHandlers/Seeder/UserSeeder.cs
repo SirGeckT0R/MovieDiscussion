@@ -1,9 +1,9 @@
-﻿using UserServiceDataAccess.Enums;
+﻿using UserServiceDataAccess.DatabaseHandlers.ServiceDbContext;
+using UserServiceDataAccess.Enums;
 using UserServiceDataAccess.Interfaces;
 using UserServiceDataAccess.Models;
-using UserServiceDataAccess.ServiceDbContext;
 
-namespace UserServiceDataAccess.Seeder
+namespace UserServiceDataAccess.DatabaseHandlers.Seeder
 {
     public class UserSeeder(UserServiceDbContext context, IPasswordHasher passwordHasher)
     {

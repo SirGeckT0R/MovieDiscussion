@@ -1,5 +1,4 @@
-﻿
-namespace UserServiceDataAccess.Handlers
+﻿namespace UserServiceDataAccess.Handlers
 {
     public class JwtOptions
     {

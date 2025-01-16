@@ -2,12 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using UserServiceDataAccess.Interfaces;
 
-namespace UserServiceDataAccess.Interceptors
+namespace UserServiceDataAccess.DatabaseHandlers.Interceptors
 {
     public class SoftDeleteInterceptor : SaveChangesInterceptor
     {
         public override InterceptionResult<int> SavingChanges(
-            DbContextEventData eventData, 
+            DbContextEventData eventData,
             InterceptionResult<int> result)
         {
             if (eventData.Context is null) return result;

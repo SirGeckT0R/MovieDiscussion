@@ -8,7 +8,7 @@ using FluentValidation;
 using UserServiceDataAccess.Dto;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
-using System;
+using UserServiceDataAccess.Enums;
 
 namespace UserServiceApplication.Services
 {
@@ -33,7 +33,7 @@ namespace UserServiceApplication.Services
 
             if (candidate == null || !_passwordHasher.Verify(loginRequest.Password, candidate.Password))
             {
-                throw new NotFoundException("No candidate found");
+                throw new NotFoundException("Email or password is incorrect");
             }
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -81,9 +81,8 @@ namespace UserServiceApplication.Services
 
         public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            _ = await _unitOfWork.UserRepository.GetByIdAsync(id, cancellationToken) ?? throw new NotFoundException("No user found");
-
-            await _unitOfWork.UserRepository.DeleteAsync(id, cancellationToken);
+            var candidate = await _unitOfWork.UserRepository.GetByIdAsync(id, cancellationToken) ?? throw new NotFoundException("No user found");
+            _unitOfWork.UserRepository.Delete(candidate, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
             _unitOfWork.Save();
@@ -93,6 +92,7 @@ namespace UserServiceApplication.Services
         {
             var user = await _unitOfWork.UserRepository.GetByEmailAsync(email, cancellationToken) ?? throw new NotFoundException("No such user found");
             cancellationToken.ThrowIfCancellationRequested();
+
             var userDto = _mapper.Map<UserDto>(user);
             return userDto;
         }
@@ -108,7 +108,7 @@ namespace UserServiceApplication.Services
 
         public async Task<string> ConfirmEmailSendAsync(string? accessToken, string callbackUrl, CancellationToken cancellationToken)
         {
-            var (confirmToken, email) = await _tokenService.GenerateConfirmEmailTokenAsync(accessToken, cancellationToken);
+            var (confirmToken, email) = await _tokenService.GenerateTokenAndExtractEmailAsync(accessToken, E_TokenType.ConfirmEmail ,cancellationToken);
             confirmToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(confirmToken));
             SendEmail(email, confirmToken, "Confirm Email", callbackUrl, cancellationToken);
             _unitOfWork.Save();
@@ -117,14 +117,10 @@ namespace UserServiceApplication.Services
 
         public async Task<string> ConfirmEmailRecieveAsync(ConfirmEmailRequest confirmEmailRequest, CancellationToken cancellationToken)
         {
-            var candidate = await _unitOfWork.UserRepository.GetByEmailTrackingAsync(confirmEmailRequest.Email, cancellationToken);
-            if (candidate == null)
-            {
-                throw new NotFoundException("No user found");
-            }
+            var candidate = await _unitOfWork.UserRepository.GetByEmailTrackingAsync(confirmEmailRequest.Email, cancellationToken) ?? throw new NotFoundException("No user found");
             cancellationToken.ThrowIfCancellationRequested();
             var confirmToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(confirmEmailRequest.Token));
-            await _tokenService.ValidateConfirmTokenAsync(confirmToken, cancellationToken);
+            await _tokenService.FindAndDeleteTokenAsync(confirmToken, E_TokenType.ConfirmEmail, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
             candidate.IsEmailConfirmed = true;
@@ -133,17 +129,10 @@ namespace UserServiceApplication.Services
             return confirmToken;
         }
 
-        private void SendEmail(string email, string token, string title, string callbackUrl, CancellationToken cancellationToken)
-        {
-            callbackUrl +=$"?{nameof(email)}={email}&{nameof(token)}={token}";
-
-            _emailService.SendEmailAsync(email, title,
-                $"Please go through the link {callbackUrl}.", cancellationToken);
-        }
 
         public async Task<string> ForgotPasswordAsync(string? accessToken, string callbackUrl, CancellationToken cancellationToken)
         {
-            var (resetToken, email) = await _tokenService.GenerateResetPasswordTokenAsync(accessToken, cancellationToken);
+            var (resetToken, email) = await _tokenService.GenerateTokenAndExtractEmailAsync(accessToken, E_TokenType.ResetPassword, cancellationToken);
             resetToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(resetToken));
             SendEmail(email, resetToken, "Reset Password", callbackUrl, cancellationToken);
             _unitOfWork.Save();
@@ -152,20 +141,24 @@ namespace UserServiceApplication.Services
 
         public async Task<string> ResetPasswordAsync(ResetPasswordRequest resetPasswordRequest, CancellationToken cancellationToken)
         {
-            var candidate = await _unitOfWork.UserRepository.GetByEmailTrackingAsync(resetPasswordRequest.Email, cancellationToken);
-            if (candidate == null)
-            {
-                throw new NotFoundException("No user found");
-            }
+            var candidate = await _unitOfWork.UserRepository.GetByEmailTrackingAsync(resetPasswordRequest.Email, cancellationToken) ?? throw new NotFoundException("No user found");
             cancellationToken.ThrowIfCancellationRequested();
-            var confirmToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetPasswordRequest.Token));
-            await _tokenService.ValidateResetTokenAsync(confirmToken, cancellationToken);
+            var resetToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetPasswordRequest.Token));
+            await _tokenService.FindAndDeleteTokenAsync(resetToken,E_TokenType.ResetPassword, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
             candidate.Password = _passwordHasher.Generate(resetPasswordRequest.NewPassword);
 
             _unitOfWork.Save();
-            return confirmToken;
+            return resetToken;
+        }
+
+        private void SendEmail(string email, string token, string title, string callbackUrl, CancellationToken cancellationToken)
+        {
+            callbackUrl += $"?{nameof(email)}={email}&{nameof(token)}={token}";
+
+            _emailService.SendEmailAsync(email, title,
+                $"Please go through the link {callbackUrl}.", cancellationToken);
         }
     }
 }

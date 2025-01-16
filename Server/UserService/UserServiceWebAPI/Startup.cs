@@ -1,20 +1,21 @@
 ﻿using UserServiceDataAccess.Handlers;
 using UserServiceDataAccess.Interfaces.Repositories;
 using UserServiceDataAccess.Interfaces;
-using UserServiceDataAccess.Repositories;
 using UserServiceWebAPI.ExceptionHandler;
-using UserServiceDataAccess.ServiceDbContext;
 using Microsoft.EntityFrameworkCore;
 using UserServiceApplication.Interfaces.Services;
 using UserServiceApplication.Services;
-using UserServiceDataAccess.UnitOfWork;
 using UserServiceWebAPI.Extensions;
 using UserServiceApplication.MappingProfiles;
 using System.Reflection;
 using UserServiceApplication.Validators;
 using UserServiceDataAccess.Models;
 using FluentValidation;
-using UserServiceDataAccess.Seeder;
+using UserServiceDataAccess.DatabaseHandlers.ServiceDbContext;
+using UserServiceDataAccess.DatabaseHandlers.Repositories;
+using UserServiceDataAccess.DatabaseHandlers.UnitOfWork;
+using UserServiceDataAccess.PasswordHasher;
+using UserServiceDataAccess.DatabaseHandlers.Seeder;
 
 namespace UserServiceWebAPI
 {
@@ -29,14 +30,18 @@ namespace UserServiceWebAPI
             services.Configure<JwtOptions>(Configuration.GetSection("Jwt"));
 
             services.AddDbContext<UserServiceDbContext>(options => options.UseNpgsql(connection));
+
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IEmailService, EmailService>();
+
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITokenRepository, TokenRepository>();
             services.AddScoped<IUserUnitOfWork, UserUnitOfWork>();
+
             services.AddScoped<IJwtProvider, JwtProvider>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
+
             services.AddScoped<IValidator<User>, UserValidator>();
             services.AddScoped<IValidator<Token>, TokenValidator>();
             
@@ -63,7 +68,6 @@ namespace UserServiceWebAPI
             });
 
             app.UseDefaultFiles();
-            app.UseHttpsRedirection();
 
             if (env.IsDevelopment())
             {

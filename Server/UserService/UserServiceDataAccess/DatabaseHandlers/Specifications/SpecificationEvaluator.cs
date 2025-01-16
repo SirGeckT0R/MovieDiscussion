@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace UserServiceDataAccess.Specifications
+namespace UserServiceDataAccess.DatabaseHandlers.Specifications
 {
     public static class SpecificationEvaluator<T> where T : class
     {
@@ -14,7 +14,7 @@ namespace UserServiceDataAccess.Specifications
 
             query = specification.IncludeExpressions.Aggregate(query, (current, includeExpression) => current.Include(includeExpression));
 
-            if(specification.OrderByExpression is not null)
+            if (specification.OrderByExpression is not null)
             {
                 query = query.OrderBy(specification.OrderByExpression);
             }

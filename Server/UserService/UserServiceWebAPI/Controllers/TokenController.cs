@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using UserServiceApplication.Interfaces.Services;
 
 namespace UserServiceWebAPI.Controllers
@@ -10,15 +11,14 @@ namespace UserServiceWebAPI.Controllers
         private readonly ITokenService _tokenService = tokenService;
 
         [HttpPost("refresh")]
+        [Authorize]
         public async Task<IActionResult> Refresh(CancellationToken cancellationToken)
         {
             string? refreshToken = HttpContext.Request.Cookies["refreshToken"];
-
-            cancellationToken.ThrowIfCancellationRequested();
             var accessToken = await _tokenService.RefreshTokenAsync(refreshToken, cancellationToken);
 
             HttpContext.Response.Cookies.Append("accessToken", accessToken, new CookieOptions { Domain = "localhost" });
-            return Ok((accessToken, refreshToken));
+            return NoContent();
         }
 
     }

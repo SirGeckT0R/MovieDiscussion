@@ -1,5 +1,4 @@
-﻿
-namespace UserServiceDataAccess.Interfaces
+﻿namespace UserServiceDataAccess.Interfaces
 {
     public interface IPasswordHasher
     {

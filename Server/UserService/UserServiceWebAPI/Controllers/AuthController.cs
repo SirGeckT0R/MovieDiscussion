@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using UserServiceApplication.Dto;
 using UserServiceApplication.Interfaces.Services;
-
 namespace UserServiceWebAPI.Controllers
 {
     [ApiController]
@@ -58,7 +57,7 @@ namespace UserServiceWebAPI.Controllers
             return Ok(token);
         }
 
-        [HttpPost("confirmRecieve", Name = "ConfirmEmail")]
+        [HttpGet("confirm", Name = "ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmailRecieve([FromQuery] ConfirmEmailRequest confirmEmailRequest, CancellationToken cancellationToken)
         {
             await _userService.ConfirmEmailRecieveAsync(confirmEmailRequest, cancellationToken);
@@ -87,6 +86,7 @@ namespace UserServiceWebAPI.Controllers
         }
 
         [HttpDelete("")]
+        [Authorize]
         public async Task<IActionResult> Delete(Guid userId, CancellationToken cancellationToken)
         {
             await _userService.DeleteAsync(userId, cancellationToken);
@@ -94,6 +94,7 @@ namespace UserServiceWebAPI.Controllers
         }
 
         [HttpPut("")]
+        [Authorize]
         public async Task<IActionResult> Update([FromForm] UpdateUserRequest updateUserRequest, CancellationToken cancellationToken)
         {
             await _userService.UpdateUserAsync(updateUserRequest, cancellationToken);

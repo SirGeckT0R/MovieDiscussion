@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using UserServiceDataAccess.DatabaseHandlers.ServiceDbContext;
 using UserServiceDataAccess.Interfaces.Repositories;
 using UserServiceDataAccess.Models;
-using UserServiceDataAccess.ServiceDbContext;
 
-namespace UserServiceDataAccess.Repositories
+namespace UserServiceDataAccess.DatabaseHandlers.Repositories
 {
     public class UserRepository(UserServiceDbContext dbContext) : GenericRepository<User>(dbContext), IUserRepository
     {

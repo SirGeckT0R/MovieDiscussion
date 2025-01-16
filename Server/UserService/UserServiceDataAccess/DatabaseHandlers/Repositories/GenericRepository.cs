@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using UserServiceDataAccess.DatabaseHandlers.ServiceDbContext;
+using UserServiceDataAccess.DatabaseHandlers.Specifications;
 using UserServiceDataAccess.Interfaces.Repositories;
 using UserServiceDataAccess.Models;
-using UserServiceDataAccess.ServiceDbContext;
-using UserServiceDataAccess.Specifications;
 
-namespace UserServiceDataAccess.Repositories
+namespace UserServiceDataAccess.DatabaseHandlers.Repositories
 {
     public class GenericRepository<T>(UserServiceDbContext context) : IGenericRepository<T> where T : IdModel
     {
@@ -19,10 +19,10 @@ namespace UserServiceDataAccess.Repositories
             return result.Entity.Id;
         }
 
-        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
+        public void Delete(T model, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            await _dbSet.Where(user => user.Id == id).ExecuteDeleteAsync(cancellationToken);
+            _dbSet.Remove(model);
         }
 
         public async Task<ICollection<T>> GetAllAsync(CancellationToken cancellationToken)

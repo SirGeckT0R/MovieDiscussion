@@ -2,7 +2,7 @@
 
 namespace UserServiceApplication.Services
 {
-    public abstract class BaseService<T>(IValidator<T> validator)where T : class
+    public abstract class BaseService<T>(IValidator<T> validator) where T : class
     {
         private readonly IValidator<T> _validator = validator;
 

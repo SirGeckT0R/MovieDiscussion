@@ -2,7 +2,6 @@
 using System.Net.Mail;
 using System.Net;
 using UserServiceApplication.Interfaces.Services;
-using System.Threading;
 
 namespace UserServiceApplication.Services
 {

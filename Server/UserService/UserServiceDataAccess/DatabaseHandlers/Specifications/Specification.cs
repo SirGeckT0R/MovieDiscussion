@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace UserServiceDataAccess.Specifications
+namespace UserServiceDataAccess.DatabaseHandlers.Specifications
 {
     public abstract class Specification<T>(Expression<Func<T, bool>>? criteria) where T : class
     {

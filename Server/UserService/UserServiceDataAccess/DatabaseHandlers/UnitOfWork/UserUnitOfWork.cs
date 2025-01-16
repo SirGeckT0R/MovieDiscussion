@@ -1,8 +1,8 @@
-﻿using UserServiceDataAccess.Interfaces;
+﻿using UserServiceDataAccess.DatabaseHandlers.ServiceDbContext;
+using UserServiceDataAccess.Interfaces;
 using UserServiceDataAccess.Interfaces.Repositories;
-using UserServiceDataAccess.ServiceDbContext;
 
-namespace UserServiceDataAccess.UnitOfWork
+namespace UserServiceDataAccess.DatabaseHandlers.UnitOfWork
 {
     public class UserUnitOfWork(UserServiceDbContext context, IUserRepository userRepository, ITokenRepository tokenRepository) : IUserUnitOfWork
     {
@@ -36,11 +36,11 @@ namespace UserServiceDataAccess.UnitOfWork
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.disposed && disposing)
+            if (!disposed && disposing)
             {
                 _context.Dispose();
             }
-            this.disposed = true;
+            disposed = true;
         }
 
         public void Dispose()

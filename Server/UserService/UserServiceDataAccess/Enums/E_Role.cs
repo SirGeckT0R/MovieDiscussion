@@ -2,8 +2,8 @@
 {
     public enum E_Role
     {
-        Guest = 0,
-        User = 1,
-        Admin = 2
+        Guest,
+        User,
+        Admin
     }
 }
