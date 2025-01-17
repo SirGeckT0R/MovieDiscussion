@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using UserServiceDataAccess.Handlers;
 using UserServiceWebAPI.RoleAuthorization;
 
 namespace UserServiceWebAPI.Extensions
@@ -29,6 +28,7 @@ namespace UserServiceWebAPI.Extensions
                         OnMessageReceived = context =>
                         {
                             context.Token = context.Request.Cookies["accessToken"];
+
                             return Task.CompletedTask;
                         }
 

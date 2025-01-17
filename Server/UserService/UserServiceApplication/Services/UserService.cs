@@ -72,11 +72,13 @@ namespace UserServiceApplication.Services
         public async Task UpdateUserAsync(UpdateUserRequest updateUserRequest, CancellationToken cancellationToken)
         {
             var candidate = await _unitOfWork.UserRepository.GetByIdAsync(updateUserRequest.Id, cancellationToken) ?? throw new NotFoundException("No user was found");
-            
+            cancellationToken.ThrowIfCancellationRequested();
+
             var user = _mapper.Map(updateUserRequest, candidate);
             _unitOfWork.UserRepository.Update(user, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
+
             await _unitOfWork.SaveAsync();
         }
 
@@ -86,6 +88,7 @@ namespace UserServiceApplication.Services
             _unitOfWork.UserRepository.Delete(candidate, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
+
             await _unitOfWork.SaveAsync();
         }
 
@@ -95,6 +98,7 @@ namespace UserServiceApplication.Services
             cancellationToken.ThrowIfCancellationRequested();
 
             var userDto = _mapper.Map<UserDto>(user);
+
             return userDto;
         }
 
@@ -104,12 +108,15 @@ namespace UserServiceApplication.Services
             cancellationToken.ThrowIfCancellationRequested();
 
             var userDto = _mapper.Map<UserDto>(user);
+
             return userDto;
         }
 
         public async Task<string> ConfirmEmailSendAsync(string? accessToken, string callbackUrl, CancellationToken cancellationToken)
         {
             var (confirmToken, email) = await _tokenService.GenerateTokenAndExtractEmailAsync(accessToken, TokenType.ConfirmEmail ,cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+
             confirmToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(confirmToken));
             SendEmail(email, confirmToken, "Confirm Email", callbackUrl, cancellationToken);
             await _unitOfWork.SaveAsync();
@@ -121,6 +128,7 @@ namespace UserServiceApplication.Services
         {
             var candidate = await _unitOfWork.UserRepository.GetByEmailTrackingAsync(confirmEmailRequest.Email, cancellationToken) ?? throw new NotFoundException("No user found");
             cancellationToken.ThrowIfCancellationRequested();
+
             var confirmToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(confirmEmailRequest.Token));
             await _tokenService.FindAndDeleteTokenAsync(confirmToken, TokenType.ConfirmEmail, cancellationToken);
 
@@ -136,6 +144,8 @@ namespace UserServiceApplication.Services
         public async Task<string> ForgotPasswordAsync(string? accessToken, string callbackUrl, CancellationToken cancellationToken)
         {
             var (resetToken, email) = await _tokenService.GenerateTokenAndExtractEmailAsync(accessToken, TokenType.ResetPassword, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+
             resetToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(resetToken));
             SendEmail(email, resetToken, "Reset Password", callbackUrl, cancellationToken);
             await _unitOfWork.SaveAsync();
@@ -147,6 +157,7 @@ namespace UserServiceApplication.Services
         {
             var candidate = await _unitOfWork.UserRepository.GetByEmailTrackingAsync(resetPasswordRequest.Email, cancellationToken) ?? throw new NotFoundException("No user found");
             cancellationToken.ThrowIfCancellationRequested();
+
             var resetToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetPasswordRequest.Token));
             await _tokenService.FindAndDeleteTokenAsync(resetToken,TokenType.ResetPassword, cancellationToken);
 

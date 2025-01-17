@@ -38,11 +38,11 @@ namespace UserServiceApplication.Services
 
         public async Task<(string, string)> GenerateTokenAndExtractEmailAsync(string? accessToken, TokenType tokenType, CancellationToken cancellationToken, bool isAuth = false)
         {
-            if (accessToken == null && !isAuth)
+            if (string.IsNullOrWhiteSpace(accessToken) && !isAuth)
             {
-                throw new TokenException("Token is null");
+                throw new TokenException("Token is empty");
             }
-            var (_, userClaims) = ExtractClaims(accessToken);
+            var (_, userClaims) = ExtractClaims(accessToken!);
 
             cancellationToken.ThrowIfCancellationRequested();
             var candidate = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(new UserIdAndTypeSpecification(tokenType, userClaims.Id), cancellationToken);
@@ -62,9 +62,9 @@ namespace UserServiceApplication.Services
 
         public async Task FindAndDeleteTokenAsync(string? confirmToken, TokenType tokenType, CancellationToken cancellationToken)
         {
-            if (confirmToken == null)
+            if (string.IsNullOrWhiteSpace(confirmToken))
             {
-                throw new TokenException("Token is null");
+                throw new TokenException("Token is empty");
             }
             var (_, userClaims) = ExtractClaims(confirmToken);
 
@@ -103,9 +103,9 @@ namespace UserServiceApplication.Services
 
         public async Task<string> RefreshTokenAsync(string? inputToken, CancellationToken cancellationToken)
         {
-            if(inputToken == null)
+            if(string.IsNullOrWhiteSpace(inputToken))
             {
-                throw new TokenException("Token is null");
+                throw new TokenException("Token is empty");
             }
             var (tokenId, userClaims) = ExtractClaims(inputToken);
 
@@ -127,7 +127,8 @@ namespace UserServiceApplication.Services
             var userId = principal.Claims.FirstOrDefault(c => c.Type.Equals(ClaimType.UserId.ToString(), StringComparison.CurrentCultureIgnoreCase))?.Value;
             var email = principal.Claims.FirstOrDefault(c => c.Type.Equals(ClaimType.Email.ToString(), StringComparison.CurrentCultureIgnoreCase))?.Value;
             var role = principal.Claims.FirstOrDefault(c => c.Type.Equals(ClaimType.Role.ToString(), StringComparison.CurrentCultureIgnoreCase))?.Value;
-            if (userId == null|| email == null || role == null)
+
+            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(role))
             {
                 throw new TokenException("Invalid token");
             }

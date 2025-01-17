@@ -10,7 +10,10 @@ namespace UserServiceDataAccess.DatabaseHandlers.Interceptors
             DbContextEventData eventData,
             InterceptionResult<int> result)
         {
-            if (eventData.Context is null) return result;
+            if (eventData.Context is null)
+            {
+                return result;
+            }
 
             foreach (var entry in eventData.Context.ChangeTracker.Entries())
             {
@@ -19,6 +22,7 @@ namespace UserServiceDataAccess.DatabaseHandlers.Interceptors
                 delete.IsDeleted = true;
                 delete.DeletedAt = DateTime.UtcNow;
             }
+
             return result;
         }
     }

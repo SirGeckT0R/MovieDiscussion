@@ -28,6 +28,7 @@ namespace UserServiceDataAccess.DatabaseHandlers.Repositories
         public async Task<ICollection<T>> GetAllAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+
             return await _dbSet.AsNoTracking().ToListAsync(cancellationToken);
         }
 
@@ -49,7 +50,7 @@ namespace UserServiceDataAccess.DatabaseHandlers.Repositories
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return await ApplySpecification(specification).FirstOrDefaultAsync(cancellationToken);
+            return (await ApplySpecification(specification)).FirstOrDefault();
         }
 
         public void Update(T model, CancellationToken cancellationToken)
@@ -58,9 +59,9 @@ namespace UserServiceDataAccess.DatabaseHandlers.Repositories
             _dbSet.Update(model);
         }
 
-        protected IQueryable<T> ApplySpecification(Specification<T> specification)
+        protected async Task<ICollection<T>> ApplySpecification(Specification<T> specification)
         {
-            return SpecificationEvaluator<T>.GetQuery(_dbSet, specification);
+            return await SpecificationEvaluator<T>.GetQuery(_dbSet, specification).ToListAsync();
         }
     }
 }

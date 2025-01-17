@@ -5,7 +5,7 @@ using UserServiceApplication.Interfaces.Services;
 namespace UserServiceWebAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("auth")]
     public class AuthController(IUserService userService) : ControllerBase
     {
         private readonly IUserService _userService = userService;
@@ -46,30 +46,7 @@ namespace UserServiceWebAPI.Controllers
             return NoContent();
         }
 
-        [HttpPost("confirm")]
-        [Authorize]
-        public async Task<IActionResult>ConfirmEmailSend(CancellationToken cancellationToken)
-        {
-            var accessToken = HttpContext.Request.Cookies["accessToken"];
-            var callbackUrl = Url.RouteUrl(
-                "ConfirmEmail",
-                values: null,
-                protocol: Request.Scheme);
-
-            var token =await _userService.ConfirmEmailSendAsync(accessToken, callbackUrl!, cancellationToken);
-
-            return Ok(token);
-        }
-
-        [HttpGet("confirm", Name = "ConfirmEmail")]
-        public async Task<IActionResult> ConfirmEmailRecieve([FromQuery] ConfirmEmailRequest confirmEmailRequest, CancellationToken cancellationToken)
-        {
-            await _userService.ConfirmEmailRecieveAsync(confirmEmailRequest, cancellationToken);
-
-            return Ok("Email confirmed");
-        }
-
-        [HttpPost("forgot")]
+        [HttpPost("password/forgot")]
         [Authorize]
         public async Task<IActionResult> ForgotPassword(CancellationToken cancellationToken)
         {
@@ -84,7 +61,7 @@ namespace UserServiceWebAPI.Controllers
             return Ok(token);
         }
 
-        [HttpPost("reset", Name = "ResetPassword")]
+        [HttpPost("password/reset", Name = "ResetPassword")]
         public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordRequest resetPasswordRequest, CancellationToken cancellationToken)
         {
             await _userService.ResetPasswordAsync(resetPasswordRequest, cancellationToken);

@@ -12,6 +12,7 @@ namespace UserServiceWebAPI.RoleAuthorization
             if (!context.User.Claims.Any(x => x.Type == ClaimType.Role.ToString()))
             {
                 context.Fail(new AuthorizationFailureReason(this, "User token has no role"));
+
                 return Task.CompletedTask;
             }
 
@@ -26,10 +27,12 @@ namespace UserServiceWebAPI.RoleAuthorization
             if (!isMatch)
             {
                 context.Fail(new AuthorizationFailureReason(this, "User token doesn't has the required role"));
+
                 return Task.CompletedTask;
             }
 
             context.Succeed(requirement);
+
             return Task.CompletedTask;
         }
     }

@@ -26,6 +26,7 @@ namespace UserServiceWebAPI.ExceptionHandler
             {
                 errors = validationException.Errors.ToList();
             }
+
             return errors;
         }
     }

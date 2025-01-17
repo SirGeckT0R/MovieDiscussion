@@ -19,14 +19,18 @@ namespace UserServiceDataAccess.Handlers
         public (string, DateTime) GenerateToken(UserClaimsDto userClaims, TokenType tokenType, Guid tokenId = default)
         {
             Claim[] claims = tokenId == Guid.Empty ?
-                [new Claim(ClaimType.UserId.ToString(), userClaims.Id.ToString()),
-                new Claim(ClaimType.Email.ToString(), userClaims.Email.ToString()),
-                new Claim(ClaimType.Role.ToString(), userClaims.Role.ToString())] 
+                [
+                    new Claim(ClaimType.UserId.ToString(), userClaims.Id.ToString()),
+                    new Claim(ClaimType.Email.ToString(), userClaims.Email.ToString()),
+                    new Claim(ClaimType.Role.ToString(), userClaims.Role.ToString())
+                ] 
                 :
-                [new Claim(ClaimType.Id.ToString(), tokenId.ToString()),
-                new Claim(ClaimType.UserId.ToString(), userClaims.Id.ToString()),
-                new Claim(ClaimType.Email.ToString(), userClaims.Email.ToString()),
-                new Claim(ClaimType.Role.ToString(), userClaims.Role.ToString())];
+                [
+                    new Claim(ClaimType.Id.ToString(), tokenId.ToString()),
+                    new Claim(ClaimType.UserId.ToString(), userClaims.Id.ToString()),
+                    new Claim(ClaimType.Email.ToString(), userClaims.Email.ToString()),
+                    new Claim(ClaimType.Role.ToString(), userClaims.Role.ToString())
+                ];
 
             var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
                 SecurityAlgorithms.HmacSha256);
