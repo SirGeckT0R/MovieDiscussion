@@ -6,6 +6,6 @@ namespace UserServiceDataAccess.Interfaces
     {
         IUserRepository UserRepository { get; }
         ITokenRepository TokenRepository { get; }
-        void Save();
+        Task SaveAsync();
     }
 }

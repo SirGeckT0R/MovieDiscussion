@@ -16,6 +16,7 @@ namespace UserServiceWebAPI.Controllers
             (string accessToken, string refreshToken) = await _userService.LoginAsync(loginRequest, cancellationToken);
             HttpContext.Response.Cookies.Append("accessToken", accessToken, new CookieOptions { Domain = "localhost" });
             HttpContext.Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions { Domain = "localhost" });
+
             return NoContent();
         }
 
@@ -25,10 +26,11 @@ namespace UserServiceWebAPI.Controllers
             (string accessToken, string refreshToken) = await _userService.RegisterAsync(registerUserCommand, cancellationToken);
             HttpContext.Response.Cookies.Append("accessToken", accessToken, new CookieOptions { Domain = "localhost" });
             HttpContext.Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions { Domain = "localhost" });
+
             return NoContent();
         }
 
-        [HttpGet("logout")]
+        [HttpPost("logout")]
         public IActionResult Logout()
         {
             if (HttpContext.Request.Cookies["accessToken"] != null)
@@ -40,6 +42,7 @@ namespace UserServiceWebAPI.Controllers
             {
                 HttpContext.Response.Cookies.Append("refreshToken", "", new CookieOptions { Domain = "localhost", Expires = DateTime.Now.AddDays(-1) });
             }
+
             return NoContent();
         }
 
@@ -54,6 +57,7 @@ namespace UserServiceWebAPI.Controllers
                 protocol: Request.Scheme);
 
             var token =await _userService.ConfirmEmailSendAsync(accessToken, callbackUrl!, cancellationToken);
+
             return Ok(token);
         }
 
@@ -61,6 +65,7 @@ namespace UserServiceWebAPI.Controllers
         public async Task<IActionResult> ConfirmEmailRecieve([FromQuery] ConfirmEmailRequest confirmEmailRequest, CancellationToken cancellationToken)
         {
             await _userService.ConfirmEmailRecieveAsync(confirmEmailRequest, cancellationToken);
+
             return Ok("Email confirmed");
         }
 
@@ -75,6 +80,7 @@ namespace UserServiceWebAPI.Controllers
                 protocol: Request.Scheme);
 
             var token = await _userService.ForgotPasswordAsync(accessToken, callbackUrl!, cancellationToken);
+
             return Ok(token);
         }
 
@@ -82,6 +88,7 @@ namespace UserServiceWebAPI.Controllers
         public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordRequest resetPasswordRequest, CancellationToken cancellationToken)
         {
             await _userService.ResetPasswordAsync(resetPasswordRequest, cancellationToken);
+
             return Ok("Password was reset");
         }
 
@@ -90,6 +97,7 @@ namespace UserServiceWebAPI.Controllers
         public async Task<IActionResult> Delete(Guid userId, CancellationToken cancellationToken)
         {
             await _userService.DeleteAsync(userId, cancellationToken);
+
             return NoContent();
         }
 
@@ -98,6 +106,7 @@ namespace UserServiceWebAPI.Controllers
         public async Task<IActionResult> Update([FromForm] UpdateUserRequest updateUserRequest, CancellationToken cancellationToken)
         {
             await _userService.UpdateUserAsync(updateUserRequest, cancellationToken);
+
             return NoContent();
         }
 

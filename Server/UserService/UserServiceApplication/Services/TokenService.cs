@@ -56,6 +56,7 @@ namespace UserServiceApplication.Services
             var (tokenValue, expiresTime) = _jwtProvider.GenerateToken(userClaims, tokenType, tokenId);
 
             await _unitOfWork.TokenRepository.AddAsync(new Token(tokenId, tokenType, userClaims.Id, tokenValue, expiresTime), cancellationToken);
+
             return (tokenValue, userClaims.Email);
         }
 
@@ -74,6 +75,7 @@ namespace UserServiceApplication.Services
         public async Task<Token?> GetTokenAsync(Guid tokenId, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+
             return await _unitOfWork.TokenRepository.GetByIdAsync(tokenId, cancellationToken);
         }
 
@@ -81,6 +83,7 @@ namespace UserServiceApplication.Services
         {
             cancellationToken.ThrowIfCancellationRequested();
             Validate(token);
+
             return await _unitOfWork.TokenRepository.AddAsync(token, cancellationToken);
         }
 
@@ -112,6 +115,7 @@ namespace UserServiceApplication.Services
             CompareWithEntity(candidate, inputToken);
             cancellationToken.ThrowIfCancellationRequested();
             var (accessToken, _) = _jwtProvider.GenerateToken(userClaims, TokenType.Access);
+
             return accessToken;
         }
 
@@ -129,6 +133,7 @@ namespace UserServiceApplication.Services
             }
 
             _ = Guid.TryParse(tokenId, out Guid tokenIdGuid);
+
             return (tokenIdGuid, new UserClaimsDto(Guid.Parse(userId), email, (Role)Enum.Parse(typeof(Role), role)));
         }
 

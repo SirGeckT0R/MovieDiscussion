@@ -17,9 +17,9 @@ namespace UserServiceWebAPI.Controllers
             string? refreshToken = HttpContext.Request.Cookies["refreshToken"];
             var accessToken = await _tokenService.RefreshTokenAsync(refreshToken, cancellationToken);
 
-            HttpContext.Response.Cookies.Append("accessToken", accessToken, new CookieOptions { Domain = "localhost" });
+            HttpContext.Response.Cookies.Append("accessToken", accessToken, new CookieOptions { Domain = "localhost" }); 
+
             return NoContent();
         }
-
     }
 }

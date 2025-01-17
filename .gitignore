@@ -402,3 +402,4 @@ FodyWeavers.xsd
 *.env
 /secrets.json
 /Server/UserService/UserServiceWebAPI/secrets.json
+/Server/ApiGateway/ApiGatewayWebAPI/secrets.json

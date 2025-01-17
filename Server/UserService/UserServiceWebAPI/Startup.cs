@@ -29,6 +29,16 @@ namespace UserServiceWebAPI
             string connection = Configuration["SqlConnectionString"] ?? throw new InvalidOperationException("No database connection string");
             services.Configure<JwtOptions>(Configuration.GetSection("Jwt"));
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                });
+            });
+
             services.AddDbContext<UserServiceDbContext>(options => options.UseNpgsql(connection));
 
             services.AddScoped<IUserService, UserService>();
@@ -81,6 +91,8 @@ namespace UserServiceWebAPI
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseCors();
 
             app.UseExceptionHandler();
             app.MapControllers();

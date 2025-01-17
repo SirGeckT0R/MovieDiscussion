@@ -40,7 +40,8 @@ namespace UserServiceApplication.Services
             var userClaims = _mapper.Map<UserClaimsDto>(candidate);
             var (accessToken, refreshToken) = await _tokenService.GenerateAuthTokensAsync(userClaims, cancellationToken);
 
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
+
             return (accessToken, refreshToken);
         }
 
@@ -63,7 +64,7 @@ namespace UserServiceApplication.Services
             var userClaims = _mapper.Map<UserClaimsDto>(user);
             var (accessToken, refreshToken) = await _tokenService.GenerateAuthTokensAsync(userClaims, cancellationToken);
 
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
 
             return (accessToken, refreshToken);
         }
@@ -76,7 +77,7 @@ namespace UserServiceApplication.Services
             _unitOfWork.UserRepository.Update(user, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
         }
 
         public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
@@ -85,7 +86,7 @@ namespace UserServiceApplication.Services
             _unitOfWork.UserRepository.Delete(candidate, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
         }
 
         public async Task<UserDto> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
@@ -111,7 +112,8 @@ namespace UserServiceApplication.Services
             var (confirmToken, email) = await _tokenService.GenerateTokenAndExtractEmailAsync(accessToken, TokenType.ConfirmEmail ,cancellationToken);
             confirmToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(confirmToken));
             SendEmail(email, confirmToken, "Confirm Email", callbackUrl, cancellationToken);
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
+
             return confirmToken;
         }
 
@@ -125,7 +127,8 @@ namespace UserServiceApplication.Services
             cancellationToken.ThrowIfCancellationRequested();
             candidate.IsEmailConfirmed = true;
 
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
+
             return confirmToken;
         }
 
@@ -135,7 +138,8 @@ namespace UserServiceApplication.Services
             var (resetToken, email) = await _tokenService.GenerateTokenAndExtractEmailAsync(accessToken, TokenType.ResetPassword, cancellationToken);
             resetToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(resetToken));
             SendEmail(email, resetToken, "Reset Password", callbackUrl, cancellationToken);
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
+
             return resetToken;
         }
 
@@ -149,7 +153,8 @@ namespace UserServiceApplication.Services
             cancellationToken.ThrowIfCancellationRequested();
             candidate.Password = _passwordHasher.Generate(resetPasswordRequest.NewPassword);
 
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
+
             return resetToken;
         }
 
