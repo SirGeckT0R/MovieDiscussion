@@ -400,3 +400,6 @@ FodyWeavers.xsd
 *.sln.iml
 
 *.env
+/secrets.json
+/Server/UserService/UserServiceWebAPI/secrets.json
+/Server/ApiGateway/ApiGatewayWebAPI/secrets.json

@@ -15,6 +15,8 @@ namespace ApiGateway
         public void Configure(WebApplication app)
         {
             //app.UseOcelot().GetAwaiter().GetResult();
+            app.UseSwagger();
+            app.UseSwaggerUI();
         }
     }
 }
