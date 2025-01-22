@@ -7,6 +7,7 @@
         public DateTime ReleaseDate { get; private set; } = DateTime.UtcNow;
         public double Rating { get; private set; } = 0; 
         public bool IsApproved { get; set; } = false;
+        public Guid SubmittedBy { get; set; }
         public ICollection<Guid> Genres { get; private set; } = [];
         public ICollection<CrewMember> CrewMembers { get; private set; } = [];
     }

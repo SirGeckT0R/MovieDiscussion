@@ -6,8 +6,9 @@ namespace MovieServiceApplication.MappingProfiles
 {
     public class GenreDtoMappingProfile : Profile
     {
-        public GenreDtoMappingProfile() {
-            CreateMap<Genre, GenreDto>();
+        public GenreDtoMappingProfile() 
+        {
+            CreateMap<Genre, GenreDto>().ReverseMap();
         }
     }
 }

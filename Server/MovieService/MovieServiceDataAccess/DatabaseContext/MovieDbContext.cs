@@ -9,6 +9,8 @@ namespace MovieServiceDataAccess.DatabaseContext
         public DbSet<Movie> Movies { get; } = null!;
         public DbSet<Genre> Genres { get; set; } = null!;
         public DbSet<Person> People { get; set; } = null!;
+        public DbSet<Watchlist> Watchlists { get; set; } = null!;
+        public DbSet<Review> Reviews { get; set; } = null!;
         public MovieDbContext(DbContextOptions<MovieDbContext> options) : base(options)
         {
         }
@@ -20,6 +22,8 @@ namespace MovieServiceDataAccess.DatabaseContext
             modelBuilder.Entity<Genre>().ToCollection("genres");
             modelBuilder.Entity<Movie>().ToCollection("movies");
             modelBuilder.Entity<Person>().ToCollection("people");
+            modelBuilder.Entity<Watchlist>().ToCollection("watchlists");
+            modelBuilder.Entity<Review>().ToCollection("reviews");
         }
     }
 }

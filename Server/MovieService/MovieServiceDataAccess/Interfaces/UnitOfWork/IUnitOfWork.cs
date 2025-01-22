@@ -7,6 +7,8 @@ namespace MovieServiceDataAccess.Interfaces.UnitOfWork
         IMovieRepository Movies { get; }
         IGenreRepository Genres { get; }
         IPersonRepository People { get; }
+        IWatchlistRepository Watchlists{ get; }
+        IReviewRepository Reviews{ get; }
         Task SaveAsync();
     }
 }

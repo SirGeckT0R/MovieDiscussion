@@ -6,8 +6,9 @@ namespace MovieServiceApplication.MappingProfiles
 {
     public class PersonDtoMappingProfile : Profile
     {
-        public PersonDtoMappingProfile() {
-            CreateMap<Person, PersonDto>();
+        public PersonDtoMappingProfile() 
+        {
+            CreateMap<Person, PersonDto>().ReverseMap();
         }
     }
 }

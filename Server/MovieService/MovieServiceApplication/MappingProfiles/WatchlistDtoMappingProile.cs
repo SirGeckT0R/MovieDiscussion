@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
 using MovieServiceApplication.Dto;
 using MovieServiceDomain.Models;
-
 namespace MovieServiceApplication.MappingProfiles
 {
-    public class CrewMemberDtoMappingProfile : Profile
+    public class WatchlistDtoMappingProile : Profile
     {
-        public CrewMemberDtoMappingProfile() 
+        public WatchlistDtoMappingProile() 
         {
-            CreateMap<CrewMember, CrewMemberDto>().ReverseMap();
+            CreateMap<Watchlist, WatchlistDto>().ReverseMap();
         }
     }
 }

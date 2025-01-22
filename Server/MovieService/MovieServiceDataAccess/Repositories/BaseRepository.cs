@@ -2,8 +2,8 @@
 using MongoDB.Driver;
 using MovieServiceDataAccess.DatabaseContext;
 using MovieServiceDataAccess.Interfaces.Repositories;
+using MovieServiceDataAccess.Specifications;
 using MovieServiceDomain.Models;
-using System.Linq.Expressions;
 
 namespace MovieServiceDataAccess.Repositories
 {
@@ -47,12 +47,13 @@ namespace MovieServiceDataAccess.Repositories
             return await _dbSet.FirstOrDefaultAsync(user => user.Id == id, cancellationToken);
         }
 
-        //public async Task<T?> GetWithSpecificationAsync(Specification<T> specification, CancellationToken cancellationToken)
-        //{
-        //    cancellationToken.ThrowIfCancellationRequested();
+        public async Task<ICollection<T>> GetWithSpecificationAsync(Specification<T> specification, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var collection = await ApplySpecification(specification);
 
-        //    return (await ApplySpecification(specification)).FirstOrDefault();
-        //}
+            return collection;
+        }
 
         public void Update(T model, CancellationToken cancellationToken)
         {
@@ -60,54 +61,9 @@ namespace MovieServiceDataAccess.Repositories
             _dbSet.Update(model);
         }
 
-        //protected async Task<ICollection<T>> ApplySpecification(Specification<T> specification)
-        //{
-        //    return await SpecificationEvaluator<T>.GetQuery(_dbSet, specification).ToListAsync();
-        //}
-
-
-
-        //public BaseRepository(IMongoDatabase database, string collectionName)
-        //{
-        //    collection = database.GetCollection<T>(collectionName);
-        //}
-
-        //public async Task<ICollection<T>> GetAllAsync()
-        //{
-        //    return await collection.Find(filterBuilder.Empty).ToListAsync();
-        //}
-
-        //public async Task<ICollection<T>> GetAllAsync(Expression<Func<T, bool>> filter)
-        //{
-        //    return await collection.Find(filter).ToListAsync();
-        //}
-
-        //public async Task<T> GetByIdAsync(Guid id)
-        //{
-        //    FilterDefinition<T> filter = filterBuilder.Eq(e => e.Id, id);
-        //    return await collection.Find(filter).FirstOrDefaultAsync();
-        //}
-
-        //public async Task<T> GetAsync(Expression<Func<T, bool>> filter)
-        //{
-        //    return await collection.Find(filter).FirstOrDefaultAsync();
-        //}
-
-        //public async Task AddAsync(T entity)
-        //{
-        //    await collection.InsertOneAsync(entity);
-        //}
-
-        //public async Task UpdateAsync(T entity)
-        //{
-        //    FilterDefinition<T> filter = filterBuilder.Eq(e => e.Id, entity.Id);
-        //    await collection.ReplaceOneAsync(filter, entity);
-        //}
-
-        //public async Task RemoveAsync(Guid id)
-        //{
-        //    FilterDefinition<T> filter = filterBuilder.Eq(e => e.Id, id);
-        //    await collection.DeleteOneAsync(filter);
-        //}
+        protected async Task<ICollection<T>> ApplySpecification(Specification<T> specification)
+        {
+            return await SpecificationEvaluator<T>.GetQuery(_dbSet, specification).ToListAsync();
+        }
     }
 }

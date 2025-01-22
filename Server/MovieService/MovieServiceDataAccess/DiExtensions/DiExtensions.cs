@@ -22,6 +22,8 @@ namespace MovieServiceDataAccess.DiExtensions
             services.AddScoped<IGenreRepository, GenreRepository>();
             services.AddScoped<IPersonRepository, PersonRepository>();
             services.AddScoped<IMovieRepository, MovieRepository>();
+            services.AddScoped<IWatchlistRepository, WatchlistRepository>();
+            services.AddScoped<IReviewRepository, ReviewRepository>();
             services.AddScoped<IUnitOfWork, MovieUnitOfWork>();
         }
     }

@@ -4,11 +4,11 @@ using MovieServiceDomain.Models;
 
 namespace MovieServiceApplication.MappingProfiles
 {
-    public class MovieDtoMappingProfile : Profile
+    public class ReviewDtoMappingProfile :Profile
     {
-        public MovieDtoMappingProfile() 
-        { 
-            CreateMap<Movie, MovieDto>().ReverseMap();
+        public ReviewDtoMappingProfile() 
+        {
+            CreateMap<Review, ReviewDto>().ReverseMap();
         }
     }
 }
