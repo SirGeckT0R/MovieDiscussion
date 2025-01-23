@@ -12,7 +12,7 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Commands.DeleteUserProfi
         public async Task<Unit> Handle(DeleteUserProfileCommand request, CancellationToken cancellationToken)
         {
             var profile = (await _unitOfWork.UserProfiles.GetWithSpecificationAsync(new UserProfileByAccountIdSpecification(request.AccountId), cancellationToken)).SingleOrDefault()
-                            ?? throw new NotFoundException("Profile not found");
+                           ?? throw new NotFoundException("Profile not found");
 
             cancellationToken.ThrowIfCancellationRequested();
             _unitOfWork.UserProfiles.Delete(profile, cancellationToken);

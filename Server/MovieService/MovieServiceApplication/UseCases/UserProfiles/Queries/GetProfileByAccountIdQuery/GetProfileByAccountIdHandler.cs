@@ -15,8 +15,7 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Queries.GetProfileByAcco
         public async Task<UserProfileDto> Handle(GetProfileByAccountIdQuery request, CancellationToken cancellationToken)
         {
             var profile = (await _unitOfWork.UserProfiles.GetWithSpecificationAsync(new UserProfileByAccountIdSpecification(request.AccountId), cancellationToken)).SingleOrDefault() 
-                            ?? 
-                            throw new NotFoundException("User profile not found");
+                           ?? throw new NotFoundException("User profile not found");
             cancellationToken.ThrowIfCancellationRequested();
 
             return _mapper.Map<UserProfileDto>(profile);

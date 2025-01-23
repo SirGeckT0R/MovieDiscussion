@@ -25,7 +25,7 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.AddMovieCommand
                 .NotEmpty()
                 .Must(x => x.All(y => Enum.IsDefined(typeof(Role), y.Role)));
 
-            RuleFor(x => x.SubmittedBy)
+            RuleFor(x => x.AccountId)
                 .NotEmpty();
         }
     }

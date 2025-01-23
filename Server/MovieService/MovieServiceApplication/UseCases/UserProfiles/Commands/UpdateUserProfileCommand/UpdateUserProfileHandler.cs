@@ -15,7 +15,7 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Commands.UpdateUserProfi
         public async Task<Unit> Handle(UpdateUserProfileCommand request, CancellationToken cancellationToken)
         {
             var profile = (await _unitOfWork.UserProfiles.GetWithSpecificationAsync(new UserProfileByAccountIdSpecification(request.AccountId), cancellationToken)).SingleOrDefault()
-                            ?? throw new NotFoundException("Profile not found");
+                           ?? throw new NotFoundException("Profile not found");
 
             cancellationToken.ThrowIfCancellationRequested();
             var newProfile = _mapper.Map(request, profile);

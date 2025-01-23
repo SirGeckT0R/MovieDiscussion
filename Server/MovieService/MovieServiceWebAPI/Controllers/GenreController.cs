@@ -6,7 +6,7 @@ using MovieServiceApplication.UseCases.Genres.Commands.UpdateGenreCommand;
 using MovieServiceApplication.UseCases.Genres.Queries.GetAllGenresQuery;
 using MovieServiceApplication.UseCases.Genres.Queries.GetGenreByIdQuery;
 
-namespace MovieServiceWebAPI
+namespace MovieServiceWebAPI.Controllers
 {
     [ApiController]
     [Route("api/genres")]

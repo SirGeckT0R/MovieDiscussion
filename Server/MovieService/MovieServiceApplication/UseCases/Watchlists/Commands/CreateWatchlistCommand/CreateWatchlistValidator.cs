@@ -5,7 +5,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.CreateWatchlistCo
     public class CreateWatchlistValidator : AbstractValidator<CreateWatchlistCommand>
     {
         public CreateWatchlistValidator() {
-            RuleFor(x => x.ProfileId)
+            RuleFor(x => x.AccountId)
                 .NotEmpty();
         }
     }

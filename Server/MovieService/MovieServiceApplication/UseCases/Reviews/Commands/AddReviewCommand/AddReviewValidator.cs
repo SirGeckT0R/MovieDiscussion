@@ -6,7 +6,7 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.AddReviewCommand
     {
         public AddReviewValidator() 
         {
-            RuleFor(x => x.ProfileId)
+            RuleFor(x => x.AccountId)
                 .NotEmpty();
 
             RuleFor(x => x.MovieId)

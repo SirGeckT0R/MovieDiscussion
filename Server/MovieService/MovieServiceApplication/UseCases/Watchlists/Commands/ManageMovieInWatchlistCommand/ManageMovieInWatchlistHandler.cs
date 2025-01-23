@@ -2,6 +2,7 @@
 using MovieServiceApplication.Enums;
 using MovieServiceApplication.Interfaces.UseCases;
 using MovieServiceDataAccess.Interfaces.UnitOfWork;
+using MovieServiceDataAccess.Specifications.UserProfileSpecifications;
 using MovieServiceDataAccess.Specifications.WatchlistSpecifications;
 using MovieServiceDomain.Exceptions;
 
@@ -13,8 +14,11 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.ManageMovieInWatc
 
         public async Task<Unit> Handle(ManageMovieInWatchlistCommand request, CancellationToken cancellationToken)
         {
-            var watchlist = (await _unitOfWork.Watchlists.GetWithSpecificationAsync(new WatchlistByProfileIdSpecification(request.ProfileId), cancellationToken)).SingleOrDefault() 
-                                ?? throw new NotFoundException("Watchlist not found");
+            var candidateProfile = (await _unitOfWork.UserProfiles.GetWithSpecificationAsync(new UserProfileByAccountIdSpecification(request.AccountId), cancellationToken)).SingleOrDefault()
+                                    ?? throw new NotFoundException("User profile not found");
+
+            var watchlist = (await _unitOfWork.Watchlists.GetWithSpecificationAsync(new WatchlistByProfileIdSpecification(candidateProfile.Id), cancellationToken)).SingleOrDefault() 
+                             ?? throw new NotFoundException("Watchlist not found");
 
             cancellationToken.ThrowIfCancellationRequested();
             _ = await _unitOfWork.Movies.GetByIdAsync(request.MovieId, cancellationToken) ?? throw new NotFoundException("Movie not found");

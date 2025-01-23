@@ -5,7 +5,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.DeleteWatchlistCo
     public class DeleteWatchlistValidator : AbstractValidator<DeleteWatchlistCommand>
     {
         public DeleteWatchlistValidator() {
-            RuleFor(x => x.ProfileId)
+            RuleFor(x => x.AccountId)
                 .NotEmpty();
         }
     }

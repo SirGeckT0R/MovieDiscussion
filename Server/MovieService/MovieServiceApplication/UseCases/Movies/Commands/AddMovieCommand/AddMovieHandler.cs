@@ -2,6 +2,7 @@
 using MediatR;
 using MovieServiceApplication.Interfaces.UseCases;
 using MovieServiceDataAccess.Interfaces.UnitOfWork;
+using MovieServiceDataAccess.Specifications.UserProfileSpecifications;
 using MovieServiceDomain.Exceptions;
 using MovieServiceDomain.Models;
 
@@ -14,7 +15,8 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.AddMovieCommand
 
         public async Task<Unit> Handle(AddMovieCommand request, CancellationToken cancellationToken)
         {
-            _ = await _unitOfWork.UserProfiles.GetByIdAsync(request.SubmittedBy, cancellationToken) ?? throw new NotFoundException("User profile not found");
+            var candidateProfile = (await _unitOfWork.UserProfiles.GetWithSpecificationAsync(new UserProfileByAccountIdSpecification(request.AccountId), cancellationToken)).SingleOrDefault() 
+                        ?? throw new NotFoundException("User profile not found");
 
             cancellationToken.ThrowIfCancellationRequested();
             if (!_unitOfWork.Genres.DoExist(request.Genres, cancellationToken))
@@ -30,6 +32,7 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.AddMovieCommand
 
             cancellationToken.ThrowIfCancellationRequested();
             var movie = _mapper.Map<Movie>(request);
+            movie.SubmittedBy = candidateProfile.Id;
             await _unitOfWork.Movies.AddAsync(movie, cancellationToken);
 
             await _unitOfWork.SaveAsync();

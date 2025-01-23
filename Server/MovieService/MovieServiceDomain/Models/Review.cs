@@ -3,7 +3,7 @@
     public class Review : IdModel
     {
         public Guid MovieId { get; private set; }
-        public Guid ProfileId { get; private set; }
+        public Guid ProfileId { get;  set; }
         public int Value { get; private set; } = 0;
 
         public string Text { get; private set; } = string.Empty;
