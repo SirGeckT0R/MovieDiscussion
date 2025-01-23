@@ -15,10 +15,17 @@ namespace MovieServiceApplication.UseCases.Reviews.Queries.GetReviewsByAccountId
 
         public async Task<ICollection<ReviewDto>> Handle(GetReviewsByAccountIdQuery request, CancellationToken cancellationToken)
         {
-            var candidateProfile = (await _unitOfWork.UserProfiles.GetWithSpecificationAsync(new UserProfileByAccountIdSpecification(request.AccountId), cancellationToken)).SingleOrDefault()
-                                    ?? throw new NotFoundException("User profile not found");
+            var profileSpecification = new UserProfileByAccountIdSpecification(request.AccountId);
+            var candidates = await _unitOfWork.UserProfiles.GetWithSpecificationAsync(profileSpecification, cancellationToken);
+            var candidateProfile = candidates.SingleOrDefault();
+            if (candidateProfile == null)
+            {
+                throw new NotFoundException("User profile not found");
+            }
 
-            var reviews = await _unitOfWork.Reviews.GetWithSpecificationAsync(new ReviewsByProfileIdSpecification(candidateProfile.Id), cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+            var reviewSpecification = new ReviewsByProfileIdSpecification(candidateProfile.Id);
+            var reviews = await _unitOfWork.Reviews.GetWithSpecificationAsync(reviewSpecification, cancellationToken);
 
             return _mapper.Map<ICollection<ReviewDto>>(reviews);
         }

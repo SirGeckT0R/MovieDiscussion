@@ -12,7 +12,6 @@ namespace MovieServiceApplication.UseCases.People.Queries.GetAllPeopleQuery
         public async Task<ICollection<PersonDto>> Handle(GetAllPeopleQuery request, CancellationToken cancellationToken)
         {
             var people = await _unitOfWork.People.GetAllAsync(cancellationToken);
-
             cancellationToken.ThrowIfCancellationRequested();
 
             return _mapper.Map<ICollection<PersonDto>>(people);

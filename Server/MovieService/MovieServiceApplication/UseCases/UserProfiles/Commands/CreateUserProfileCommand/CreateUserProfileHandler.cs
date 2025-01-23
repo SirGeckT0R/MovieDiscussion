@@ -14,8 +14,10 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Commands.CreateUserProfi
         private readonly IMapper _mapper = mapper;
         public async Task<Unit> Handle(CreateUserProfileCommand request, CancellationToken cancellationToken)
         {
-            var candidate = (await _unitOfWork.UserProfiles.GetWithSpecificationAsync(new UserProfileByAccountIdSpecification(request.AccountId), cancellationToken)).SingleOrDefault();
-            if (candidate != null)
+            var profileSpecification = new UserProfileByAccountIdSpecification(request.AccountId);
+            var candidates = await _unitOfWork.UserProfiles.GetWithSpecificationAsync(profileSpecification, cancellationToken);
+            var candidateProfile = candidates.SingleOrDefault();
+            if (candidateProfile != null)
             {
                 throw new ConflictException("User profile already exists");
             }

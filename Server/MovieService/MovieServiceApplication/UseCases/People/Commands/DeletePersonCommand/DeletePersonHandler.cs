@@ -11,8 +11,12 @@ namespace MovieServiceApplication.UseCases.People.Commands.DeletePersonCommand
 
         public async Task<Unit> Handle(DeletePersonCommand request, CancellationToken cancellationToken)
         {
-            var person = await _unitOfWork.People.GetByIdAsync(request.Id, cancellationToken) ?? throw new NotFoundException("Person not found");
-            
+            var person = await _unitOfWork.People.GetByIdAsync(request.Id, cancellationToken);
+            if (person == null)
+            {
+                throw new NotFoundException("Person not found");
+            }
+
             cancellationToken.ThrowIfCancellationRequested();
             _unitOfWork.People.Delete(person, cancellationToken);
 

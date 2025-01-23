@@ -13,7 +13,8 @@ namespace MovieServiceApplication.UseCases.Reviews.Queries.GetReviewsByMovieIdQu
 
         public async Task<ICollection<ReviewDto>> Handle(GetReviewsByMovieIdQuery request, CancellationToken cancellationToken)
         {
-            var reviews = await _unitOfWork.Reviews.GetWithSpecificationAsync(new ReviewsByMovieIdSpecification(request.MovieId), cancellationToken);
+            var reviewSpecification = new ReviewsByMovieIdSpecification(request.MovieId);
+            var reviews = await _unitOfWork.Reviews.GetWithSpecificationAsync(reviewSpecification, cancellationToken);
 
             return _mapper.Map<ICollection<ReviewDto>>(reviews);
         }

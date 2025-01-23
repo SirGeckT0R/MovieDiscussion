@@ -1,6 +1,7 @@
 ﻿using MovieServiceApplication.Extensions;
 using MovieServiceApplication.UseCases.Genres.Commands.AddGenreCommand;
 using MovieServiceDataAccess.DiExtensions;
+using MovieServiceWebAPI.ExceptionHandler;
 using System.Reflection;
 
 namespace MovieServiceWebAPI
@@ -16,6 +17,8 @@ namespace MovieServiceWebAPI
             builder.Services.AddMediatR();
             builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(AddGenreMappingProfile)));
 
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+            builder.Services.AddProblemDetails();
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -28,6 +31,7 @@ namespace MovieServiceWebAPI
                 app.UseSwaggerUI();
             }
 
+            app.UseExceptionHandler();
             app.MapControllers();
             app.UseAuthorization();
         }

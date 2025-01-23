@@ -13,7 +13,11 @@ namespace MovieServiceApplication.UseCases.People.Commands.UpdatePersonCommand
         private readonly IMapper _mapper = mapper;
         public async Task<Unit> Handle(UpdatePersonCommand request, CancellationToken cancellationToken)
         {
-            _ = await _unitOfWork.People.GetByIdAsync(request.Id, cancellationToken) ?? throw new NotFoundException("Person not found");
+            var candidatePerson = await _unitOfWork.People.GetByIdAsync(request.Id, cancellationToken);
+            if (candidatePerson == null)
+            {
+                throw new NotFoundException("Person not found");
+            }
 
             cancellationToken.ThrowIfCancellationRequested();
             var person = _mapper.Map<Person>(request);

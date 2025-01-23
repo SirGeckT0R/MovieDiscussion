@@ -11,11 +11,16 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Commands.DeleteUserProfi
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         public async Task<Unit> Handle(DeleteUserProfileCommand request, CancellationToken cancellationToken)
         {
-            var profile = (await _unitOfWork.UserProfiles.GetWithSpecificationAsync(new UserProfileByAccountIdSpecification(request.AccountId), cancellationToken)).SingleOrDefault()
-                           ?? throw new NotFoundException("Profile not found");
+            var profileSpecification = new UserProfileByAccountIdSpecification(request.AccountId);
+            var candidates = await _unitOfWork.UserProfiles.GetWithSpecificationAsync(profileSpecification, cancellationToken);
+            var candidateProfile = candidates.SingleOrDefault();
+            if (candidateProfile == null)
+            {
+                throw new NotFoundException("User profile not found");
+            }
 
             cancellationToken.ThrowIfCancellationRequested();
-            _unitOfWork.UserProfiles.Delete(profile, cancellationToken);
+            _unitOfWork.UserProfiles.Delete(candidateProfile, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveAsync();

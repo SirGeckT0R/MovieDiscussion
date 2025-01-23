@@ -11,7 +11,11 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.DeleteReviewCommand
 
         public async Task<Unit> Handle(DeleteReviewCommand request, CancellationToken cancellationToken)
         {
-            var review = await _unitOfWork.Reviews.GetByIdTrackingAsync(request.Id, cancellationToken) ?? throw new NotFoundException("Review not found");
+            var review = await _unitOfWork.Reviews.GetByIdTrackingAsync(request.Id, cancellationToken);
+            if (review == null)
+            {
+                throw new NotFoundException("Review not found");
+            }
 
             cancellationToken.ThrowIfCancellationRequested();
             _unitOfWork.Reviews.Delete(review, cancellationToken);

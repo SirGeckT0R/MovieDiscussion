@@ -15,17 +15,22 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.AddMovieCommand
 
         public async Task<Unit> Handle(AddMovieCommand request, CancellationToken cancellationToken)
         {
-            var candidateProfile = (await _unitOfWork.UserProfiles.GetWithSpecificationAsync(new UserProfileByAccountIdSpecification(request.AccountId), cancellationToken)).SingleOrDefault() 
-                        ?? throw new NotFoundException("User profile not found");
+            var profileSpecification = new UserProfileByAccountIdSpecification(request.AccountId);
+            var candidates = await _unitOfWork.UserProfiles.GetWithSpecificationAsync(profileSpecification, cancellationToken);
+            var candidateProfile = candidates.SingleOrDefault();
+            if (candidateProfile == null)
+            { 
+                throw new NotFoundException("User profile not found");
+            }
 
             cancellationToken.ThrowIfCancellationRequested();
             if (!_unitOfWork.Genres.DoExist(request.Genres, cancellationToken))
             {
                 throw new NotFoundException("Some genres are not found");
             }
-            
+
             cancellationToken.ThrowIfCancellationRequested();
-            if(!_unitOfWork.People.DoExist(request.CrewMembers.Select(x => x.PersonId).ToList(), cancellationToken))
+            if (!_unitOfWork.People.DoExist(request.CrewMembers.Select(x => x.PersonId).ToList(), cancellationToken))
             {
                 throw new NotFoundException("Some crew members are not found");
             }
@@ -35,6 +40,7 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.AddMovieCommand
             movie.SubmittedBy = candidateProfile.Id;
             await _unitOfWork.Movies.AddAsync(movie, cancellationToken);
 
+            cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveAsync();
 
             return Unit.Value;

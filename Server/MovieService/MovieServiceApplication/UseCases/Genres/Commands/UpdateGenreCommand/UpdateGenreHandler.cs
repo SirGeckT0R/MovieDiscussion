@@ -12,7 +12,11 @@ namespace MovieServiceApplication.UseCases.Genres.Commands.UpdateGenreCommand
         private readonly IMapper _mapper = mapper;
         public async Task<Unit> Handle(UpdateGenreCommand request, CancellationToken cancellationToken)
         {
-            _ = await _unitOfWork.Genres.GetByIdAsync(request.Id, cancellationToken) ?? throw new NotFoundException("Genre not found");
+            var candidateGenre = await _unitOfWork.Genres.GetByIdAsync(request.Id, cancellationToken);
+            if (candidateGenre == null)
+            { 
+                throw new NotFoundException("Genre not found");
+            }
 
             cancellationToken.ThrowIfCancellationRequested();
             var genre = _mapper.Map<Genre>(request);

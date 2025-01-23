@@ -16,14 +16,25 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.AddReviewCommand
 
         public async Task<Unit> Handle(AddReviewCommand request, CancellationToken cancellationToken)
         {
-            var candidateProfile = (await _unitOfWork.UserProfiles.GetWithSpecificationAsync(new UserProfileByAccountIdSpecification(request.AccountId), cancellationToken)).SingleOrDefault() 
-                                    ?? throw new NotFoundException("User profile not found");
-            _ = await _unitOfWork.Movies.GetByIdAsync(request.MovieId, cancellationToken) 
-                ?? throw new NotFoundException("Movie not found");
+            var profileSpecification = new UserProfileByAccountIdSpecification(request.AccountId);
+            var candidates = await _unitOfWork.UserProfiles.GetWithSpecificationAsync(profileSpecification, cancellationToken);
+            var candidateProfile = candidates.SingleOrDefault();
+            if (candidateProfile == null) 
+            {
+                throw new NotFoundException("User profile not found");
+            }
+
+            var candidateMovie = await _unitOfWork.Movies.GetByIdAsync(request.MovieId, cancellationToken);
+            if (candidateMovie == null) 
+            {
+                throw new NotFoundException("Movie not found");
+            }
 
             cancellationToken.ThrowIfCancellationRequested();
-            var candidate = (await _unitOfWork.Reviews.GetWithSpecificationAsync(new ReviewByMovieAndProfileIdSpecification(candidateProfile.Id, request.MovieId), cancellationToken)).FirstOrDefault();
-            if(candidate != null)
+            var reviewSpecification = new ReviewByMovieAndProfileIdSpecification(candidateProfile.Id, request.MovieId);
+            var candidatesReviews = await _unitOfWork.Reviews.GetWithSpecificationAsync(reviewSpecification, cancellationToken);
+            var candidateReview = candidatesReviews.SingleOrDefault();
+            if (candidateReview != null)
             {
                 throw new ConflictException("Review by that user for the movie already exists");
             }

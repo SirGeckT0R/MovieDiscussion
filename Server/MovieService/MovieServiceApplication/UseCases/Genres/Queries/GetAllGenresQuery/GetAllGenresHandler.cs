@@ -12,7 +12,6 @@ namespace MovieServiceApplication.UseCases.Genres.Queries.GetAllGenresQuery
         public async Task<ICollection<GenreDto>> Handle(GetAllGenresQuery request, CancellationToken cancellationToken)
         {
             var genres = await _unitOfWork.Genres.GetAllAsync(cancellationToken);
-
             cancellationToken.ThrowIfCancellationRequested();
 
             return _mapper.Map<ICollection<GenreDto>>(genres);

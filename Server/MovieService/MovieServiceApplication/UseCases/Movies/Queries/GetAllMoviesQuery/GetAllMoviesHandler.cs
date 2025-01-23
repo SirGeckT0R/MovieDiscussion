@@ -13,7 +13,6 @@ namespace MovieServiceApplication.UseCases.Movies.Queries.GetAllMoviesQuery
         public async Task<ICollection<MovieDto>> Handle(GetAllMoviesQuery request, CancellationToken cancellationToken)
         {
             var movies = await _unitOfWork.Movies.GetAllAsync(cancellationToken);
-
             cancellationToken.ThrowIfCancellationRequested();
 
             return movies.Select(_mapper.Map<MovieDto>).ToList();

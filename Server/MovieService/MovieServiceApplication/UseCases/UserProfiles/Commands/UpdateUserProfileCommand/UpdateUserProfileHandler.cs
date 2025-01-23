@@ -14,11 +14,16 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Commands.UpdateUserProfi
 
         public async Task<Unit> Handle(UpdateUserProfileCommand request, CancellationToken cancellationToken)
         {
-            var profile = (await _unitOfWork.UserProfiles.GetWithSpecificationAsync(new UserProfileByAccountIdSpecification(request.AccountId), cancellationToken)).SingleOrDefault()
-                           ?? throw new NotFoundException("Profile not found");
+            var profileSpecification = new UserProfileByAccountIdSpecification(request.AccountId);
+            var candidates = await _unitOfWork.UserProfiles.GetWithSpecificationAsync(profileSpecification, cancellationToken);
+            var candidateProfile = candidates.SingleOrDefault();
+            if (candidateProfile == null)
+            {
+                throw new NotFoundException("User profile not found");
+            }
 
             cancellationToken.ThrowIfCancellationRequested();
-            var newProfile = _mapper.Map(request, profile);
+            var newProfile = _mapper.Map(request, candidateProfile);
             _unitOfWork.UserProfiles.Update(newProfile, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();

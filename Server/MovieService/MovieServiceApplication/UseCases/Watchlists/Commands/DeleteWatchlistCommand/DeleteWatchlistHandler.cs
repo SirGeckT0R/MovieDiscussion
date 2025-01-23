@@ -13,15 +13,27 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.DeleteWatchlistCo
 
         public async Task<Unit> Handle(DeleteWatchlistCommand request, CancellationToken cancellationToken)
         {
-            var candidateProfile = (await _unitOfWork.UserProfiles.GetWithSpecificationAsync(new UserProfileByAccountIdSpecification(request.AccountId), cancellationToken)).SingleOrDefault()
-                                    ?? throw new NotFoundException("User profile not found");
+            var profileSpecification = new UserProfileByAccountIdSpecification(request.AccountId);
+            var candidates = await _unitOfWork.UserProfiles.GetWithSpecificationAsync(profileSpecification, cancellationToken);
+            var candidateProfile = candidates.SingleOrDefault();
+            if (candidateProfile == null)
+            {
+                throw new NotFoundException("User profile not found");
+            }
 
-            var watchlist = (await _unitOfWork.Watchlists.GetWithSpecificationAsync(new WatchlistByProfileIdSpecification(candidateProfile.Id), cancellationToken)).SingleOrDefault() 
-                             ?? throw new NotFoundException("Watchlist not found");
+            cancellationToken.ThrowIfCancellationRequested();
+            var watchlistSpecification = new WatchlistByProfileIdSpecification(candidateProfile.Id);
+            var candidateWatchlists = await _unitOfWork.Watchlists.GetWithSpecificationAsync(watchlistSpecification, cancellationToken);
+            var watchlist = candidateWatchlists.SingleOrDefault();
+            if (watchlist == null)
+            {
+                throw new NotFoundException("Watchlist not found");
+            }
 
             cancellationToken.ThrowIfCancellationRequested();
             _unitOfWork.Watchlists.Delete(watchlist, cancellationToken);
 
+            cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveAsync();
 
             return Unit.Value;
