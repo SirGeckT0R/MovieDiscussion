@@ -14,6 +14,8 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.AddMovieCommand
 
         public async Task<Unit> Handle(AddMovieCommand request, CancellationToken cancellationToken)
         {
+            _ = await _unitOfWork.UserProfiles.GetByIdAsync(request.SubmittedBy, cancellationToken) ?? throw new NotFoundException("User profile not found");
+
             cancellationToken.ThrowIfCancellationRequested();
             if (!_unitOfWork.Genres.DoExist(request.Genres, cancellationToken))
             {

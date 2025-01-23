@@ -13,7 +13,8 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.ManageMovieInWatc
 
         public async Task<Unit> Handle(ManageMovieInWatchlistCommand request, CancellationToken cancellationToken)
         {
-            var watchlist = (await _unitOfWork.Watchlists.GetWithSpecificationAsync(new WatchlistByUserIdSpecification(request.UserId), cancellationToken)).SingleOrDefault() ?? throw new NotFoundException("Watchlist not found");
+            var watchlist = (await _unitOfWork.Watchlists.GetWithSpecificationAsync(new WatchlistByProfileIdSpecification(request.ProfileId), cancellationToken)).SingleOrDefault() 
+                                ?? throw new NotFoundException("Watchlist not found");
 
             cancellationToken.ThrowIfCancellationRequested();
             _ = await _unitOfWork.Movies.GetByIdAsync(request.MovieId, cancellationToken) ?? throw new NotFoundException("Movie not found");

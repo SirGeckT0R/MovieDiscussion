@@ -7,7 +7,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.ManageMovieInWatc
     {
         public ManageMovieInWatchlistValidator()
         {
-            RuleFor(command => command.UserId)
+            RuleFor(command => command.ProfileId)
                 .NotEmpty();
 
             RuleFor(command => command.MovieId)

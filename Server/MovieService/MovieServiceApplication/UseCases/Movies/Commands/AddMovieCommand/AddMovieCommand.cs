@@ -11,5 +11,6 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.AddMovieCommand
         public DateTime ReleaseDate { get;  set; } = DateTime.UtcNow;
         public ICollection<Guid> Genres { get;  set; } = [];
         public ICollection<CrewMemberDto> CrewMembers { get;  set; } = [];
+        public Guid SubmittedBy { get;  set; }
     }
 }
