@@ -8,7 +8,7 @@ namespace MovieServiceApplication.MappingProfiles
     {
         public UserProfileDtoMappingProfile() 
         {
-            CreateMap<UserProfileDto, UserProfile>().ReverseMap();
+            CreateMap<UserProfile, UserProfileDto>().ReverseMap();
         }
     }
 }

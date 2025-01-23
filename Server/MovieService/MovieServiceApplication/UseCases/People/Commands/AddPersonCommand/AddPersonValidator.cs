@@ -14,7 +14,7 @@ namespace MovieServiceApplication.UseCases.People.Commands.AddPersonCommand
                 .MaximumLength(50);
 
 
-            RuleFor(x => x.BirthDate)
+            RuleFor(x => x.DateOfBirth)
                 .NotEmpty()
                 .Must(x => x < DateTime.Now);
         }

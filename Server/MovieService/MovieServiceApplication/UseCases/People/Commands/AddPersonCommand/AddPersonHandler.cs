@@ -12,7 +12,7 @@ namespace MovieServiceApplication.UseCases.People.Commands.AddPersonCommand
         private readonly IMapper _mapper = mapper;
         public async Task<Unit> Handle(AddPersonCommand request, CancellationToken cancellationToken)
         {
-            var person = _mapper.Map<AddPersonCommand, Person>(request);
+            var person = _mapper.Map<Person>(request);
             await _unitOfWork.People.AddAsync(person, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
