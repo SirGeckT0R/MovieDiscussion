@@ -12,7 +12,8 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.DeleteWatchlistCo
 
         public async Task<Unit> Handle(DeleteWatchlistCommand request, CancellationToken cancellationToken)
         {
-            var watchlist = (await _unitOfWork.Watchlists.GetWithSpecificationAsync(new WatchlistByUserIdSpecification(request.UserId), cancellationToken)).SingleOrDefault() ?? throw new NotFoundException("Watchlist not found");
+            var watchlist = (await _unitOfWork.Watchlists.GetWithSpecificationAsync(new WatchlistByProfileIdSpecification(request.ProfileId), cancellationToken)).SingleOrDefault() 
+                                ?? throw new NotFoundException("Watchlist not found");
 
             cancellationToken.ThrowIfCancellationRequested();
             _unitOfWork.Watchlists.Delete(watchlist, cancellationToken);

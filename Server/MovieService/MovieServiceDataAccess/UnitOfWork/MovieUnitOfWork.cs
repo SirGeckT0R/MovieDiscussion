@@ -9,7 +9,8 @@ namespace MovieServiceDataAccess.UnitOfWork
                                  IGenreRepository genreRepository, 
                                  IPersonRepository personRepository,
                                  IWatchlistRepository watchlistRepository,
-                                 IReviewRepository reviewRepository) : IUnitOfWork
+                                 IReviewRepository reviewRepository,
+                                 IUserProfileRepository userProfileRepository) : IUnitOfWork
     {
         private readonly MovieDbContext _context = context;
         private readonly IMovieRepository _movieRepository = movieRepository;
@@ -17,6 +18,7 @@ namespace MovieServiceDataAccess.UnitOfWork
         private readonly IPersonRepository _personRepository = personRepository;
         private readonly IWatchlistRepository _watchlistRepository = watchlistRepository;
         private readonly IReviewRepository _reviewRepository = reviewRepository;
+        private readonly IUserProfileRepository _userProfileRepository = userProfileRepository;
 
         private bool disposed = false;
         public IMovieRepository Movies {
@@ -55,6 +57,14 @@ namespace MovieServiceDataAccess.UnitOfWork
             get
             {
                 return _reviewRepository;
+            }
+        }
+
+        public IUserProfileRepository UserProfiles
+        {
+            get
+            {
+                return _userProfileRepository;
             }
         }
 

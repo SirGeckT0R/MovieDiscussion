@@ -6,7 +6,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.ManageMovieInWatc
 {
     public record ManageMovieInWatchlistCommand : ICommand<Unit>
     {
-        public Guid UserId { get; set; }
+        public Guid ProfileId { get; set; }
         public Guid MovieId { get; set; }
         public WatchlistAction Action { get; set; }
     }

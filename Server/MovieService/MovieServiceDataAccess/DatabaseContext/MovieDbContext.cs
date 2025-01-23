@@ -11,6 +11,7 @@ namespace MovieServiceDataAccess.DatabaseContext
         public DbSet<Person> People { get; set; } = null!;
         public DbSet<Watchlist> Watchlists { get; set; } = null!;
         public DbSet<Review> Reviews { get; set; } = null!;
+        public DbSet<UserProfile> UserProfiles { get; set; } = null!;
         public MovieDbContext(DbContextOptions<MovieDbContext> options) : base(options)
         {
         }
@@ -24,6 +25,7 @@ namespace MovieServiceDataAccess.DatabaseContext
             modelBuilder.Entity<Person>().ToCollection("people");
             modelBuilder.Entity<Watchlist>().ToCollection("watchlists");
             modelBuilder.Entity<Review>().ToCollection("reviews");
+            modelBuilder.Entity<UserProfile>().ToCollection("userProfiles");
         }
     }
 }

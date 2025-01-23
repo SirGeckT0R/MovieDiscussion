@@ -15,10 +15,11 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.AddReviewCommand
 
         public async Task<Unit> Handle(AddReviewCommand request, CancellationToken cancellationToken)
         {
+            _ = await _unitOfWork.UserProfiles.GetByIdAsync(request.ProfileId, cancellationToken) ?? throw new NotFoundException("User profile not found");
             _ = await _unitOfWork.Movies.GetByIdAsync(request.MovieId, cancellationToken) ?? throw new NotFoundException("Movie not found");
 
             cancellationToken.ThrowIfCancellationRequested();
-            var candidate = (await _unitOfWork.Reviews.GetWithSpecificationAsync(new ReviewByMovieAndUserIdSpecification(request.UserId, request.MovieId), cancellationToken)).FirstOrDefault();
+            var candidate = (await _unitOfWork.Reviews.GetWithSpecificationAsync(new ReviewByMovieAndProfileIdSpecification(request.ProfileId, request.MovieId), cancellationToken)).FirstOrDefault();
             if(candidate != null)
             {
                 throw new ConflictException("Review by that user for the movie already exists");

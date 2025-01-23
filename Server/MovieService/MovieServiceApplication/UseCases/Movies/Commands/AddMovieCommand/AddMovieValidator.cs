@@ -24,6 +24,9 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.AddMovieCommand
             RuleFor(x => x.CrewMembers)
                 .NotEmpty()
                 .Must(x => x.All(y => Enum.IsDefined(typeof(Role), y.Role)));
+
+            RuleFor(x => x.SubmittedBy)
+                .NotEmpty();
         }
     }
 }

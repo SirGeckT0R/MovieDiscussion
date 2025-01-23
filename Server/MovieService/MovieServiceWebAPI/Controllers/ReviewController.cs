@@ -5,7 +5,7 @@ using MovieServiceApplication.UseCases.Reviews.Commands.DeleteReviewCommand;
 using MovieServiceApplication.UseCases.Reviews.Commands.UpdateReviewCommand;
 using MovieServiceApplication.UseCases.Reviews.Queries.GetReviewByIdQuery;
 using MovieServiceApplication.UseCases.Reviews.Queries.GetReviewsByMovieIdQuery;
-using MovieServiceApplication.UseCases.Reviews.Queries.GetReviewsByUserIdQuery;
+using MovieServiceApplication.UseCases.Reviews.Queries.GetReviewsByProfileIdQuery;
 
 namespace MovieServiceWebAPI.Controllers
 {
@@ -38,8 +38,8 @@ namespace MovieServiceWebAPI.Controllers
 
             return Ok(review);
         }
-        [HttpGet("user/{UserId:Guid}")]
-        public async Task<IActionResult> GetByUser([FromRoute] GetReviewsByUserIdQuery query, CancellationToken cancellationToken)
+        [HttpGet("user/{ProfileId:Guid}")]
+        public async Task<IActionResult> GetByUser([FromRoute] GetReviewsByProfileIdQuery query, CancellationToken cancellationToken)
         {
             var review = await _mediator.Send(query, cancellationToken);
 

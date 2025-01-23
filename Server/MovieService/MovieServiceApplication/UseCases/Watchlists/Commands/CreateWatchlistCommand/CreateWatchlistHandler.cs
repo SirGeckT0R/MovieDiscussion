@@ -15,7 +15,9 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.CreateWatchlistCo
 
         public async Task<Unit> Handle(CreateWatchlistCommand request, CancellationToken cancellationToken)
         {
-            var candidate = await _unitOfWork.Watchlists.GetWithSpecificationAsync(new WatchlistByUserIdSpecification(request.UserId), cancellationToken);
+            _ = await _unitOfWork.UserProfiles.GetByIdAsync(request.ProfileId, cancellationToken) ?? throw new NotFoundException("User profile not found");
+
+            var candidate = (await _unitOfWork.Watchlists.GetWithSpecificationAsync(new WatchlistByProfileIdSpecification(request.ProfileId), cancellationToken)).SingleOrDefault();
             if (candidate != null)
             {
                 throw new ConflictException("Watchlist was already created");

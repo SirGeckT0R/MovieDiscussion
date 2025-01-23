@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MovieServiceApplication.UseCases.Watchlists.Commands.CreateWatchlistCommand;
 using MovieServiceApplication.UseCases.Watchlists.Commands.DeleteWatchlistCommand;
 using MovieServiceApplication.UseCases.Watchlists.Commands.ManageMovieInWatchlistCommand;
-using MovieServiceApplication.UseCases.Watchlists.Queries.GetWatchlistByUserIdQuery;
+using MovieServiceApplication.UseCases.Watchlists.Queries.GetWatchlistByProfileIdQuery;
 
 namespace MovieServiceWebAPI.Controllers
 {
@@ -21,15 +21,15 @@ namespace MovieServiceWebAPI.Controllers
             return Created();
         }
 
-        [HttpGet("{UserId:Guid}")]
-        public async Task<ActionResult> GetByUserId([FromRoute] GetWatchlistByUserIdQuery query,CancellationToken cancellationToken)
+        [HttpGet("{ProfileId:Guid}")]
+        public async Task<ActionResult> GetByUserId([FromRoute] GetWatchlistByProfileIdQuery query,CancellationToken cancellationToken)
         {
             var watchlist = await _mediator.Send(query, cancellationToken);
 
             return Ok(watchlist);
         }
 
-        [HttpDelete("{UserId:Guid}")]
+        [HttpDelete("{ProfileId:Guid}")]
         public async Task<ActionResult> Delete([FromRoute] DeleteWatchlistCommand command, CancellationToken cancellationToken)
         {
             await _mediator.Send(command, cancellationToken);
@@ -37,10 +37,10 @@ namespace MovieServiceWebAPI.Controllers
             return NoContent();
         }
 
-        [HttpPost("{UserId:Guid}")]
-        public async Task<ActionResult> ManageMovie([FromRoute] Guid UserId, [FromBody] ManageMovieInWatchlistCommand command, CancellationToken cancellationToken)
+        [HttpPost("{ProfileId:Guid}")]
+        public async Task<ActionResult> ManageMovie([FromRoute] Guid ProfileId, [FromBody] ManageMovieInWatchlistCommand command, CancellationToken cancellationToken)
         {
-            command.UserId = UserId;
+            command.ProfileId = ProfileId;
             await _mediator.Send(command, cancellationToken);
 
             return NoContent();
