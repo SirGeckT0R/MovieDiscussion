@@ -32,7 +32,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.CreateWatchlistCo
             {
                 throw new ConflictException("Watchlist was already created");
             }
-        
+
             cancellationToken.ThrowIfCancellationRequested();
             var watchlist = _mapper.Map<Watchlist>(request);
             watchlist.ProfileId = candidateProfile.Id;
