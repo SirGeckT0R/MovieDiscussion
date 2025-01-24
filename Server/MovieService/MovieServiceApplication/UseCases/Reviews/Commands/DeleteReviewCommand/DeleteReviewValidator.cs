@@ -7,7 +7,8 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.DeleteReviewCommand
         public DeleteReviewValidator() 
         {
             RuleFor(x => x.Id)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("Review's {PropertyName} is required");
         }
     }
 }

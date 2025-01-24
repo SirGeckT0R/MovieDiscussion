@@ -7,11 +7,13 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Commands.UpdateUserProfi
         public UpdateUserProfileValidator()
         {
             RuleFor(x => x.AccountId)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("Profile's {PropertyName} is required");
 
             RuleFor(x => x.Username)
                 .NotEmpty()
-                .MaximumLength(50);
+                .MaximumLength(50)
+                .WithMessage("Profile's {PropertyName} is required");
         }
     }
 }

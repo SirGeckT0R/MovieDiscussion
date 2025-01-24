@@ -7,19 +7,23 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.AddReviewCommand
         public AddReviewValidator() 
         {
             RuleFor(x => x.AccountId)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("Review's {PropertyName} is required");
 
             RuleFor(x => x.MovieId)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("Review's {PropertyName} is required");
 
             RuleFor(x => x.Value)
                 .NotEmpty()
                 .GreaterThanOrEqualTo(1)
-                .LessThanOrEqualTo(10);
+                .LessThanOrEqualTo(10)
+                .WithMessage("Review value must be between 1 and 10");
 
             RuleFor(x => x.Text)
                 .NotEmpty()
-                .MaximumLength(200);
+                .MaximumLength(200)
+                .WithMessage("Review's {PropertyName} is required");
         }
     }
 }

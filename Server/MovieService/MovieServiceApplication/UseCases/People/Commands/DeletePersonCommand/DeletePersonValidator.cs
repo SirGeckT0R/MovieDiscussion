@@ -6,7 +6,8 @@ namespace MovieServiceApplication.UseCases.People.Commands.DeletePersonCommand
     {
         public DeletePersonValidator() {
             RuleFor(x => x.Id)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("Person's {PropertyName} is required");
         }
     }
 }

@@ -8,14 +8,17 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.ManageMovieInWatc
         public ManageMovieInWatchlistValidator()
         {
             RuleFor(command => command.AccountId)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("Watchlist's {PropertyName} is required");
 
             RuleFor(command => command.MovieId)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("Watchlist's {PropertyName} is required");
 
             RuleFor(x => x.Action)
                 .NotEmpty()
-                .Must(x => Enum.IsDefined(typeof(WatchlistAction), x));
+                .Must(x => Enum.IsDefined(typeof(WatchlistAction), x))
+                .WithMessage("Watchlist's {PropertyName} is required");
         }
     }
 }

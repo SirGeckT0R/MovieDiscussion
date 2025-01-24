@@ -7,26 +7,32 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.UpdateMovieCommand
     {
         public UpdateMovieValidator() {
             RuleFor(x => x.Id)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("Movie's {PropertyName} is required");
 
             RuleFor(x => x.Title)
                 .NotEmpty()
-                .MaximumLength(50);
+                .MaximumLength(50)
+                .WithMessage("Movie's {PropertyName} is required");
 
             RuleFor(x => x.Description)
                 .NotEmpty()
-                .MaximumLength(200);
+                .MaximumLength(200)
+                .WithMessage("Movie's {PropertyName} is required");
 
             RuleFor(x => x.ReleaseDate)
                 .NotEmpty()
-                .Must(x => x < DateTime.Now);
+                .Must(x => x < DateTime.Now)
+                .WithMessage("Movie's {PropertyName} is required");
 
             RuleFor(x => x.Genres)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("Movie has to have at least one genre");
 
             RuleFor(x => x.CrewMembers)
                 .NotEmpty()
-                .Must(x => x.All(y => Enum.IsDefined(typeof(Role), y.Role)));
+                .Must(x => x.All(y => Enum.IsDefined(typeof(Role), y.Role)))
+                .WithMessage("Movie has to have at least one crew member");
         }
     }
 }

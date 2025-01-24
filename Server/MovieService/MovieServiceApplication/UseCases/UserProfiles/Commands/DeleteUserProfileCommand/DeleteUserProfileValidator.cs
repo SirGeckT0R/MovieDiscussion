@@ -7,7 +7,8 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Commands.DeleteUserProfi
         public DeleteUserProfileValidator() 
         {
             RuleFor(x => x.AccountId)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("Profile's {PropertyName} is required");
         }
     }
 }

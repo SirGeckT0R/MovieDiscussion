@@ -6,7 +6,8 @@ namespace MovieServiceApplication.UseCases.Genres.Commands.DeleteGenreCommand
     {
         public DeleteGenreValidator() {
             RuleFor(x => x.Id)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("Genre's {PropertyName} is required");
         }
     }
 }

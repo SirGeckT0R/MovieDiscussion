@@ -7,7 +7,8 @@ namespace MovieServiceApplication.UseCases.Genres.Commands.AddGenreCommand
         public AddGenreValidator() {
             RuleFor(x => x.Name)
                 .NotEmpty()
-                .MaximumLength(50);
+                .MaximumLength(50)
+                .WithMessage("Genre's {PropertyName} is required");
         }
     }
 }

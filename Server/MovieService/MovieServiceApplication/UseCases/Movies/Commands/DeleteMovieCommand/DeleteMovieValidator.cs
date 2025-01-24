@@ -6,7 +6,8 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.DeleteMovieCommand
     {
         public DeleteMovieValidator() {
             RuleFor(x => x.Id)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("Movie's {PropertyName} is required");
         }
     }
 }

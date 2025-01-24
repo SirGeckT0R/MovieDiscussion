@@ -6,7 +6,8 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.CreateWatchlistCo
     {
         public CreateWatchlistValidator() {
             RuleFor(x => x.AccountId)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("Watchlist's {PropertyName} is required");
         }
     }
 }
