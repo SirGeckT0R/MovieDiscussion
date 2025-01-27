@@ -40,7 +40,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.CreateWatchlistCo
             watchlist.ProfileId = candidateProfile.Id;
             await _unitOfWork.Watchlists.AddAsync(watchlist, cancellationToken);
 
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }

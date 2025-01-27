@@ -22,7 +22,7 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.DeleteMovieCommand
             _unitOfWork.Movies.Delete(movie, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }

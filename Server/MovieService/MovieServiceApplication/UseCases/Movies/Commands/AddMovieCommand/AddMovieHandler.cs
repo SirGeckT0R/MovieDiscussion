@@ -46,7 +46,7 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.AddMovieCommand
             await _unitOfWork.Movies.AddAsync(movie, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }

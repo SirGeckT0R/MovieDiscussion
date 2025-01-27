@@ -21,7 +21,7 @@ namespace MovieServiceApplication.UseCases.Genres.Commands.DeleteGenreCommand
             _unitOfWork.Genres.Delete(genre, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }

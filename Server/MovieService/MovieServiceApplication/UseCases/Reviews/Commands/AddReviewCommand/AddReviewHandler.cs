@@ -49,7 +49,7 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.AddReviewCommand
             await _unitOfWork.Reviews.AddAsync(review, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }

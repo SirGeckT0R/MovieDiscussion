@@ -65,7 +65,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.ManageMovieInWatc
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }

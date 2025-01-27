@@ -22,7 +22,7 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.DeleteReviewCommand
             _unitOfWork.Reviews.Delete(review, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }

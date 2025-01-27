@@ -25,7 +25,7 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.UpdateReviewCommand
             _unitOfWork.Reviews.Update(newReview, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }

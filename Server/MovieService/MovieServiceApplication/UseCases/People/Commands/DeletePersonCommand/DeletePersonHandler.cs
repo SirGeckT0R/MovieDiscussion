@@ -22,7 +22,7 @@ namespace MovieServiceApplication.UseCases.People.Commands.DeletePersonCommand
             _unitOfWork.People.Delete(person, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }

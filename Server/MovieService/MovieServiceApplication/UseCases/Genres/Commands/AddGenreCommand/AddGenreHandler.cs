@@ -28,7 +28,7 @@ namespace MovieServiceApplication.UseCases.Genres.Commands.AddGenreCommand
             await _unitOfWork.Genres.AddAsync(genre, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }

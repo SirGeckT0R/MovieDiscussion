@@ -25,7 +25,7 @@ namespace MovieServiceApplication.UseCases.People.Commands.UpdatePersonCommand
             _unitOfWork.People.Update(person, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }

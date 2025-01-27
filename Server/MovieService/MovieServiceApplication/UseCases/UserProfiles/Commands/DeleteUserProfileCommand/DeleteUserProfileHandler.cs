@@ -24,7 +24,7 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Commands.DeleteUserProfi
             _unitOfWork.UserProfiles.Delete(candidateProfile, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }

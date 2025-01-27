@@ -28,7 +28,7 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Commands.CreateUserProfi
             await _unitOfWork.UserProfiles.AddAsync(userProfile, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }

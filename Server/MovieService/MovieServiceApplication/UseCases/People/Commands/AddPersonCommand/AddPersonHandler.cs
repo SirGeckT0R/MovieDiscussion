@@ -16,7 +16,7 @@ namespace MovieServiceApplication.UseCases.People.Commands.AddPersonCommand
             await _unitOfWork.People.AddAsync(person, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }

@@ -41,7 +41,7 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.UpdateMovieCommand
             _unitOfWork.Movies.Update(movie, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }

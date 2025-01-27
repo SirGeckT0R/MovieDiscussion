@@ -36,7 +36,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.DeleteWatchlistCo
             _unitOfWork.Watchlists.Delete(watchlist, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }
