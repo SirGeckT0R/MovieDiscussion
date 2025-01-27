@@ -13,6 +13,7 @@ namespace MovieServiceApplication.UseCases.Genres.Commands.UpdateGenreCommand
         public async Task<Unit> Handle(UpdateGenreCommand request, CancellationToken cancellationToken)
         {
             var candidateGenre = await _unitOfWork.Genres.GetByIdAsync(request.Id, cancellationToken);
+
             if (candidateGenre == null)
             { 
                 throw new NotFoundException("Genre not found");
@@ -23,7 +24,7 @@ namespace MovieServiceApplication.UseCases.Genres.Commands.UpdateGenreCommand
             _unitOfWork.Genres.Update(genre, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return Unit.Value;
         }

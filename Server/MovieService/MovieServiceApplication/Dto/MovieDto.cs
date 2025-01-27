@@ -9,5 +9,7 @@
         public double Rating { get;  set; } = 0;
         public IList<Guid> Genres { get;  set; } = [];
         public IList<CrewMemberDto> CrewMembers { get;  set; } = [];
+
+        public MovieDto() { }
     }
 }

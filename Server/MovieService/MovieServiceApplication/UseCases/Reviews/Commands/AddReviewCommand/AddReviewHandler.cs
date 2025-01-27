@@ -19,21 +19,25 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.AddReviewCommand
             var profileSpecification = new UserProfileByAccountIdSpecification(request.AccountId);
             var candidates = await _unitOfWork.UserProfiles.GetWithSpecificationAsync(profileSpecification, cancellationToken);
             var candidateProfile = candidates.SingleOrDefault();
+
             if (candidateProfile == null) 
             {
                 throw new NotFoundException("User profile not found");
             }
 
+            cancellationToken.ThrowIfCancellationRequested();
             var candidateMovie = await _unitOfWork.Movies.GetByIdAsync(request.MovieId, cancellationToken);
+
             if (candidateMovie == null) 
             {
                 throw new NotFoundException("Movie not found");
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-            var reviewSpecification = new ReviewByMovieAndProfileIdSpecification(candidateProfile.Id, request.MovieId);
+            var reviewSpecification = new ReviewByProfileAndMovieIdSpecification(candidateProfile.Id, request.MovieId);
             var candidatesReviews = await _unitOfWork.Reviews.GetWithSpecificationAsync(reviewSpecification, cancellationToken);
             var candidateReview = candidatesReviews.SingleOrDefault();
+
             if (candidateReview != null)
             {
                 throw new ConflictException("Review by that user for the movie already exists");
@@ -45,7 +49,7 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.AddReviewCommand
             await _unitOfWork.Reviews.AddAsync(review, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return Unit.Value;
         }

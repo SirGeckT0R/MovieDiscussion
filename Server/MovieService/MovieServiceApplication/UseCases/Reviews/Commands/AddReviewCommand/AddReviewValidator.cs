@@ -23,7 +23,7 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.AddReviewCommand
             RuleFor(x => x.Text)
                 .NotEmpty()
                 .MaximumLength(200)
-                .WithMessage("Review's {PropertyName} is required");
+                .WithMessage("Review's {PropertyName} is empty or too long");
         }
     }
 }

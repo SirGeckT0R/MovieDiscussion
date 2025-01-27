@@ -14,6 +14,7 @@ namespace MovieServiceApplication.UseCases.People.Commands.UpdatePersonCommand
         public async Task<Unit> Handle(UpdatePersonCommand request, CancellationToken cancellationToken)
         {
             var candidatePerson = await _unitOfWork.People.GetByIdAsync(request.Id, cancellationToken);
+
             if (candidatePerson == null)
             {
                 throw new NotFoundException("Person not found");
@@ -24,7 +25,7 @@ namespace MovieServiceApplication.UseCases.People.Commands.UpdatePersonCommand
             _unitOfWork.People.Update(person, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return Unit.Value;
         }

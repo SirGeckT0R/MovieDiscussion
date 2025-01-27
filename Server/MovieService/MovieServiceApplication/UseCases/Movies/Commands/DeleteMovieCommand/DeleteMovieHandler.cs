@@ -12,6 +12,7 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.DeleteMovieCommand
         public async Task<Unit> Handle(DeleteMovieCommand request, CancellationToken cancellationToken)
         {
             var movie = await _unitOfWork.Movies.GetByIdTrackingAsync(request.Id, cancellationToken);
+
             if (movie == null)
             {
                 throw new NotFoundException("Movie not found");
@@ -21,7 +22,7 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.DeleteMovieCommand
             _unitOfWork.Movies.Delete(movie, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return Unit.Value;
         }

@@ -2,8 +2,8 @@
 {
     public enum WatchlistAction
     {
-        None,
-        Add,
-        Remove
+        None = 0,
+        Add = 1,
+        Remove = 2
     }
 }

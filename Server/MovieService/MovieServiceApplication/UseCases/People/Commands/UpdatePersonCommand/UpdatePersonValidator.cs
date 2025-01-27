@@ -8,12 +8,12 @@ namespace MovieServiceApplication.UseCases.People.Commands.UpdatePersonCommand
             RuleFor(x => x.FirstName)
                 .NotEmpty()
                 .MaximumLength(50)
-                .WithMessage("Person's {PropertyName} is required");
+                .WithMessage("Person's {PropertyName} is empty or too long");
 
             RuleFor(x => x.LastName)
                 .NotEmpty()
                 .MaximumLength(50)
-                .WithMessage("Person's {PropertyName} is required");
+                .WithMessage("Person's {PropertyName} is empty or too long");
 
 
             RuleFor(x => x.DateOfBirth)

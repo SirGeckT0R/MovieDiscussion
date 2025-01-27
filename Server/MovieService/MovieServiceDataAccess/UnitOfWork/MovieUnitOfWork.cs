@@ -68,7 +68,7 @@ namespace MovieServiceDataAccess.UnitOfWork
             }
         }
 
-        public async Task SaveAsync()
+        public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
         }

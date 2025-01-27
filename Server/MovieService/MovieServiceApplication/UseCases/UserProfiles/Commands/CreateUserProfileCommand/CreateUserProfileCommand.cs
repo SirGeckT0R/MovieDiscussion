@@ -8,14 +8,6 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Commands.CreateUserProfi
         public Guid AccountId { get; set; }
         public string Username { get; set; } = string.Empty;
 
-        public CreateUserProfileCommand()
-        {
-        }
-
-        public CreateUserProfileCommand(Guid accountId, string username)
-        {
-            AccountId = accountId;
-            Username = username;
-        }
+        public CreateUserProfileCommand() { }
     }
 }

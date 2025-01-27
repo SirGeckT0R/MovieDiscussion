@@ -17,6 +17,7 @@ namespace MovieServiceApplication.UseCases.Genres.Commands.AddGenreCommand
             var genreSpecification = new GenreByNameSpecification(request.Name);
             var candidates = await _unitOfWork.Genres.GetWithSpecificationAsync(genreSpecification, cancellationToken);
             var candidateGenre = candidates.SingleOrDefault();
+
             if (candidateGenre != null)
             {
                 throw new ConflictException("Genre already exists");
@@ -27,7 +28,7 @@ namespace MovieServiceApplication.UseCases.Genres.Commands.AddGenreCommand
             await _unitOfWork.Genres.AddAsync(genre, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return Unit.Value;
         }

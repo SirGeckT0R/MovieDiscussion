@@ -18,6 +18,7 @@ namespace MovieServiceApplication.UseCases.Reviews.Queries.GetReviewsByAccountId
             var profileSpecification = new UserProfileByAccountIdSpecification(request.AccountId);
             var candidates = await _unitOfWork.UserProfiles.GetWithSpecificationAsync(profileSpecification, cancellationToken);
             var candidateProfile = candidates.SingleOrDefault();
+
             if (candidateProfile == null)
             {
                 throw new NotFoundException("User profile not found");

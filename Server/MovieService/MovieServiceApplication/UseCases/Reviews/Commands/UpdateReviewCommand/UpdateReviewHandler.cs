@@ -14,6 +14,7 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.UpdateReviewCommand
         public async Task<Unit> Handle(UpdateReviewCommand request, CancellationToken cancellationToken)
         {
             var review = await _unitOfWork.Reviews.GetByIdTrackingAsync(request.Id, cancellationToken);
+
             if (review == null)
             {
                 throw new NotFoundException("Review not found");
@@ -24,7 +25,7 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.UpdateReviewCommand
             _unitOfWork.Reviews.Update(newReview, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return Unit.Value;
         }

@@ -14,18 +14,24 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.UpdateMovieCommand
         public async Task<Unit> Handle(UpdateMovieCommand request, CancellationToken cancellationToken)
         {
             var candidate = await _unitOfWork.Movies.GetByIdTrackingAsync(request.Id, cancellationToken);
-            if (candidate == null) {
+
+            if (candidate == null)
+            {
                 throw new NotFoundException("Movie not found");
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-            if (!_unitOfWork.Genres.DoExist(request.Genres, cancellationToken))
+            var doGenresExist = _unitOfWork.Genres.DoExist(request.Genres, cancellationToken);
+
+            if (!doGenresExist)
             {
                 throw new NotFoundException("Some genres are not found");
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-            if (!_unitOfWork.People.DoExist(request.CrewMembers.Select(x => x.PersonId).ToList(), cancellationToken))
+            var doCrewMembersExist = _unitOfWork.People.DoExist(request.CrewMembers.Select(x => x.PersonId).ToList(), cancellationToken);
+
+            if (!doCrewMembersExist)
             {
                 throw new NotFoundException("Some crew members are not found");
             }
@@ -34,7 +40,8 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.UpdateMovieCommand
             var movie = _mapper.Map(request, candidate);
             _unitOfWork.Movies.Update(movie, cancellationToken);
 
-            await _unitOfWork.SaveAsync();
+            cancellationToken.ThrowIfCancellationRequested();
+            await _unitOfWork.SaveChangesAsync();
 
             return Unit.Value;
         }

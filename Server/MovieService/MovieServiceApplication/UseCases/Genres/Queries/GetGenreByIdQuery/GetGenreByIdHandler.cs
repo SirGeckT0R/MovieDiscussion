@@ -14,10 +14,12 @@ namespace MovieServiceApplication.UseCases.Genres.Queries.GetGenreByIdQuery
         public async Task<GenreDto> Handle(GetGenreByIdQuery request, CancellationToken cancellationToken)
         {
             var genre = await _unitOfWork.Genres.GetByIdAsync(request.Id, cancellationToken);
-            if(genre == null) 
+
+            if (genre == null)
             {
                 throw new NotFoundException("Genre not found");
             }
+
             cancellationToken.ThrowIfCancellationRequested();
 
             return _mapper.Map<GenreDto>(genre);

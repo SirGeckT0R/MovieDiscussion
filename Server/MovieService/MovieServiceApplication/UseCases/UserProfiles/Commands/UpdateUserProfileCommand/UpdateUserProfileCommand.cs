@@ -8,14 +8,6 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Commands.UpdateUserProfi
         public Guid AccountId { get; set; }
         public string Username { get; set; } = string.Empty;
 
-        public UpdateUserProfileCommand()
-        {
-        }
-
-        public UpdateUserProfileCommand(Guid accountId, string username)
-        {
-            AccountId = accountId;
-            Username = username;
-        }
+        public UpdateUserProfileCommand() { }
     }
 }

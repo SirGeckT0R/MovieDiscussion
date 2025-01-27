@@ -17,6 +17,7 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Commands.CreateUserProfi
             var profileSpecification = new UserProfileByAccountIdSpecification(request.AccountId);
             var candidates = await _unitOfWork.UserProfiles.GetWithSpecificationAsync(profileSpecification, cancellationToken);
             var candidateProfile = candidates.SingleOrDefault();
+
             if (candidateProfile != null)
             {
                 throw new ConflictException("User profile already exists");
@@ -27,7 +28,7 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Commands.CreateUserProfi
             await _unitOfWork.UserProfiles.AddAsync(userProfile, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return Unit.Value;
         }

@@ -9,7 +9,7 @@ namespace MovieServiceApplication.UseCases.Genres.Commands.UpdateGenreCommand
             RuleFor(x => x.Name)
                 .NotEmpty()
                 .MaximumLength(50)
-                .WithMessage("Genre's {PropertyName} is required");
+                .WithMessage("Genre's {PropertyName} is empty or too long");
         }
     }
 }

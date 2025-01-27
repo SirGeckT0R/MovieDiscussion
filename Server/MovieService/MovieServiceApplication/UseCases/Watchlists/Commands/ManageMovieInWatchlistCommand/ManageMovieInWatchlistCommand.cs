@@ -9,5 +9,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.ManageMovieInWatc
         public Guid AccountId { get; set; }
         public Guid MovieId { get; set; }
         public WatchlistAction Action { get; set; }
+
+        public ManageMovieInWatchlistCommand() { }
     }
 }

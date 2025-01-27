@@ -9,7 +9,7 @@ using MovieServiceDataAccess.DatabaseContext;
 
 namespace MovieServiceDataAccess.DiExtensions
 {
-    public static class DiExtensions
+    public static class DIExtensions
     {
         public static void AddMongo(this IServiceCollection services, IConfiguration configuration)
         {

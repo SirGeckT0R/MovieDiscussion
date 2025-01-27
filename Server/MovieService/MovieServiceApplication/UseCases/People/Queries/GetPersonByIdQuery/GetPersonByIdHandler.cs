@@ -14,10 +14,12 @@ namespace MovieServiceApplication.UseCases.People.Queries.GetPersonByIdQuery
         public async Task<PersonDto> Handle(GetPersonByIdQuery request, CancellationToken cancellationToken)
         {
             var person = await _unitOfWork.People.GetByIdAsync(request.Id, cancellationToken);
+
             if (person == null)
             {
                 throw new NotFoundException("Person not found");
             }
+
             cancellationToken.ThrowIfCancellationRequested();
 
             return _mapper.Map<PersonDto>(person);

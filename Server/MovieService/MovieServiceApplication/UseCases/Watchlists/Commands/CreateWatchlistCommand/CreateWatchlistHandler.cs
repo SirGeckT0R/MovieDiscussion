@@ -19,6 +19,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.CreateWatchlistCo
             var profileSpecification = new UserProfileByAccountIdSpecification(request.AccountId);
             var candidates = await _unitOfWork.UserProfiles.GetWithSpecificationAsync(profileSpecification, cancellationToken);
             var candidateProfile = candidates.SingleOrDefault();
+
             if (candidateProfile == null)
             {
                 throw new NotFoundException("User profile not found");
@@ -28,6 +29,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.CreateWatchlistCo
             var watchlistSpecification = new WatchlistByProfileIdSpecification(candidateProfile.Id);
             var candidateWatchlists = await _unitOfWork.Watchlists.GetWithSpecificationAsync(watchlistSpecification, cancellationToken);
             var candidate = candidateWatchlists.SingleOrDefault();
+
             if (candidate != null)
             {
                 throw new ConflictException("Watchlist was already created");
@@ -38,7 +40,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.CreateWatchlistCo
             watchlist.ProfileId = candidateProfile.Id;
             await _unitOfWork.Watchlists.AddAsync(watchlist, cancellationToken);
 
-            await _unitOfWork.SaveAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return Unit.Value;
         }

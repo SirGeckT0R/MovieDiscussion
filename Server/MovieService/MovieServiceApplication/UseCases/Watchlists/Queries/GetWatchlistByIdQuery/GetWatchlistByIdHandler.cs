@@ -14,10 +14,13 @@ namespace MovieServiceApplication.UseCases.Watchlists.Queries.GetWatchlistByIdQu
         public async Task<WatchlistDto> Handle(GetWatchlistByIdQuery request, CancellationToken cancellationToken)
         {
             var watchlist = await _unitOfWork.Watchlists.GetByIdAsync(request.Id, cancellationToken);
+
             if (watchlist == null)
             {
                 throw new NotFoundException("Watchlist not found");
             }
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             return _mapper.Map<WatchlistDto>(watchlist);
         }

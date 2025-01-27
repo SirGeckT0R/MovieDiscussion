@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace MovieServiceApplication.Extensions
 {
-    public static class DependencyInjectionExtensions
+    public static class DIExtensions
     {
         public static void AddMediatR(this IServiceCollection services)
         {

@@ -14,10 +14,12 @@ namespace MovieServiceApplication.UseCases.Reviews.Queries.GetReviewByIdQuery
         public async Task<ReviewDto> Handle(GetReviewByIdQuery request, CancellationToken cancellationToken)
         {
             var review = await _unitOfWork.Reviews.GetByIdAsync(request.Id, cancellationToken);
+
             if (review == null)
             {
                 throw new NotFoundException("Review not found");
             }
+
             cancellationToken.ThrowIfCancellationRequested();
 
             return _mapper.Map<ReviewDto>(review);

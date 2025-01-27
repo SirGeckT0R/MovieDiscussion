@@ -18,19 +18,24 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.AddMovieCommand
             var profileSpecification = new UserProfileByAccountIdSpecification(request.AccountId);
             var candidates = await _unitOfWork.UserProfiles.GetWithSpecificationAsync(profileSpecification, cancellationToken);
             var candidateProfile = candidates.SingleOrDefault();
+
             if (candidateProfile == null)
             { 
                 throw new NotFoundException("User profile not found");
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-            if (!_unitOfWork.Genres.DoExist(request.Genres, cancellationToken))
+            var doGenresExist = _unitOfWork.Genres.DoExist(request.Genres, cancellationToken);
+
+            if (!doGenresExist)
             {
                 throw new NotFoundException("Some genres are not found");
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-            if (!_unitOfWork.People.DoExist(request.CrewMembers.Select(x => x.PersonId).ToList(), cancellationToken))
+            var doCrewMembersExist = _unitOfWork.People.DoExist(request.CrewMembers.Select(x => x.PersonId).ToList(), cancellationToken);
+
+            if (!doCrewMembersExist)
             {
                 throw new NotFoundException("Some crew members are not found");
             }
@@ -41,7 +46,7 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.AddMovieCommand
             await _unitOfWork.Movies.AddAsync(movie, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return Unit.Value;
         }

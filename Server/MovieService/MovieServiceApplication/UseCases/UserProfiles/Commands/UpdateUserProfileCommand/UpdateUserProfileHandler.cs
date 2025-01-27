@@ -17,6 +17,7 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Commands.UpdateUserProfi
             var profileSpecification = new UserProfileByAccountIdSpecification(request.AccountId);
             var candidates = await _unitOfWork.UserProfiles.GetWithSpecificationAsync(profileSpecification, cancellationToken);
             var candidateProfile = candidates.SingleOrDefault();
+
             if (candidateProfile == null)
             {
                 throw new NotFoundException("User profile not found");
@@ -27,7 +28,7 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Commands.UpdateUserProfi
             _unitOfWork.UserProfiles.Update(newProfile, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return Unit.Value;
         }

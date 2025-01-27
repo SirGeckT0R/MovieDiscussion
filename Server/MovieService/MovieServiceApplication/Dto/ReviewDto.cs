@@ -7,5 +7,7 @@
         public Guid ProfileId { get;  set; }
         public int Value { get;  set; } = 0;
         public string Text { get;  set; } = string.Empty;
+
+        public ReviewDto() { }
     }
 }

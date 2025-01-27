@@ -11,13 +11,7 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.UpdateReviewCommand
 
         public UpdateReviewCommand()
         {
-        }
 
-        public UpdateReviewCommand(Guid id, int value, string text)
-        {
-            Id = id;
-            Value = value;
-            Text = text;
         }
     }
 }

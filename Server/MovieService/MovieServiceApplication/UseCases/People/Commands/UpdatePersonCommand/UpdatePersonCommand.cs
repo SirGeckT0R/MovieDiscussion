@@ -11,12 +11,5 @@ namespace MovieServiceApplication.UseCases.People.Commands.UpdatePersonCommand
         public DateTime DateOfBirth { get; set; } = DateTime.UtcNow;
 
         public UpdatePersonCommand() { }
-        public UpdatePersonCommand(Guid id, string firstName, string lastName, DateTime dateOfBirth)
-        {
-            Id = id;
-            FirstName = firstName;
-            LastName = lastName;
-            DateOfBirth = dateOfBirth;
-        }
     }
 }

@@ -4,7 +4,7 @@ namespace MovieServiceDataAccess.Specifications.GenreSpecifications
 {
     public class GenreByNameSpecification : Specification<Genre>
     {
-        public GenreByNameSpecification(string name) : base(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
+        public GenreByNameSpecification(string name) : base(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
         {
         }
     }

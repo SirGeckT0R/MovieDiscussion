@@ -13,7 +13,7 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Commands.CreateUserProfi
             RuleFor(x => x.Username)
                 .NotEmpty()
                 .MaximumLength(50)
-                .WithMessage("Profile's {PropertyName} is required");
+                .WithMessage("Profile's {PropertyName} is empty or too long");
         }
     }
 }

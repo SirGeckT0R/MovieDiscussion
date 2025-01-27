@@ -12,5 +12,7 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.AddMovieCommand
         public ICollection<Guid> Genres { get;  set; } = [];
         public ICollection<CrewMemberDto> CrewMembers { get;  set; } = [];
         public Guid AccountId { get;  set; }
+
+        public AddMovieCommand() { }
     }
 }

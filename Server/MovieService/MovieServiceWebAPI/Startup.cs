@@ -1,5 +1,7 @@
 ﻿using MovieServiceApplication.Extensions;
 using MovieServiceApplication.UseCases.Genres.Commands.AddGenreCommand;
+using MovieServiceDataAccess.DatabaseContext;
+using MovieServiceDataAccess.DataSeeder;
 using MovieServiceDataAccess.DiExtensions;
 using MovieServiceWebAPI.ExceptionHandler;
 using System.Reflection;
@@ -27,6 +29,12 @@ namespace MovieServiceWebAPI
         {
             if (env.IsDevelopment())
             {
+                using (var scope = app.Services.CreateScope())
+                {
+                    var dbContext = scope.ServiceProvider.GetRequiredService<MovieDbContext>();
+                    var userSeeder = new DataSeeder(dbContext);
+                    userSeeder.SeedAsync().GetAwaiter().GetResult();
+                }
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }

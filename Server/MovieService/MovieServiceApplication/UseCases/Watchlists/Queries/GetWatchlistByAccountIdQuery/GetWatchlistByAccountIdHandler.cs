@@ -18,6 +18,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Queries.GetWatchlistByAcco
             var profileSpecification = new UserProfileByAccountIdSpecification(request.AccountId);
             var candidates = await _unitOfWork.UserProfiles.GetWithSpecificationAsync(profileSpecification, cancellationToken);
             var candidateProfile = candidates.SingleOrDefault();
+
             if (candidateProfile == null)
             {
                 throw new NotFoundException("User profile not found");
@@ -27,6 +28,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Queries.GetWatchlistByAcco
             var watchlistSpecification = new WatchlistByProfileIdSpecification(candidateProfile.Id);
             var candidateWatchlists = await _unitOfWork.Watchlists.GetWithSpecificationAsync(watchlistSpecification, cancellationToken);
             var watchlist = candidateWatchlists.SingleOrDefault();
+
             if (watchlist == null)
             {
                 throw new NotFoundException("Watchlist not found");

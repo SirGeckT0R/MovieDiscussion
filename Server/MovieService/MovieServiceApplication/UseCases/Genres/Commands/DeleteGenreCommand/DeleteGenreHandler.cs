@@ -10,7 +10,8 @@ namespace MovieServiceApplication.UseCases.Genres.Commands.DeleteGenreCommand
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         public async Task<Unit> Handle(DeleteGenreCommand request, CancellationToken cancellationToken)
         {
-            var genre = await _unitOfWork.Genres.GetByIdAsync(request.Id, cancellationToken);
+            var genre = await _unitOfWork.Genres.GetByIdTrackingAsync(request.Id, cancellationToken);
+
             if (genre == null)
             {
                 throw new NotFoundException("Genre not found");
@@ -20,7 +21,7 @@ namespace MovieServiceApplication.UseCases.Genres.Commands.DeleteGenreCommand
             _unitOfWork.Genres.Delete(genre, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.SaveAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return Unit.Value;
         }

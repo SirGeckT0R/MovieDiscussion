@@ -14,10 +14,12 @@ namespace MovieServiceApplication.UseCases.Movies.Queries.GetMovieByIdQuery
         public async Task<MovieDto> Handle(GetMovieByIdQuery request, CancellationToken cancellationToken)
         {
             var movie = await _unitOfWork.Movies.GetByIdAsync(request.Id, cancellationToken);
+
             if (movie == null)
             {
                 throw new NotFoundException("Movie not found");
             }
+
             cancellationToken.ThrowIfCancellationRequested();
 
             return _mapper.Map<MovieDto>(movie);

@@ -10,6 +10,6 @@ namespace MovieServiceDataAccess.Interfaces.UnitOfWork
         IWatchlistRepository Watchlists { get; }
         IReviewRepository Reviews { get; }
         IUserProfileRepository UserProfiles { get; }
-        Task SaveAsync();
+        Task SaveChangesAsync();
     }
 }
