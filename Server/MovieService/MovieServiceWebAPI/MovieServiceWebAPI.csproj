@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-
   <ItemGroup>
+    <ProjectReference Include="..\MovieServiceApplication\MovieServiceApplication.csproj" />
+    <ProjectReference Include="..\MovieServiceDataAccess\MovieServiceDataAccess.csproj" />
   </ItemGroup>
-
 </Project>

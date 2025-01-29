@@ -403,3 +403,4 @@ FodyWeavers.xsd
 /secrets.json
 /Server/UserService/UserServiceWebAPI/secrets.json
 /Server/ApiGateway/ApiGatewayWebAPI/secrets.json
+/Server/MovieService/MovieServiceWebAPI/secrets.json
