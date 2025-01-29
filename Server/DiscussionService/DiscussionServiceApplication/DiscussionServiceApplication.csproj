@@ -1,3 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="MediatR" Version="12.4.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DiscussionServiceDataAccess\DiscussionServiceDataAccess.csproj" />
+    <ProjectReference Include="..\DiscussionServiceDomain\DiscussionServiceDomain.csproj" />
+  </ItemGroup>
 </Project>
