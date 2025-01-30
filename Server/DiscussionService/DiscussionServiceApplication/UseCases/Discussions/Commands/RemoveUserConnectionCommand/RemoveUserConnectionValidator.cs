@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace DiscussionServiceApplication.UseCases.UserConnections.Commands.RemoveUserConnectionCommand
+namespace DiscussionServiceApplication.UseCases.Discussions.Commands.RemoveUserConnectionCommand
 {
     public class RemoveUserConnectionValidator : AbstractValidator<RemoveUserConnectionCommand>
     {
-        public RemoveUserConnectionValidator() 
+        public RemoveUserConnectionValidator()
         {
             RuleFor(x => x.ConnectionId)
                 .NotEmpty()

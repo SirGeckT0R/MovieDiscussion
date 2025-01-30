@@ -20,7 +20,7 @@ namespace DiscussionServiceApplication.UseCases.Discussions.Commands.UpdateDiscu
                 throw new NotFoundException("Discussion not found");
             }
 
-            var isAuthorized = candidate.CreatorProfileId.Equals(request.SubmitterId);
+            var isAuthorized = candidate.CreatedBy.Equals(request.UpdatedBy);
             if (!isAuthorized)
             {
                 throw new UnauthorizedException("Only creator of discussion can update it");

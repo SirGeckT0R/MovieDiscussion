@@ -2,6 +2,9 @@
 {
     public record MessageDto(string Text, Guid SentBy, DateTime SentAt)
     {
-        public MessageDto() : this(string.Empty, Guid.Empty, DateTime.UtcNow) { }
+        public MessageDto() : this(string.Empty, Guid.Empty, DateTime.UtcNow) 
+        {
+
+        }
     }
 }

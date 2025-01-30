@@ -57,23 +57,6 @@ namespace DiscussionServiceWebAPI
 
             app.UseAuthorization();
 
-            app.Use(async (context, next) =>
-            {
-                if (context.User != null && context.Request.Path.Equals("/discussion-hub"))
-                {
-                    //For testing purpose.
-                    var claims = new List<Claim>
-                                            {
-                                                new Claim("AccountId", "2fa85f64-5717-4562-b3fc-2c963f66afa6")
-                                            };
-
-                    var appIdentity = new ClaimsIdentity(claims);
-                    context.User.AddIdentity(appIdentity);
-                }
-
-                await next(context);
-            });
-
             app.MapHub<DiscussionHub>("discussion-hub");
         }
     }

@@ -24,7 +24,7 @@ namespace DiscussionServiceApplication.UseCases.Discussions.Commands.DeleteDiscu
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return  Unit.Value;
+            return Unit.Value;
         }
     }
 }

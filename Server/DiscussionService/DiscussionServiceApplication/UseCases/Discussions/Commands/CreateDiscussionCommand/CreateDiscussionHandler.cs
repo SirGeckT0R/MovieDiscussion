@@ -14,7 +14,6 @@ namespace DiscussionServiceApplication.UseCases.Discussions.Commands.CreateDiscu
         public async Task<Unit> Handle(CreateDiscussionCommand request, CancellationToken cancellationToken)
         {
             var discussion = _mapper.Map<Discussion>(request);
-            discussion.IsActive = true;
             await _unitOfWork.Discussions.AddAsync(discussion, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();

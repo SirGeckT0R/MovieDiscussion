@@ -4,7 +4,7 @@ using DiscussionServiceDomain.Exceptions;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 
-namespace DiscussionServiceApplication.UseCases.UserConnections.Commands.RemoveUserConnectionCommand
+namespace DiscussionServiceApplication.UseCases.Discussions.Commands.RemoveUserConnectionCommand
 {
     public class RemoveUserConnectionHandler(IDistributedCache cache) : ICommandHandler<RemoveUserConnectionCommand, UserConnection>
     {
@@ -12,22 +12,22 @@ namespace DiscussionServiceApplication.UseCases.UserConnections.Commands.RemoveU
 
         public async Task<UserConnection> Handle(RemoveUserConnectionCommand request, CancellationToken cancellationToken)
         {
-            var stringConnection = await _cache.GetStringAsync(request.ConnectionId);
+            var stringConnection = await _cache.GetStringAsync(request.ConnectionId, cancellationToken);
 
             if (string.IsNullOrWhiteSpace(stringConnection))
             {
-                throw new NotFoundException("No connection was found in cache");
+                throw new NotFoundException("User connection not found in cache");
             }
 
             var connection = JsonSerializer.Deserialize<UserConnection>(stringConnection);
 
             if (connection == null)
             {
-                throw new NotFoundException("No user connection was found");
+                throw new CacheException("User connection can't be parsed");
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _cache.RemoveAsync(request.ConnectionId);
+            await _cache.RemoveAsync(request.ConnectionId, cancellationToken);
 
             return connection;
         }

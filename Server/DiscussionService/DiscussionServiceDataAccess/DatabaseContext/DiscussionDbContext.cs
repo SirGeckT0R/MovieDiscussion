@@ -1,6 +1,6 @@
-﻿using DiscussionServiceDomain.Models;
+﻿using DiscussionServiceDataAccess.Configurations;
+using DiscussionServiceDomain.Models;
 using Microsoft.EntityFrameworkCore;
-using MongoDB.EntityFrameworkCore.Extensions;
 
 namespace DiscussionServiceDataAccess.DatabaseContext
 {
@@ -14,7 +14,8 @@ namespace DiscussionServiceDataAccess.DatabaseContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Discussion>().ToCollection("discussions");
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(DiscussionDbContext).Assembly);
+            new DiscussionConfiguration().Configure(modelBuilder.Entity<Discussion>());
         }
     }
 }

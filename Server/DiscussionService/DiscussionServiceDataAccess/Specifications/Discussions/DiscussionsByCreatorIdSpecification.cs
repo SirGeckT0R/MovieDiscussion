@@ -4,7 +4,7 @@ namespace DiscussionServiceDataAccess.Specifications.Discussions
 {
     public class DiscussionsByCreatorIdSpecification : Specification<Discussion>
     {
-        public DiscussionsByCreatorIdSpecification(Guid id) : base(x => x.CreatorProfileId.Equals(id))
+        public DiscussionsByCreatorIdSpecification(Guid id) : base(x => x.CreatedBy.Equals(id))
         {
         }
     }

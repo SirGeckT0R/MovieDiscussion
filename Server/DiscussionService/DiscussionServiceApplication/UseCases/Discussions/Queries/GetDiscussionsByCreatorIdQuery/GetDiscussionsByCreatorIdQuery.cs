@@ -3,5 +3,5 @@ using DiscussionServiceApplication.Interfaces.UseCases;
 
 namespace DiscussionServiceApplication.UseCases.Discussions.Queries.GetDiscussionsByCreatorIdQuery
 {
-    public record GetDiscussionsByCreatorIdQuery(Guid CreatorProfileId) : IQuery<ICollection<DiscussionDto>>;
+    public record GetDiscussionsByCreatorIdQuery(Guid CreatedBy) : IQuery<ICollection<DiscussionDto>>;
 }

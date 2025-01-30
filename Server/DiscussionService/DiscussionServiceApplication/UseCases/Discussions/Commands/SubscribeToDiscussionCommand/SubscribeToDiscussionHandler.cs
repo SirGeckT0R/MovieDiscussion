@@ -3,15 +3,15 @@ using DiscussionServiceDataAccess.Interfaces.UnitOfWork;
 using DiscussionServiceDomain.Exceptions;
 using MediatR;
 
-namespace DiscussionServiceApplication.UseCases.Discussions.Commands.ChangeActiveStateOfDiscussionCommand
+namespace DiscussionServiceApplication.UseCases.Discussions.Commands.SubscribeToDiscussionCommand
 {
-    public class ChangeActiveStateOfDiscussionHandler(IUnitOfWork unitOfWork) : ICommandHandler<ChangeActiveStateOfDiscussionCommand, Unit>
+    public class SubscribeToDiscussionHandler(IUnitOfWork unitOfWork) : ICommandHandler<SubscribeToDiscussionCommand, Unit>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public async Task<Unit> Handle(ChangeActiveStateOfDiscussionCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(SubscribeToDiscussionCommand request, CancellationToken cancellationToken)
         {
-            var discussion = await _unitOfWork.Discussions.GetByIdTrackingAsync(request.Id, cancellationToken);
+            var discussion = await _unitOfWork.Discussions.GetByIdAsync(request.DiscussionId, cancellationToken);
 
             if (discussion == null)
             {
@@ -19,12 +19,12 @@ namespace DiscussionServiceApplication.UseCases.Discussions.Commands.ChangeActiv
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-            discussion.IsActive = request.NewState; 
+            discussion.Subscribers.Add(request.AccountId);
             _unitOfWork.Discussions.Update(discussion, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-
+            
             return Unit.Value;
         }
     }

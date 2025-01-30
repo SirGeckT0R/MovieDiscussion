@@ -13,7 +13,7 @@ namespace DiscussionServiceApplication.UseCases.Discussions.Queries.GetDiscussio
 
         public async Task<ICollection<DiscussionDto>> Handle(GetDiscussionsByCreatorIdQuery request, CancellationToken cancellationToken)
         {
-            var specification = new DiscussionsByCreatorIdSpecification(request.CreatorProfileId);
+            var specification = new DiscussionsByCreatorIdSpecification(request.CreatedBy);
             var discussions = await _unitOfWork.Discussions.GetWithSpecificationAsync(specification, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();

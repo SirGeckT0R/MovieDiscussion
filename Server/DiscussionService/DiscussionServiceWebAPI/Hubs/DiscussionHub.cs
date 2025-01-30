@@ -1,6 +1,6 @@
-﻿using DiscussionServiceApplication.UseCases.UserConnections.Commands.RemoveUserConnectionCommand;
-using DiscussionServiceApplication.UseCases.UserConnections.Commands.SaveUserConnectionCommand;
-using DiscussionServiceApplication.UseCases.UserConnections.Queries.GetUserConnectionQuery;
+﻿using DiscussionServiceApplication.UseCases.Discussions.Commands.AddMessageToDiscussionCommand;
+using DiscussionServiceApplication.UseCases.Discussions.Commands.RemoveUserConnectionCommand;
+using DiscussionServiceApplication.UseCases.Discussions.Commands.SaveUserConnectionCommand;
 using DiscussionServiceWebAPI.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
@@ -29,18 +29,18 @@ namespace DiscussionServiceWebAPI.Hubs
                     .ReceiveMessage("Admin", $"{userConnection.AccountId} joined the chat");
         }
 
-        public async Task SendMessage(string message)
+        public async Task SendMessage(string Message)
         {
             var cancellationToken = Context.ConnectionAborted;
 
-            var getConnectionCommand = new GetUserConnectionQuery(Context.ConnectionId);
-            var userConnection = await _mediator.Send(getConnectionCommand, cancellationToken);
+            var saveMessageCommand = new AddMessageToDiscussionCommand(Context.ConnectionId, Message);
+            var userConnection = await _mediator.Send(saveMessageCommand, cancellationToken);
 
             var stringDiscussionId = userConnection.DiscussionId.ToString();
 
             await Clients
                     .Group(stringDiscussionId)
-                    .ReceiveMessage($"{userConnection.AccountId}", message);
+                    .ReceiveMessage($"{userConnection.AccountId}", Message);
         }
 
         public override async Task OnDisconnectedAsync(Exception? exception)

@@ -1,8 +1,7 @@
 ﻿using DiscussionServiceApplication.Dto;
 using DiscussionServiceApplication.Interfaces.UseCases;
-using MediatR;
 
-namespace DiscussionServiceApplication.UseCases.UserConnections.Commands.RemoveUserConnectionCommand
+namespace DiscussionServiceApplication.UseCases.Discussions.Commands.RemoveUserConnectionCommand
 {
     public record RemoveUserConnectionCommand(string ConnectionId) : ICommand<UserConnection>;
 }

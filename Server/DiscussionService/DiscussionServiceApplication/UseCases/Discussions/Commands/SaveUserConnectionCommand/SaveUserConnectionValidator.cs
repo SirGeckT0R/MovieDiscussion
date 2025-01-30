@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace DiscussionServiceApplication.UseCases.UserConnections.Commands.SaveUserConnectionCommand
+namespace DiscussionServiceApplication.UseCases.Discussions.Commands.SaveUserConnectionCommand
 {
     public class SaveUserConnectionValidator : AbstractValidator<SaveUserConnectionCommand>
     {

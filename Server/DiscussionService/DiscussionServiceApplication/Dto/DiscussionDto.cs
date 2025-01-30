@@ -1,7 +1,25 @@
 ﻿namespace DiscussionServiceApplication.Dto
 {
-    public record DiscussionDto(Guid Id, string Title, string Description, DateTime StartDateTime, bool IsActive, ICollection<Guid> Participants, ICollection<MessageDto> Messages)
+    public record DiscussionDto(Guid Id, 
+                                string Title, 
+                                string Description, 
+                                DateTime StartAt, 
+                                Guid CreatedBy, 
+                                bool IsActive, 
+                                ICollection<Guid> Subscribers, 
+                                ICollection<MessageDto> Messages)
     {
-        public DiscussionDto() : this(Guid.NewGuid(), "", "", DateTime.UtcNow, false, new List<Guid>(), new List<MessageDto>()) { }
+        public DiscussionDto() : this(Guid.Empty, 
+                                      "", 
+                                      "", 
+                                      DateTime.UtcNow, 
+                                      Guid.Empty, 
+                                      false, 
+                                      new List<Guid>(), 
+                                      new List<MessageDto>()
+                                      ) 
+        { 
+
+        }
     }
 }

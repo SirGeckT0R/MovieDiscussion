@@ -11,7 +11,8 @@ namespace DiscussionServiceApplication.UseCases.Discussions.Commands.ChangeActiv
                 .WithMessage("{PropertyName} is required");
 
             RuleFor(x => x.NewState)
-                .NotNull();
+                .NotNull()
+                .WithMessage("{PropertyName} is required");
         }
     }
 }

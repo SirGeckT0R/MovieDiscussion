@@ -5,7 +5,7 @@ using DiscussionServiceDomain.Exceptions;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 
-namespace DiscussionServiceApplication.UseCases.UserConnections.Commands.SaveUserConnectionCommand
+namespace DiscussionServiceApplication.UseCases.Discussions.Commands.SaveUserConnectionCommand
 {
     public class SaveUserConnectionHandler(IUnitOfWork unitOfWork, IDistributedCache cache) : ICommandHandler<SaveUserConnectionCommand, UserConnection>
     {
@@ -19,7 +19,7 @@ namespace DiscussionServiceApplication.UseCases.UserConnections.Commands.SaveUse
 
             if (!isAccountIdCorrect)
             {
-                throw new UnauthorizedException("No account Id was found");
+                throw new UnauthorizedException("Account Id not found");
             }
 
             Guid discussionId;
@@ -29,9 +29,6 @@ namespace DiscussionServiceApplication.UseCases.UserConnections.Commands.SaveUse
             {
                 throw new BadRequestException("Incorrect discussion id");
             }
-
-            //check if user is in database
-            var username = "";
 
             cancellationToken.ThrowIfCancellationRequested();
             var discussion = await _unitOfWork.Discussions.GetByIdAsync(discussionId, cancellationToken);
@@ -47,7 +44,7 @@ namespace DiscussionServiceApplication.UseCases.UserConnections.Commands.SaveUse
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-            var userConnection = new UserConnection(discussion.Id, accountId, username);
+            var userConnection = new UserConnection(discussion.Id, accountId);
             var connectionString = JsonSerializer.Serialize(userConnection);
 
             cancellationToken.ThrowIfCancellationRequested();
