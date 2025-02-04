@@ -10,14 +10,17 @@ namespace UserServiceApplication.Validators
             RuleFor(user => user.Email)
                 .NotEmpty()
                 .MaximumLength(100)
-                .EmailAddress();
+                .EmailAddress()
+                .WithMessage("User's {PropertyName} is required");
 
             RuleFor(user => user.Username)
                 .NotEmpty()
-                .MaximumLength(100);
+                .MaximumLength(100)
+                .WithMessage("User's {PropertyName} is required");
 
             RuleFor(user => user.Password)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("User's {PropertyName} is required");
         }
     }
 }

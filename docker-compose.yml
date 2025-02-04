@@ -9,9 +9,11 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     build:
       context: .
-      dockerfile: Server/ApiGateway/ApiGateway/Dockerfile
+      dockerfile: Server/ApiGateway/ApiGatewayWebAPI/Dockerfile
     ports:
       - ${API_GATEWAY_PORTS}
+    networks:
+      - elastic
 
   userservicewebapi:
     image: ${DOCKER_REGISTRY-}userservicewebapi
@@ -23,7 +25,9 @@ services:
       context: .
       dockerfile: Server/UserService/UserServiceWebAPI/Dockerfile
     ports:
-      - ${USER_SERVICE_PORTS}
+      - ${USER_SERVICE_PORTS}  
+    networks:
+      - elastic
 
   movieservicewebapi:
     image: ${DOCKER_REGISTRY-}movieservicewebapi
@@ -36,6 +40,8 @@ services:
       dockerfile: Server/MovieService/MovieServiceWebAPI/Dockerfile
     ports:
       - ${MOVIE_SERVICE_PORTS}
+    networks:
+      - elastic
 
   discussionservicewebapi:
     image: ${DOCKER_REGISTRY-}discussionservicewebapi
@@ -48,13 +54,8 @@ services:
       dockerfile: Server/DiscussionService/DiscussionServiceWebAPI/Dockerfile
     ports:
       - ${DISCUSSION_SERVICE_PORTS}
-
-  redis:
-    image: redis:latest
-    env_file:
-      - .env
-    ports:
-      - ${REDIS_PORTS}
+    networks:
+      - elastic
 
   postgres:
     image: postgres:latest
@@ -68,6 +69,8 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - ${POSTGRES_PORTS}
+    networks:
+      - elastic
 
   moviemongodb:
     image: mongo
@@ -81,6 +84,8 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
     ports:
       - ${MOVIE_MONGO_PORTS}
+    networks:
+      - elastic
 
   discussionmongodb:
     image: mongo
@@ -94,21 +99,33 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DISCUSSION_PASSWORD}
     ports:
       - ${MONGO_DISCUSSION_PORTS}
-   
+    networks:
+      - elastic
+
+  redis:
+    image: redis:latest
+    env_file:
+      - .env
+    ports:
+      - ${REDIS_PORTS}
+    networks:
+      - elastic
+
   elasticsearch:
    container_name: elasticsearch
    image: elasticsearch:8.14.3
    environment:
       - discovery.type=single-node
-      - ES_JAVA_OPTS=-Xms512m -Xms512m
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - xpack.security.enabled=false
       - xpack.security.http.ssl.enabled=false
+      - xpack.watcher.enabled=false
    ports:
     - ${ELASTIC_PORTS}
    volumes:
     - elasticsearch-data:/usr/share/elasticsearch/data
    networks:
-    - elastic
+    - elastic    
 
   logstash:
     image: logstash:7.9.1
@@ -116,12 +133,11 @@ services:
     ports:
       - ${LOGSTASH_PORTS}
     volumes:
-      - logstash_data:/usr/share/logstash/data
-
-    networks:
-      - elastic
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
     depends_on:
       - elasticsearch
+    networks:
+      - elastic
 
   kibana:
    container_name: kibana
@@ -149,6 +165,8 @@ services:
       - rabbitmq_data:/usr/share/rabbitmq/data
     ports:
       - ${RABBITMQ_PORTS}
+    networks:
+      - elastic
   
 networks:
   elastic:

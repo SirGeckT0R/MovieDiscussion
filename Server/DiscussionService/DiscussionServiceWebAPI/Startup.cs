@@ -1,10 +1,17 @@
 ﻿using DiscussionServiceApplication.Extensions;
 using DiscussionServiceApplication.MappingProfiles;
+using DiscussionServiceDataAccess.DatabaseContext;
 using DiscussionServiceDataAccess.DIExtensions;
 using DiscussionServiceWebAPI.Hubs;
+using Hangfire.Mongo.Migration.Strategies.Backup;
+using Hangfire.Mongo.Migration.Strategies;
+using Hangfire.Mongo;
+using Hangfire;
+using Microsoft.EntityFrameworkCore;
 using MovieServiceWebAPI.ExceptionHandler;
 using System.Reflection;
 using System.Security.Claims;
+using DiscussionServiceWebAPI.Hangfire;
 
 namespace DiscussionServiceWebAPI
 {
@@ -18,6 +25,9 @@ namespace DiscussionServiceWebAPI
             builder.Services.AddStackExchangeRedisCache(options =>
                 options.Configuration = builder.Configuration["Redis"]
             );
+
+            var hangfireConnectionString = Configuration["HangfireConnectionString"]!;
+            builder.Services.AddDbContext<HangfireDbContext>(options => options.UseMongoDB(hangfireConnectionString, "hangfire"));
 
             builder.Services.AddSignalR();
 
@@ -35,6 +45,25 @@ namespace DiscussionServiceWebAPI
                            .AllowAnyHeader();
                 });
             });
+
+            var migrationOptions = new MongoMigrationOptions
+            {
+                MigrationStrategy = new DropMongoMigrationStrategy(),
+                BackupStrategy = new CollectionMongoBackupStrategy()
+            };
+            builder.Services.AddHangfire(configuration => configuration
+                                                    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                                                    .UseSimpleAssemblyNameTypeSerializer()
+                                                    .UseRecommendedSerializerSettings()
+                                                    .UseMongoStorage(hangfireConnectionString, "hangfire",
+                                                        new MongoStorageOptions
+                                                        {
+                                                            MigrationOptions = migrationOptions,
+                                                            CheckQueuedJobsStrategy = CheckQueuedJobsStrategy.TailNotificationsCollection
+                                                        })
+                                         );
+
+            builder.Services.AddHangfireServer();
 
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
             builder.Services.AddProblemDetails();
@@ -57,6 +86,31 @@ namespace DiscussionServiceWebAPI
 
             app.UseAuthorization();
 
+            app.Use(async (context, next) =>
+            {
+                if (context.User != null && context.Request.Path.Equals("/discussion-hub"))
+                {
+                    //For testing purpose.
+                    var claims = new List<Claim>
+                                            {
+                                                new Claim("AccountId", "2fa85f64-5717-4562-b3fc-2c963f66afa6")
+                                            };
+
+                    var appIdentity = new ClaimsIdentity(claims);
+                    context.User.AddIdentity(appIdentity);
+                }
+
+                await next(context);
+            });
+
+            var options = new DashboardOptions()
+            {
+                Authorization = [new HangfireAuthorizationFilter()]
+            };
+            app.UseHangfireDashboard("/hangfire", options);
+
+            app.MapControllers();
+            app.MapHangfireDashboard();
             app.MapHub<DiscussionHub>("discussion-hub");
         }
     }

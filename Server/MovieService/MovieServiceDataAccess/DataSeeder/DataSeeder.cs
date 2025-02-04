@@ -114,6 +114,9 @@ namespace MovieServiceDataAccess.DataSeeder
                         movies[1].Id,
                     ]) { Id = Guid.NewGuid() },
                 ];
+
+            movies.ForEach(x => x.Rating = reviews.Where(y => y.MovieId == x.Id).Select(y => y.Value).Average());
+
             _context.Database.AutoTransactionBehavior = Microsoft.EntityFrameworkCore.AutoTransactionBehavior.Never;
             if (!_context.Genres.Any())
             {

@@ -15,7 +15,9 @@ using UserServiceDataAccess.DatabaseHandlers.ServiceDbContext;
 using UserServiceDataAccess.DatabaseHandlers.Repositories;
 using UserServiceDataAccess.DatabaseHandlers.UnitOfWork;
 using UserServiceDataAccess.PasswordHasher;
-using UserServiceDataAccess.DatabaseHandlers.Seeder;
+using Hangfire;
+using Hangfire.PostgreSql;
+using UserServiceWebAPI.Hangfire;
 
 namespace UserServiceWebAPI
 {
@@ -26,7 +28,9 @@ namespace UserServiceWebAPI
         {
             builder.Configuration.AddJsonFile("secrets.json", optional: false, reloadOnChange: true);
             var services = builder.Services;
-            string connection = Configuration["SqlConnectionString"] ?? throw new InvalidOperationException("No database connection string");
+            string userDbConnectionString = Configuration["SqlConnectionString"] ?? throw new InvalidOperationException("No database connection string");
+            var hangfireConnectionString = Configuration["HangfireConnectionString"];
+
             services.Configure<JwtOptions>(Configuration.GetSection("Jwt"));
 
             builder.Services.AddCors(options =>
@@ -39,7 +43,8 @@ namespace UserServiceWebAPI
                 });
             });
 
-            services.AddDbContext<UserServiceDbContext>(options => options.UseNpgsql(connection));
+            services.AddDbContext<UserServiceDbContext>(options => options.UseNpgsql(userDbConnectionString));
+            services.AddDbContext<HangfireDbContext>(options => options.UseNpgsql(hangfireConnectionString));
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITokenService, TokenService>();
@@ -54,18 +59,28 @@ namespace UserServiceWebAPI
 
             services.AddScoped<IValidator<User>, UserValidator>();
             services.AddScoped<IValidator<Token>, TokenValidator>();
-            
 
             services.AddExceptionHandler<GlobalExceptionHandler>();
             services.AddProblemDetails();
 
             services.AddApiAuthentication(Configuration);
 
+            services.AddHangfire(configuration => configuration
+                                                    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                                                    .UseSimpleAssemblyNameTypeSerializer()
+                                                    .UseRecommendedSerializerSettings()
+                                                    .UsePostgreSqlStorage(options => options.UseNpgsqlConnection(hangfireConnectionString!))
+                                );
+
+            services.AddHangfireServer();
+
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
 
             services.AddAutoMapper(Assembly.GetAssembly(typeof(RegisterRequestMappingProfile)));
+
+            builder.Host.AddLogging(Configuration);
         }
 
         public void Configure(WebApplication app, IWebHostEnvironment env)
@@ -81,21 +96,22 @@ namespace UserServiceWebAPI
 
             if (env.IsDevelopment())
             {
-                using(var scope = app.Services.CreateScope())
-                {
-                    var dbContext = scope.ServiceProvider.GetRequiredService<UserServiceDbContext>();
-                    var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
-                    var userSeeder = new UserSeeder(dbContext, passwordHasher);
-                    userSeeder.Seed();
-                }
+                app.SeedAndMigrateDatabases();
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
             app.UseCors();
+            app.SeedAndMigrateDatabases();
+            var options = new DashboardOptions()
+            {
+                Authorization = [new HangfireAuthorizationFilter()]
+            };
+            app.UseHangfireDashboard("/hangfire", options);
 
             app.UseExceptionHandler();
             app.MapControllers();
+            app.MapHangfireDashboard();
             app.UseAuthentication();
             app.UseAuthorization();
         }

@@ -6,9 +6,10 @@ using UserServiceApplication.Interfaces.Services;
 namespace UserServiceWebAPI.Controllers
 {
     [ApiController]
-    public class EmailController(IUserService userService) : ControllerBase
+    public class EmailController(IUserService userService, ILogger<EmailController> logger) : ControllerBase
     {
         private readonly IUserService _userService = userService;
+        private readonly ILogger<EmailController> _logger = logger;
 
         [HttpPost("confirmation/send")]
         [Authorize]
@@ -22,6 +23,8 @@ namespace UserServiceWebAPI.Controllers
 
             var token = await _userService.ConfirmEmailSendAsync(accessToken, callbackUrl!, cancellationToken);
 
+            _logger.LogInformation("Confirmation email sent to user");
+
             return Ok(token);
         }
 
@@ -29,6 +32,8 @@ namespace UserServiceWebAPI.Controllers
         public async Task<IActionResult> ConfirmEmailRecieve([FromQuery] ConfirmEmailRequest confirmEmailRequest, CancellationToken cancellationToken)
         {
             await _userService.ConfirmEmailRecieveAsync(confirmEmailRequest, cancellationToken);
+
+            _logger.LogInformation("User email confirmed");
 
             return Ok("Email confirmed");
         }

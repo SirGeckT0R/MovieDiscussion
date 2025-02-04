@@ -8,23 +8,29 @@ namespace UserServiceApplication.Validators
     {
         public TokenValidator() {
             RuleFor(x => x.Id)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("Token's {PropertyName} is required");
 
             RuleFor(x => x.User)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("Token's {PropertyName} is required");
 
             RuleFor(x => x.TokenType)
                 .NotEmpty()
-                .NotEqual(TokenType.None);
+                .NotEqual(TokenType.None)
+                .WithMessage("Token's {PropertyName} is required");
 
             RuleFor(x => x.TokenValue)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("Token's {PropertyName} is required");
 
             RuleFor(x => x.ExpiresAt)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("Token's {PropertyName} is required");
 
             RuleFor(x => x.CreatedAt)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("Token's {PropertyName} is required");
         }
     }
 }

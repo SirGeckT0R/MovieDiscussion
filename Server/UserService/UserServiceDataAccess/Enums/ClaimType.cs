@@ -2,10 +2,10 @@
 {
     public enum ClaimType
     {
-        None,
-        Id,
-        UserId,
-        Email,
-        Role
+        None = 0,
+        Id = 1,
+        UserId = 2,
+        Email = 3,
+        Role = 4
     }
 }

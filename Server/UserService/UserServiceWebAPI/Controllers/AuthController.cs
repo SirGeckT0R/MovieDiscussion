@@ -2,13 +2,15 @@
 using Microsoft.AspNetCore.Mvc;
 using UserServiceApplication.Dto;
 using UserServiceApplication.Interfaces.Services;
+
 namespace UserServiceWebAPI.Controllers
 {
     [ApiController]
     [Route("auth")]
-    public class AuthController(IUserService userService) : ControllerBase
+    public class AuthController(IUserService userService, ILogger<AuthController> logger) : ControllerBase
     {
         private readonly IUserService _userService = userService;
+        private readonly ILogger<AuthController> _logger = logger;
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromForm] LoginRequest loginRequest, CancellationToken cancellationToken)
@@ -16,6 +18,8 @@ namespace UserServiceWebAPI.Controllers
             (string accessToken, string refreshToken) = await _userService.LoginAsync(loginRequest, cancellationToken);
             HttpContext.Response.Cookies.Append("accessToken", accessToken, new CookieOptions { Domain = "localhost" });
             HttpContext.Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions { Domain = "localhost" });
+
+            _logger.LogInformation("User was logged in");
 
             return NoContent();
         }
@@ -27,6 +31,8 @@ namespace UserServiceWebAPI.Controllers
             HttpContext.Response.Cookies.Append("accessToken", accessToken, new CookieOptions { Domain = "localhost" });
             HttpContext.Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions { Domain = "localhost" });
 
+            _logger.LogInformation("User has registered");
+
             return NoContent();
         }
 
@@ -36,12 +42,18 @@ namespace UserServiceWebAPI.Controllers
             if (HttpContext.Request.Cookies["accessToken"] != null)
             {
                 HttpContext.Response.Cookies.Append("accessToken", "", new CookieOptions { Domain = "localhost", Expires = DateTime.Now.AddDays(-1) });
+
+                _logger.LogInformation("Access token cleared");
             }
 
             if (HttpContext.Request.Cookies["refreshToken"] != null)
             {
                 HttpContext.Response.Cookies.Append("refreshToken", "", new CookieOptions { Domain = "localhost", Expires = DateTime.Now.AddDays(-1) });
+
+                _logger.LogInformation("Refresh token cleared");
             }
+
+            _logger.LogInformation("User was logged out");
 
             return NoContent();
         }
@@ -58,6 +70,8 @@ namespace UserServiceWebAPI.Controllers
 
             var token = await _userService.ForgotPasswordAsync(accessToken, callbackUrl!, cancellationToken);
 
+            _logger.LogInformation("Token for resetting password was created");
+
             return Ok(token);
         }
 
@@ -65,6 +79,8 @@ namespace UserServiceWebAPI.Controllers
         public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordRequest resetPasswordRequest, CancellationToken cancellationToken)
         {
             await _userService.ResetPasswordAsync(resetPasswordRequest, cancellationToken);
+
+            _logger.LogInformation("User password was reset");
 
             return Ok("Password was reset");
         }
@@ -75,6 +91,8 @@ namespace UserServiceWebAPI.Controllers
         {
             await _userService.DeleteAsync(userId, cancellationToken);
 
+            _logger.LogInformation("User was deleted");
+
             return NoContent();
         }
 
@@ -83,6 +101,8 @@ namespace UserServiceWebAPI.Controllers
         public async Task<IActionResult> Update([FromForm] UpdateUserRequest updateUserRequest, CancellationToken cancellationToken)
         {
             await _userService.UpdateUserAsync(updateUserRequest, cancellationToken);
+
+            _logger.LogInformation("User was updated");
 
             return NoContent();
         }

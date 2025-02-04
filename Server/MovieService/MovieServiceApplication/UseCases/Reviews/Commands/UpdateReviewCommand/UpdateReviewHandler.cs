@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using Hangfire;
+using Hangfire.Storage;
 using MediatR;
 using MovieServiceApplication.Interfaces.UseCases;
+using MovieServiceApplication.Jobs;
 using MovieServiceDataAccess.Interfaces.UnitOfWork;
 using MovieServiceDomain.Exceptions;
 
@@ -23,6 +26,12 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.UpdateReviewCommand
             cancellationToken.ThrowIfCancellationRequested();
             var newReview = _mapper.Map(request, review);
             _unitOfWork.Reviews.Update(newReview, cancellationToken);
+
+            var doesJobExist = JobStorage.Current.GetConnection().GetRecurringJobs().Any(x => x.Id == $"{review.MovieId}");
+            if (!doesJobExist)
+            {
+                RecurringJob.AddOrUpdate<CalculateRatingJob>($"{review.MovieId}", x => x.ExecuteAsync(review.MovieId), Cron.MinuteInterval(1));
+            }
 
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);

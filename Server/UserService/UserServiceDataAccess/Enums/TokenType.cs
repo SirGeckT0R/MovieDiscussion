@@ -2,10 +2,10 @@
 {
     public enum TokenType
     {
-        None,
-        Access,
-        Refresh,
-        ConfirmEmail,
-        ResetPassword
+        None = 0,
+        Access = 1,
+        Refresh = 2,
+        ConfirmEmail = 3,
+        ResetPassword = 4
     }
 }
