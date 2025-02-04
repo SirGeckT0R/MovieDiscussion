@@ -23,7 +23,7 @@ namespace MovieServiceApplication.UseCases.Genres.Commands.AddGenreCommand
 
             if (candidateGenre != null)
             {
-                _logger.LogError("Add genre command failed: genre already exists");
+                _logger.LogError("Add genre command failed for {GenreName}: genre already exists", request.Name);
 
                 throw new ConflictException("Genre already exists");
             }

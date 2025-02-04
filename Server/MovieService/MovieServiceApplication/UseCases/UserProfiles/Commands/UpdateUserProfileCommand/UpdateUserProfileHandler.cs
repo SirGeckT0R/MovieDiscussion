@@ -22,7 +22,7 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Commands.UpdateUserProfi
 
             if (candidateProfile == null)
             {
-                _logger.LogError("Update user profile command failed: user profile not found");
+                _logger.LogError("Update user profile command failed for {Id}: user profile not found", request.AccountId);
 
                 throw new NotFoundException("User profile not found");
             }

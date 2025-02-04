@@ -2,6 +2,7 @@
 using DiscussionServiceApplication.MappingProfiles;
 using DiscussionServiceDataAccess.DatabaseContext;
 using DiscussionServiceDataAccess.DIExtensions;
+using DiscussionServiceWebAPI.Extensions;
 using DiscussionServiceWebAPI.Hubs;
 using Hangfire.Mongo.Migration.Strategies.Backup;
 using Hangfire.Mongo.Migration.Strategies;
@@ -71,6 +72,8 @@ namespace DiscussionServiceWebAPI
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Host.AddLogging(Configuration);
         }
         public void Configure(WebApplication app, IWebHostEnvironment env)
         {
@@ -86,22 +89,6 @@ namespace DiscussionServiceWebAPI
 
             app.UseAuthorization();
 
-            app.Use(async (context, next) =>
-            {
-                if (context.User != null && context.Request.Path.Equals("/discussion-hub"))
-                {
-                    //For testing purpose.
-                    var claims = new List<Claim>
-                                            {
-                                                new Claim("AccountId", "2fa85f64-5717-4562-b3fc-2c963f66afa6")
-                                            };
-
-                    var appIdentity = new ClaimsIdentity(claims);
-                    context.User.AddIdentity(appIdentity);
-                }
-
-                await next(context);
-            });
 
             var options = new DashboardOptions()
             {

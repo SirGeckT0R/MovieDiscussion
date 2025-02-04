@@ -20,7 +20,7 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Commands.DeleteUserProfi
 
             if (candidateProfile == null)
             {
-                _logger.LogError("Delete user profile command failed: user profile not found");
+                _logger.LogError("Delete user profile command failed for {Id}: user profile not found", request.AccountId);
 
                 throw new NotFoundException("User profile not found");
             }

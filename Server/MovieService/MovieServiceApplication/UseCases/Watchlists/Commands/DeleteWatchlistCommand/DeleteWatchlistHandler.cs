@@ -21,7 +21,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.DeleteWatchlistCo
 
             if (candidateProfile == null)
             {
-                _logger.LogError("Delete watchlist command failed: user profile not found");
+                _logger.LogError("Delete watchlist command failed: user profile with account id {Id} not found", request.AccountId);
 
                 throw new NotFoundException("User profile not found");
             }

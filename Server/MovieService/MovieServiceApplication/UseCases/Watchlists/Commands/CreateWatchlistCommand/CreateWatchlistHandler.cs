@@ -24,7 +24,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.CreateWatchlistCo
 
             if (candidateProfile == null)
             {
-                _logger.LogError("Create watchlist command failed: user profile not found");
+                _logger.LogError("Create watchlist command failed: user profile with account id {Id} not found", request.AccountId);
 
                 throw new NotFoundException("User profile not found");
             }

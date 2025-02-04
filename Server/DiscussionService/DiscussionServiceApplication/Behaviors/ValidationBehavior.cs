@@ -2,7 +2,7 @@
 using MediatR;
 using DiscussionServiceApplication.Interfaces.UseCases;
 
-namespace DiscussionServiceApplication.Validation
+namespace DiscussionServiceApplication.Behaviors
 {
     public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : class, ICommand<TResponse>
     {

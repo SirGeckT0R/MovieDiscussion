@@ -19,7 +19,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Queries.GetWatchlistByIdQu
 
             if (watchlist == null)
             {
-                _logger.LogError("Get watchlist by id command failed: watchlist not found");
+                _logger.LogError("Get watchlist by id command failed for {Id}: watchlist not found", request.Id);
 
                 throw new NotFoundException("Watchlist not found");
             }

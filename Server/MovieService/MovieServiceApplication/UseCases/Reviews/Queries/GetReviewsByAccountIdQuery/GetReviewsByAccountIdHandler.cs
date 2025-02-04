@@ -23,7 +23,7 @@ namespace MovieServiceApplication.UseCases.Reviews.Queries.GetReviewsByAccountId
 
             if (candidateProfile == null)
             {
-                _logger.LogError("Get review by account id command failed: user profile not found");
+                _logger.LogError("Get review by account id command failed: user profile with account id {Id} not found", request.AccountId);
 
                 throw new NotFoundException("User profile not found");
             }

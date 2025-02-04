@@ -23,7 +23,7 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Commands.CreateUserProfi
 
             if (candidateProfile != null)
             {
-                _logger.LogError("Create user profile command failed: user profile already exists");
+                _logger.LogError("Create user profile command failed: user profile already exists for {Id}", request.AccountId);
 
                 throw new ConflictException("User profile already exists");
             }

@@ -19,7 +19,7 @@ namespace MovieServiceApplication.UseCases.Reviews.Queries.GetReviewByIdQuery
 
             if (review == null)
             {
-                _logger.LogError("Get review by id command failed: review not found");
+                _logger.LogError("Get review by id command failed for {Id}: review not found", request.Id);
 
                 throw new NotFoundException("Review not found");
             }

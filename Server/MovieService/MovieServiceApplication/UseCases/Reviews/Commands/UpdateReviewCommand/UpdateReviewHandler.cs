@@ -22,7 +22,7 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.UpdateReviewCommand
 
             if (review == null)
             {
-                _logger.LogError("Update review command failed: review not found");
+                _logger.LogError("Update review command failed for {Id}: review not found", request.Id);
 
                 throw new NotFoundException("Review not found");
             }

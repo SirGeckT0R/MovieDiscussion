@@ -13,15 +13,18 @@ namespace DiscussionServiceWebAPI.Controllers
 {
     [ApiController]
     [Route("api/discussions")]
-    public class DiscussionController(IMediator mediator) : ControllerBase
+    public class DiscussionController(IMediator mediator, ILogger<DiscussionController> logger) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
+        private readonly ILogger<DiscussionController> _logger = logger;
 
         [HttpGet]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
             var query = new GetAllDiscussionsQuery();
             var discussions = await _mediator.Send(query, cancellationToken);
+
+            _logger.LogInformation("Returning all discussions");
 
             return Ok(discussions);
         }
@@ -31,6 +34,8 @@ namespace DiscussionServiceWebAPI.Controllers
         {
             await _mediator.Send(command, cancellationToken);
 
+            _logger.LogInformation("Discussion was created");
+
             return Created();
         }
 
@@ -38,6 +43,8 @@ namespace DiscussionServiceWebAPI.Controllers
         public async Task<IActionResult> GetById([FromRoute] GetDiscussionByIdQuery query, CancellationToken cancellationToken)
         {
             var discussion = await _mediator.Send(query, cancellationToken);
+
+            _logger.LogInformation("Returning discussion by id");
 
             return Ok(discussion);
         }
@@ -48,6 +55,8 @@ namespace DiscussionServiceWebAPI.Controllers
             var newCommand = command with { Id = Id };
             await _mediator.Send(newCommand, cancellationToken);
 
+            _logger.LogInformation("Discussion's state has changed");
+
             return NoContent();
         }
 
@@ -57,6 +66,8 @@ namespace DiscussionServiceWebAPI.Controllers
             var newCommand = command with { Id = Id };
             await _mediator.Send(newCommand, cancellationToken);
 
+            _logger.LogInformation("Discussion was updated");
+
             return NoContent();
         }
 
@@ -64,6 +75,8 @@ namespace DiscussionServiceWebAPI.Controllers
         public async Task<IActionResult> Delete([FromRoute] DeleteDiscussionCommand command, CancellationToken cancellationToken)
         {
             await _mediator.Send(command, cancellationToken);
+
+            _logger.LogInformation("Discussion was deleted");
 
             return NoContent();
         }
@@ -74,6 +87,8 @@ namespace DiscussionServiceWebAPI.Controllers
             var newCommand = command with { DiscussionId = Id };
             await _mediator.Send(newCommand, cancellationToken);
 
+            _logger.LogInformation("User was subscribed to a discussion");
+
             return NoContent();
         }
 
@@ -81,6 +96,8 @@ namespace DiscussionServiceWebAPI.Controllers
         public async Task<IActionResult> GetAllByCreatorId([FromRoute] GetDiscussionsByCreatorIdQuery query, CancellationToken cancellationToken)
         {
             var discussions = await _mediator.Send(query, cancellationToken);
+
+            _logger.LogInformation("Returning all discussions by creator id");
 
             return Ok(discussions);
         }

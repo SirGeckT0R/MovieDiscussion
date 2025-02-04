@@ -22,7 +22,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.ManageMovieInWatc
 
             if (candidateProfile == null)
             {
-                _logger.LogError("Manage movie in watchlist command failed: user profile not found");
+                _logger.LogError("Manage movie in watchlist command failed: user profile with account id {Id} not found", request.AccountId);
 
                 throw new NotFoundException("User profile not found");
             }
@@ -44,7 +44,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.ManageMovieInWatc
 
             if (movie == null)
             {
-                _logger.LogError("Manage movie in watchlist command failed: movie not found");
+                _logger.LogError("Manage movie in watchlist command failed: movie with id {Id} not found", request.MovieId);
 
                 throw new NotFoundException("Movie not found");
             }
@@ -56,7 +56,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.ManageMovieInWatc
 
                     if (watchlist.MovieIds.Any(m => m.Equals(request.MovieId)))
                     {
-                        _logger.LogError("Manage movie in watchlist command failed: movie already added to watchlist");
+                        _logger.LogError("Manage movie in watchlist command failed: movie with id {Id} already added to watchlist", request.MovieId);
 
                         throw new ConflictException("Movie already added to watchlist");
                     }
@@ -68,7 +68,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.ManageMovieInWatc
 
                     if (!watchlist.MovieIds.Remove(request.MovieId))
                     {
-                        _logger.LogError("Manage movie in watchlist command failed: movie wasn't present in watchlist");
+                        _logger.LogError("Manage movie in watchlist command failed: movie with id {Id} wasn't present in watchlist", request.MovieId);
 
                         throw new ConflictException("Movie wasn't present in watchlist");
                     }

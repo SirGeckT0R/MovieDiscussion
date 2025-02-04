@@ -19,7 +19,7 @@ namespace MovieServiceApplication.UseCases.People.Queries.GetPersonByIdQuery
 
             if (person == null)
             {
-                _logger.LogError("Get person by id command failed: person not found");
+                _logger.LogError("Get person by id {Id} command failed: person not found", request.Id);
 
                 throw new NotFoundException("Person not found");
             }

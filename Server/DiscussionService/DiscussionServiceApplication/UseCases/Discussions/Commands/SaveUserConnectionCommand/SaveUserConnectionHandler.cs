@@ -3,14 +3,16 @@ using DiscussionServiceApplication.Interfaces.UseCases;
 using DiscussionServiceDataAccess.Interfaces.UnitOfWork;
 using DiscussionServiceDomain.Exceptions;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
 namespace DiscussionServiceApplication.UseCases.Discussions.Commands.SaveUserConnectionCommand
 {
-    public class SaveUserConnectionHandler(IUnitOfWork unitOfWork, IDistributedCache cache) : ICommandHandler<SaveUserConnectionCommand, UserConnection>
+    public class SaveUserConnectionHandler(IUnitOfWork unitOfWork, IDistributedCache cache, ILogger<SaveUserConnectionHandler> logger) : ICommandHandler<SaveUserConnectionCommand, UserConnection>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IDistributedCache _cache = cache;
+        private readonly ILogger<SaveUserConnectionHandler> _logger = logger;
 
         public async Task<UserConnection> Handle(SaveUserConnectionCommand request, CancellationToken cancellationToken)
         {
@@ -19,6 +21,8 @@ namespace DiscussionServiceApplication.UseCases.Discussions.Commands.SaveUserCon
 
             if (!isAccountIdCorrect)
             {
+                _logger.LogError("Save user connection command failed for {AccountId}: account Id not found", request.AccountIdClaimValue);
+
                 throw new UnauthorizedException("Account Id not found");
             }
 
@@ -27,6 +31,8 @@ namespace DiscussionServiceApplication.UseCases.Discussions.Commands.SaveUserCon
 
             if (!isDiscussionIdCorrect)
             {
+                _logger.LogError("Save user connection command failed for {DiscussionId}: incorrect discussion id", request.DiscussionId);
+
                 throw new BadRequestException("Incorrect discussion id");
             }
 
@@ -35,11 +41,15 @@ namespace DiscussionServiceApplication.UseCases.Discussions.Commands.SaveUserCon
 
             if (discussion == null)
             {
+                _logger.LogError("Save user connection command failed for {DiscussionId}: discussion not found", discussionId);
+
                 throw new NotFoundException("Discussion not found");
             }
 
             if (!discussion.IsActive)
             {
+                _logger.LogError("Save user connection command failed for {DiscussionId}: discussion is not active", discussionId);
+
                 throw new UnauthorizedException("Discussion is not active");
             }
 

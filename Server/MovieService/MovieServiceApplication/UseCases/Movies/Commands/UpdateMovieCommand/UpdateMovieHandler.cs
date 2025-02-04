@@ -19,7 +19,7 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.UpdateMovieCommand
 
             if (candidate == null)
             {
-                _logger.LogError("Update movie command failed: movie not found");
+                _logger.LogError("Update movie command failed for {Id}: movie not found", request.Id);
 
                 throw new NotFoundException("Movie not found");
             }

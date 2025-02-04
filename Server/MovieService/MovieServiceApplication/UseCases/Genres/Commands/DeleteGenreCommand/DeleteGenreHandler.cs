@@ -16,7 +16,7 @@ namespace MovieServiceApplication.UseCases.Genres.Commands.DeleteGenreCommand
 
             if (genre == null)
             {
-                _logger.LogError("Delete genre command failed: genre not found");
+                _logger.LogError("Delete genre command failed for {Id}: genre not found", request.Id);
 
                 throw new NotFoundException("Genre not found");
             }

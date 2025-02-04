@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using DiscussionServiceApplication.Validation;
 using System.Reflection;
+using DiscussionServiceApplication.Behaviors;
 
 namespace DiscussionServiceApplication.Extensions
 {
@@ -16,6 +16,7 @@ namespace DiscussionServiceApplication.Extensions
             });
 
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         }

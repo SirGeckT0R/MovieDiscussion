@@ -20,7 +20,7 @@ namespace MovieServiceApplication.UseCases.People.Commands.UpdatePersonCommand
 
             if (candidatePerson == null)
             {
-                _logger.LogError("Update person command failed: person not found");
+                _logger.LogError("Update person command failed for {Id}: person not found", request.Id);
 
                 throw new NotFoundException("Person not found");
             }

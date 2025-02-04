@@ -20,7 +20,7 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.DeleteReviewCommand
 
             if (review == null)
             {
-                _logger.LogError("Delete review command failed: review not found");
+                _logger.LogError("Delete review command failed for {Id}: review not found", request.Id);
 
                 throw new NotFoundException("Review not found");
             }

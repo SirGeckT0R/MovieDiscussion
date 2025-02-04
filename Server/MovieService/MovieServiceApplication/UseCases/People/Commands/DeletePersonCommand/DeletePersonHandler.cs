@@ -17,7 +17,7 @@ namespace MovieServiceApplication.UseCases.People.Commands.DeletePersonCommand
 
             if (person == null)
             {
-                _logger.LogError("Delete person command failed: person not found");
+                _logger.LogError("Delete person command failed for {Id}: person not found", request.Id);
 
                 throw new NotFoundException("Person not found");
             }

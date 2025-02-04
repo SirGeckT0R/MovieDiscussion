@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
-namespace MovieServiceApplication.Behaviors
+namespace DiscussionServiceApplication.Behaviors
 {
     public class LoggingBehavior<TRequest, TResponse>(ILogger<LoggingBehavior<TRequest, TResponse>> logger)
         : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>

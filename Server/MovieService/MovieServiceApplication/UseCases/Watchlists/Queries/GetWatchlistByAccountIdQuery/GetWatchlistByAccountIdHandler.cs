@@ -23,7 +23,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Queries.GetWatchlistByAcco
 
             if (candidateProfile == null)
             {
-                _logger.LogError("Get watchlist by account id command failed: user profile not found");
+                _logger.LogError("Get watchlist by account id command failed: user profile wit haccount id {Id} not found", request.AccountId);
 
                 throw new NotFoundException("User profile not found");
             }
@@ -35,7 +35,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Queries.GetWatchlistByAcco
 
             if (watchlist == null)
             {
-                _logger.LogError("Get watchlist by account id command failed: watchlist not found");
+                _logger.LogError("Get watchlist by account id {Id} command failed: watchlist not found", request.AccountId);
 
                 throw new NotFoundException("Watchlist not found");
             }

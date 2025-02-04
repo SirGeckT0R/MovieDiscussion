@@ -17,7 +17,7 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.DeleteMovieCommand
 
             if (movie == null)
             {
-                _logger.LogError("Delete movie command failed: movie not found");
+                _logger.LogError("Delete movie command failed for {Id}: movie not found", request.Id);
 
                 throw new NotFoundException("Movie not found");
             }

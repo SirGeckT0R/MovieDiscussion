@@ -27,7 +27,7 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.AddReviewCommand
 
             if (candidateProfile == null)
             {
-                _logger.LogError("Add review command failed: user profile not found");
+                _logger.LogError("Add review command failed: user profile with account id {Id} not found", request.AccountId);
 
                 throw new NotFoundException("User profile not found");
             }
@@ -37,7 +37,7 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.AddReviewCommand
 
             if (candidateMovie == null)
             {
-                _logger.LogError("Add review command failed: movie not found");
+                _logger.LogError("Add review command failed for {Id}: movie not found", request.MovieId);
 
                 throw new NotFoundException("Movie not found");
             }

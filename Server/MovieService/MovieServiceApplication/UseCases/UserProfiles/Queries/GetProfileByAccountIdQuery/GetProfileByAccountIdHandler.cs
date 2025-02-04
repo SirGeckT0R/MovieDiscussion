@@ -22,7 +22,7 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Queries.GetProfileByAcco
 
             if (candidateProfile == null)
             {
-                _logger.LogError("Get user profile by account idcommand failed: user profile not found");
+                _logger.LogError("Get user profile by account id command failed: user profile with account Id {Id} not found", request.AccountId);
 
                 throw new NotFoundException("User profile not found");
             }
