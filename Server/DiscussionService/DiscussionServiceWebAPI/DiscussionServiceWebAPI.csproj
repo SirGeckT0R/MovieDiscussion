@@ -1,6 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.1" />
   </ItemGroup>
-
+  <ItemGroup>
+    <ProjectReference Include="..\DiscussionServiceApplication\DiscussionServiceApplication.csproj" />
+    <ProjectReference Include="..\DiscussionServiceDataAccess\DiscussionServiceDataAccess.csproj" />
+    <ProjectReference Include="..\DiscussionServiceDomain\DiscussionServiceDomain.csproj" />
+  </ItemGroup>
 </Project>

@@ -1,3 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  <ItemGroup>
+    <PackageReference Include="MongoDB.EntityFrameworkCore" Version="8.2.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DiscussionServiceDomain\DiscussionServiceDomain.csproj" />
+  </ItemGroup>
 </Project>
