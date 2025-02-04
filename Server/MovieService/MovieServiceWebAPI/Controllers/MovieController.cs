@@ -10,14 +10,17 @@ namespace MovieServiceWebAPI.Controllers
 {
     [ApiController]
     [Route("/api/movies")]
-    public class MovieController(IMediator mediator) : ControllerBase
+    public class MovieController(IMediator mediator, ILogger<MovieController> logger) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
+        private readonly ILogger<MovieController> _logger = logger;
 
         [HttpGet]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
             var movies = await _mediator.Send(new GetAllMoviesQuery(), cancellationToken);
+
+            _logger.LogInformation("Returning all movies");
 
             return Ok(movies);
         }
@@ -27,6 +30,8 @@ namespace MovieServiceWebAPI.Controllers
         {
             await _mediator.Send(command, cancellationToken);
 
+            _logger.LogInformation("Movie was created");
+
             return Created();
         }
 
@@ -34,6 +39,8 @@ namespace MovieServiceWebAPI.Controllers
         public async Task<IActionResult> GetById([FromRoute] GetMovieByIdQuery query, CancellationToken cancellationToken)
         {
             var movie = await _mediator.Send(query, cancellationToken);
+
+            _logger.LogInformation("Returning movie by id");
 
             return Ok(movie);
         }
@@ -44,6 +51,8 @@ namespace MovieServiceWebAPI.Controllers
             command.Id = Id;
             await _mediator.Send(command, cancellationToken);
 
+            _logger.LogInformation("Movie was updated");
+
             return NoContent();
         }
 
@@ -51,6 +60,8 @@ namespace MovieServiceWebAPI.Controllers
         public async Task<IActionResult> Delete([FromRoute] DeleteMovieCommand command, CancellationToken cancellationToken)
         {
             await _mediator.Send(command, cancellationToken);
+
+            _logger.LogInformation("Movie was deleted");
 
             return NoContent();
         }

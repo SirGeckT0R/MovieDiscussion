@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Hangfire;
-using Hangfire.Common;
 using Hangfire.Storage;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using MovieServiceApplication.Interfaces.UseCases;
 using MovieServiceApplication.Jobs;
 using MovieServiceDataAccess.Interfaces.UnitOfWork;
@@ -13,10 +13,11 @@ using MovieServiceDomain.Models;
 
 namespace MovieServiceApplication.UseCases.Reviews.Commands.AddReviewCommand
 {
-    public class AddReviewHandler(IUnitOfWork unitOfWork, IMapper mapper) : ICommandHandler<AddReviewCommand, Unit>
+    public class AddReviewHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<AddReviewHandler> logger) : ICommandHandler<AddReviewCommand, Unit>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<AddReviewHandler> _logger = logger;
 
         public async Task<Unit> Handle(AddReviewCommand request, CancellationToken cancellationToken)
         {
@@ -24,16 +25,20 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.AddReviewCommand
             var candidates = await _unitOfWork.UserProfiles.GetWithSpecificationAsync(profileSpecification, cancellationToken);
             var candidateProfile = candidates.SingleOrDefault();
 
-            if (candidateProfile == null) 
+            if (candidateProfile == null)
             {
+                _logger.LogError("Add review command failed: user profile not found");
+
                 throw new NotFoundException("User profile not found");
             }
 
             cancellationToken.ThrowIfCancellationRequested();
             var candidateMovie = await _unitOfWork.Movies.GetByIdAsync(request.MovieId, cancellationToken);
 
-            if (candidateMovie == null) 
+            if (candidateMovie == null)
             {
+                _logger.LogError("Add review command failed: movie not found");
+
                 throw new NotFoundException("Movie not found");
             }
 
@@ -44,6 +49,8 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.AddReviewCommand
 
             if (candidateReview != null)
             {
+                _logger.LogError("Add review command failed: review by that user for the movie already exists");
+
                 throw new ConflictException("Review by that user for the movie already exists");
             }
 
@@ -55,7 +62,7 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.AddReviewCommand
             var doesJobExist = JobStorage.Current.GetConnection().GetRecurringJobs().Any(x => x.Id == $"{review.MovieId}");
             if (!doesJobExist)
             {
-                RecurringJob.AddOrUpdate<CalculateRatingJob>($"{review.MovieId}", x => x.ExecuteAsync(review.MovieId), Cron.MinuteInterval(1));
+                RecurringJob.AddOrUpdate<CalculateRatingJob>($"{review.MovieId}", x => x.ExecuteAsync(review.MovieId), Cron.HourInterval(1));
             }
 
             cancellationToken.ThrowIfCancellationRequested();

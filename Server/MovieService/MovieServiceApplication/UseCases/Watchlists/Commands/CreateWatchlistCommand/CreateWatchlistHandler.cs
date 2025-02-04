@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using MovieServiceApplication.Interfaces.UseCases;
 using MovieServiceDataAccess.Interfaces.UnitOfWork;
 using MovieServiceDataAccess.Specifications.UserProfileSpecifications;
@@ -9,10 +10,11 @@ using MovieServiceDomain.Models;
 
 namespace MovieServiceApplication.UseCases.Watchlists.Commands.CreateWatchlistCommand
 {
-    public class CreateWatchlistHandler(IUnitOfWork unitOfWork, IMapper mapper) : ICommandHandler<CreateWatchlistCommand, Unit>
+    public class CreateWatchlistHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<CreateWatchlistHandler> logger) : ICommandHandler<CreateWatchlistCommand, Unit>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<CreateWatchlistHandler> _logger = logger;
 
         public async Task<Unit> Handle(CreateWatchlistCommand request, CancellationToken cancellationToken)
         {
@@ -22,6 +24,8 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.CreateWatchlistCo
 
             if (candidateProfile == null)
             {
+                _logger.LogError("Create watchlist command failed: user profile not found");
+
                 throw new NotFoundException("User profile not found");
             }
 
@@ -32,6 +36,8 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.CreateWatchlistCo
 
             if (candidate != null)
             {
+                _logger.LogError("Create watchlist command failed: watchlist was already created");
+
                 throw new ConflictException("Watchlist was already created");
             }
 

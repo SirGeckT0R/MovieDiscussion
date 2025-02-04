@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using MovieServiceApplication.Dto;
 using MovieServiceApplication.Interfaces.UseCases;
 using MovieServiceDataAccess.Interfaces.UnitOfWork;
@@ -8,10 +9,11 @@ using MovieServiceDomain.Exceptions;
 
 namespace MovieServiceApplication.UseCases.Reviews.Queries.GetReviewsByAccountIdQuery
 {
-    public class GetReviewsByAccountIdHandler(IUnitOfWork unitOfWork, IMapper mapper) : IQueryHandler<GetReviewsByAccountIdQuery, ICollection<ReviewDto>>
+    public class GetReviewsByAccountIdHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<GetReviewsByAccountIdHandler> logger) : IQueryHandler<GetReviewsByAccountIdQuery, ICollection<ReviewDto>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<GetReviewsByAccountIdHandler> _logger = logger;
 
         public async Task<ICollection<ReviewDto>> Handle(GetReviewsByAccountIdQuery request, CancellationToken cancellationToken)
         {
@@ -21,6 +23,8 @@ namespace MovieServiceApplication.UseCases.Reviews.Queries.GetReviewsByAccountId
 
             if (candidateProfile == null)
             {
+                _logger.LogError("Get review by account id command failed: user profile not found");
+
                 throw new NotFoundException("User profile not found");
             }
 

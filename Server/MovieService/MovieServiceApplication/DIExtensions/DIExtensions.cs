@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using MovieServiceApplication.Validation;
+using MovieServiceApplication.Behaviors;
 using System.Reflection;
 
 namespace MovieServiceApplication.Extensions
@@ -16,6 +16,7 @@ namespace MovieServiceApplication.Extensions
             });
 
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         }

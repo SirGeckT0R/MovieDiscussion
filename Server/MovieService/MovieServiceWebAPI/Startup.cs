@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using MovieServiceApplication.Extensions;
 using MovieServiceApplication.UseCases.Genres.Commands.AddGenreCommand;
 using MovieServiceDataAccess.DatabaseContext;
-using MovieServiceDataAccess.DataSeeder;
 using MovieServiceDataAccess.DiExtensions;
 using MovieServiceWebAPI.ExceptionHandler;
 using MovieServiceWebAPI.Hangfire;
 using System.Reflection;
+using MovieServiceWebAPI.Extensions;
 
 namespace MovieServiceWebAPI
 {
@@ -27,8 +27,6 @@ namespace MovieServiceWebAPI
 
             builder.Services.AddMediatR();
             builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(AddGenreMappingProfile)));
-
-
 
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
             builder.Services.AddProblemDetails();
@@ -54,20 +52,18 @@ namespace MovieServiceWebAPI
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Host.AddLogging(Configuration);
         }
         public void Configure(WebApplication app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
-                using (var scope = app.Services.CreateScope())
-                {
-                    var dbContext = scope.ServiceProvider.GetRequiredService<MovieDbContext>();
-                    var userSeeder = new DataSeeder(dbContext);
-                    userSeeder.SeedAsync().GetAwaiter().GetResult();
-                }
+                app.SeedAndMigrateDatabases();
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
             var options = new DashboardOptions()
             {
                 Authorization = [new HangfireAuthorizationFilter()]

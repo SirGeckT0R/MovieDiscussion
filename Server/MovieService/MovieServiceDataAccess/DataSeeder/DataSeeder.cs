@@ -1,11 +1,13 @@
-﻿using MovieServiceDataAccess.DatabaseContext;
+﻿using Microsoft.Extensions.Logging;
+using MovieServiceDataAccess.DatabaseContext;
 using MovieServiceDomain.Enums;
 using MovieServiceDomain.Models;
 namespace MovieServiceDataAccess.DataSeeder
 {
-    public class DataSeeder(MovieDbContext context)
+    public class DataSeeder(MovieDbContext context, ILogger<DataSeeder> logger)
     {
         private readonly MovieDbContext _context = context;
+        private readonly ILogger<DataSeeder> _logger = logger;
         public async Task SeedAsync()
         {
             List<Genre> genres =
@@ -151,6 +153,8 @@ namespace MovieServiceDataAccess.DataSeeder
 
             await _context.SaveChangesAsync();
             _context.Database.AutoTransactionBehavior = Microsoft.EntityFrameworkCore.AutoTransactionBehavior.WhenNeeded;
+
+            _logger.LogInformation("Seeding completed successfully");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using MovieServiceApplication.Dto;
 using MovieServiceApplication.Interfaces.UseCases;
 using MovieServiceDataAccess.Interfaces.UnitOfWork;
@@ -6,10 +7,11 @@ using MovieServiceDomain.Exceptions;
 
 namespace MovieServiceApplication.UseCases.Genres.Queries.GetGenreByIdQuery
 {
-    public class GetGenreByIdHandler(IUnitOfWork unitOfWork, IMapper mapper) : IQueryHandler<GetGenreByIdQuery, GenreDto>
+    public class GetGenreByIdHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<GetGenreByIdHandler> logger) : IQueryHandler<GetGenreByIdQuery, GenreDto>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<GetGenreByIdHandler> _logger = logger;
 
         public async Task<GenreDto> Handle(GetGenreByIdQuery request, CancellationToken cancellationToken)
         {
@@ -17,6 +19,8 @@ namespace MovieServiceApplication.UseCases.Genres.Queries.GetGenreByIdQuery
 
             if (genre == null)
             {
+                _logger.LogError("Get genre  by id command failed: genre not found");
+
                 throw new NotFoundException("Genre not found");
             }
 

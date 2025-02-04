@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MovieServiceDataAccess.DatabaseContext;
+﻿using MovieServiceDataAccess.DatabaseContext;
+using MovieServiceDataAccess.DataSeeder;
 
 namespace MovieServiceWebAPI.Extensions
 {
@@ -11,6 +11,11 @@ namespace MovieServiceWebAPI.Extensions
             {
                 var hangfireDbContext = scope.ServiceProvider.GetRequiredService<HangfireDbContext>();
                 hangfireDbContext.Database.EnsureCreated();
+
+                var dbContext = scope.ServiceProvider.GetRequiredService<MovieDbContext>();
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<DataSeeder>>();
+                var userSeeder = new DataSeeder(dbContext, logger);
+                userSeeder.SeedAsync().GetAwaiter().GetResult();
             } 
 
             return app;

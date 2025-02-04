@@ -10,14 +10,17 @@ namespace MovieServiceWebAPI.Controllers
 {
     [ApiController]
     [Route("api/genres")]
-    public class GenreController(IMediator mediator): ControllerBase
+    public class GenreController(IMediator mediator, ILogger<GenreController> logger): ControllerBase
     {
         private readonly IMediator _mediator = mediator;
+        private readonly ILogger<GenreController> _logger = logger;
 
         [HttpGet]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
             var genres = await _mediator.Send(new GetAllGenresQuery(), cancellationToken);
+
+            _logger.LogInformation("Returning all genres");
 
             return Ok(genres);
         }
@@ -27,6 +30,8 @@ namespace MovieServiceWebAPI.Controllers
         {
             await _mediator.Send(command, cancellationToken);
 
+            _logger.LogInformation("Genre was created");
+
             return Created();
         }
 
@@ -34,6 +39,8 @@ namespace MovieServiceWebAPI.Controllers
         public async Task<IActionResult> GetById([FromRoute] GetGenreByIdQuery query, CancellationToken cancellationToken)
         {
             var genre = await _mediator.Send(query, cancellationToken);
+
+            _logger.LogInformation("Returning genre by Id");
 
             return Ok(genre);
         }
@@ -44,6 +51,8 @@ namespace MovieServiceWebAPI.Controllers
             command.Id = Id;
             await _mediator.Send(command, cancellationToken);
 
+            _logger.LogInformation("Genre was updated");
+
             return NoContent();
         }
 
@@ -51,6 +60,8 @@ namespace MovieServiceWebAPI.Controllers
         public async Task<IActionResult> Delete([FromRoute] DeleteGenreCommand command, CancellationToken cancellationToken)
         {
             await _mediator.Send(command, cancellationToken);
+
+            _logger.LogInformation("Genre was deleted");
 
             return NoContent();
         }

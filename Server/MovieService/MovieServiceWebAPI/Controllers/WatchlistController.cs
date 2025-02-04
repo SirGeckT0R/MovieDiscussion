@@ -9,14 +9,17 @@ namespace MovieServiceWebAPI.Controllers
 {
     [ApiController]
     [Route("api/watchlists")]
-    public class WatchlistController(IMediator mediator) : ControllerBase
+    public class WatchlistController(IMediator mediator, ILogger<WatchlistController> logger) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
+        private readonly ILogger<WatchlistController> _logger = logger;
 
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] CreateWatchlistCommand command, CancellationToken cancellationToken)
         {
             await _mediator.Send(command, cancellationToken);
+
+            _logger.LogInformation("Watchlist was created");
 
             return Created();
         }
@@ -26,6 +29,8 @@ namespace MovieServiceWebAPI.Controllers
         {
             var watchlist = await _mediator.Send(query, cancellationToken);
 
+            _logger.LogInformation("Returning watchlist by id");
+
             return Ok(watchlist);
         }
 
@@ -33,6 +38,8 @@ namespace MovieServiceWebAPI.Controllers
         public async Task<ActionResult> Delete([FromRoute] DeleteWatchlistCommand command, CancellationToken cancellationToken)
         {
             await _mediator.Send(command, cancellationToken);
+
+            _logger.LogInformation("Watchlist was deleted");
 
             return NoContent();
         }
@@ -42,6 +49,8 @@ namespace MovieServiceWebAPI.Controllers
         {
             command.AccountId = AccountId;
             await _mediator.Send(command, cancellationToken);
+
+            _logger.LogInformation("Watchlist updated with action: {WatchlistAction}", command.Action);
 
             return NoContent();
         }
