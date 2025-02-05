@@ -18,7 +18,7 @@ namespace DiscussionServiceApplication.UseCases.Discussions.Queries.GetUserConne
 
             if (string.IsNullOrWhiteSpace(stringConnection))
             {
-                _logger.LogInformation("Get user connection query failed for {ConnectionId}: user connection not found in cache", request.ConnectionId);
+                _logger.LogError("Get user connection query failed for {ConnectionId}: user connection not found in cache", request.ConnectionId);
 
                 throw new NotFoundException("User connection not found in cache");
             }
@@ -27,7 +27,7 @@ namespace DiscussionServiceApplication.UseCases.Discussions.Queries.GetUserConne
 
             if (userConnection == null)
             {
-                _logger.LogInformation("Get user connection query failed for {ConnectionId}: user connection can't be parsed", request.ConnectionId);
+                _logger.LogError("Get user connection query failed for {ConnectionId}: user connection can't be parsed", request.ConnectionId);
 
                 throw new CacheException("User connection can't be parsed");
             }
