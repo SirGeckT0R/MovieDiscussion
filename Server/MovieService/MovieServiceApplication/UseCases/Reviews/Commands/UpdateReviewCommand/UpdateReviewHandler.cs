@@ -1,20 +1,25 @@
 ﻿using AutoMapper;
-using Hangfire;
-using Hangfire.Storage;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using MovieServiceApplication.Helpers;
 using MovieServiceApplication.Interfaces.UseCases;
-using MovieServiceApplication.Jobs;
 using MovieServiceDataAccess.Interfaces.UnitOfWork;
 using MovieServiceDomain.Exceptions;
 
 namespace MovieServiceApplication.UseCases.Reviews.Commands.UpdateReviewCommand
 {
-    public class UpdateReviewHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateReviewHandler> logger) : ICommandHandler<UpdateReviewCommand, Unit>
+    public class UpdateReviewHandler(IUnitOfWork unitOfWork, 
+                                     IMapper mapper, 
+                                     ILogger<UpdateReviewHandler> logger,
+                                     IConfiguration configuration) 
+                                     : 
+                                     ICommandHandler<UpdateReviewCommand, Unit>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
         private readonly ILogger<UpdateReviewHandler> _logger = logger;
+        private readonly IConfiguration _configuration = configuration;
 
         public async Task<Unit> Handle(UpdateReviewCommand request, CancellationToken cancellationToken)
         {
@@ -31,11 +36,7 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.UpdateReviewCommand
             var newReview = _mapper.Map(request, review);
             _unitOfWork.Reviews.Update(newReview, cancellationToken);
 
-            var doesJobExist = JobStorage.Current.GetConnection().GetRecurringJobs().Any(x => x.Id == $"{review.MovieId}");
-            if (!doesJobExist)
-            {
-                RecurringJob.AddOrUpdate<CalculateRatingJob>($"{review.MovieId}", x => x.ExecuteAsync(review.MovieId), Cron.HourInterval(1));
-            }
+            CalculateRatingJobHelper.AddJob(review.MovieId, _configuration, _logger);
 
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);

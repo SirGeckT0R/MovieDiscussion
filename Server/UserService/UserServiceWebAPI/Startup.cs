@@ -69,7 +69,7 @@ namespace UserServiceWebAPI
                                                     .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
                                                     .UseSimpleAssemblyNameTypeSerializer()
                                                     .UseRecommendedSerializerSettings()
-                                                    .UsePostgreSqlStorage(options => options.UseNpgsqlConnection(hangfireConnectionString!))
+                                                    .UsePostgreSqlStorage(options => options.UseNpgsqlConnection(hangfireConnectionString))
                                 );
 
             services.AddHangfireServer();
@@ -102,7 +102,7 @@ namespace UserServiceWebAPI
             }
 
             app.UseCors();
-            app.SeedAndMigrateDatabases();
+
             var options = new DashboardOptions()
             {
                 Authorization = [new HangfireAuthorizationFilter()]
@@ -111,7 +111,9 @@ namespace UserServiceWebAPI
 
             app.UseExceptionHandler();
             app.MapControllers();
+
             app.MapHangfireDashboard();
+
             app.UseAuthentication();
             app.UseAuthorization();
         }

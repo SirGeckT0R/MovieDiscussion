@@ -29,7 +29,7 @@ namespace MovieServiceWebAPI.Controllers
         {
             var watchlist = await _mediator.Send(query, cancellationToken);
 
-            _logger.LogInformation("Returning watchlist by id");
+            _logger.LogInformation("Returning watchlist by account id");
 
             return Ok(watchlist);
         }

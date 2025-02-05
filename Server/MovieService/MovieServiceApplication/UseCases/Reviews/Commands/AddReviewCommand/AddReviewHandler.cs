@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
-using Hangfire;
-using Hangfire.Storage;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using MovieServiceApplication.Helpers;
 using MovieServiceApplication.Interfaces.UseCases;
-using MovieServiceApplication.Jobs;
 using MovieServiceDataAccess.Interfaces.UnitOfWork;
 using MovieServiceDataAccess.Specifications.ReviewSpecifications;
 using MovieServiceDataAccess.Specifications.UserProfileSpecifications;
@@ -13,11 +12,17 @@ using MovieServiceDomain.Models;
 
 namespace MovieServiceApplication.UseCases.Reviews.Commands.AddReviewCommand
 {
-    public class AddReviewHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<AddReviewHandler> logger) : ICommandHandler<AddReviewCommand, Unit>
+    public class AddReviewHandler(IUnitOfWork unitOfWork, 
+                                  IMapper mapper, 
+                                  ILogger<AddReviewHandler> logger, 
+                                  IConfiguration configuration) 
+                                  : 
+                                  ICommandHandler<AddReviewCommand, Unit>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
         private readonly ILogger<AddReviewHandler> _logger = logger;
+        private readonly IConfiguration _configuration = configuration;
 
         public async Task<Unit> Handle(AddReviewCommand request, CancellationToken cancellationToken)
         {
@@ -59,11 +64,7 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.AddReviewCommand
             review.ProfileId = candidateProfile.Id;
             await _unitOfWork.Reviews.AddAsync(review, cancellationToken);
 
-            var doesJobExist = JobStorage.Current.GetConnection().GetRecurringJobs().Any(x => x.Id == $"{review.MovieId}");
-            if (!doesJobExist)
-            {
-                RecurringJob.AddOrUpdate<CalculateRatingJob>($"{review.MovieId}", x => x.ExecuteAsync(review.MovieId), Cron.HourInterval(1));
-            }
+            CalculateRatingJobHelper.AddJob(review.MovieId, _configuration, _logger);
 
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);

@@ -5,10 +5,12 @@ using DiscussionServiceDataAccess.Interfaces.UnitOfWork;
 namespace DiscussionServiceDataAccess.UnitOfWork
 {
     public class DiscussionUnitOfWork(DiscussionDbContext context,
-                                 IDiscussionRepository discussionRepository) : IUnitOfWork
+                                      IDiscussionRepository discussionRepository,
+                                      IMessageRepository messageRepository) : IUnitOfWork
     {
         private readonly DiscussionDbContext _context = context;
         private readonly IDiscussionRepository _discussionRepository = discussionRepository;
+        private readonly IMessageRepository _messageRepository = messageRepository;
 
         private bool disposed = false;
         public IDiscussionRepository Discussions
@@ -16,6 +18,14 @@ namespace DiscussionServiceDataAccess.UnitOfWork
             get
             {
                 return _discussionRepository;
+            }
+        }
+
+        public IMessageRepository Messages
+        {
+            get
+            {
+                return _messageRepository;
             }
         }
 

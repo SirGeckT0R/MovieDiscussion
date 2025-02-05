@@ -40,11 +40,14 @@ namespace MovieServiceWebAPI
                                                     .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
                                                     .UseSimpleAssemblyNameTypeSerializer()
                                                     .UseRecommendedSerializerSettings()
-                                                    .UseMongoStorage(hangfireConnectionString, "hangfire", 
-                                                        new MongoStorageOptions { 
-                                                                                    MigrationOptions = migrationOptions, 
-                                                                                    CheckQueuedJobsStrategy = CheckQueuedJobsStrategy.TailNotificationsCollection 
-                                                                                })
+                                                    .UseMongoStorage(hangfireConnectionString, 
+                                                                        "hangfire", 
+                                                                        new MongoStorageOptions 
+                                                                        { 
+                                                                            MigrationOptions = migrationOptions, 
+                                                                            CheckQueuedJobsStrategy = CheckQueuedJobsStrategy.TailNotificationsCollection 
+                                                                        }
+                                                                    )
                                          );
 
             builder.Services.AddHangfireServer();
@@ -72,7 +75,9 @@ namespace MovieServiceWebAPI
 
             app.UseExceptionHandler();
             app.MapControllers();
+
             app.MapHangfireDashboard();
+
             app.UseAuthorization();
         }
     }

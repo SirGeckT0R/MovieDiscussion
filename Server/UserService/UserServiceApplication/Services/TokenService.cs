@@ -24,7 +24,8 @@ namespace UserServiceApplication.Services
             _logger.LogInformation("Generate auth tokens attempt started for {Id}", userClaims.Id);
 
             cancellationToken.ThrowIfCancellationRequested();
-            var candidate = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(new UserIdAndTypeSpecification(TokenType.Refresh, userClaims.Id), cancellationToken);
+            var specification = new UserIdAndTypeSpecification(TokenType.Refresh, userClaims.Id);
+            var candidate = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(specification, cancellationToken);
 
             if (candidate != null)
             {
@@ -39,7 +40,8 @@ namespace UserServiceApplication.Services
             var (refreshToken, expiresRefresh) = _jwtProvider.GenerateToken(userClaims, TokenType.Refresh, refreshTokenId);
 
             cancellationToken.ThrowIfCancellationRequested();
-            await _unitOfWork.TokenRepository.AddAsync(new Token(refreshTokenId, TokenType.Refresh, userClaims.Id, refreshToken, expiresRefresh), cancellationToken);
+            var token = new Token(refreshTokenId, TokenType.Refresh, userClaims.Id, refreshToken, expiresRefresh);
+            await _unitOfWork.TokenRepository.AddAsync(token, cancellationToken);
 
             _logger.LogInformation("Generate auth tokens attempt completed successfully for {Id}", userClaims.Id);
 
@@ -54,13 +56,14 @@ namespace UserServiceApplication.Services
             {
                 _logger.LogError("Generate token and extract email attempt failed: token is not valid");
 
-                throw new TokenException("Token is empty");
+                throw new TokenException("Token is not valid");
             }
 
             var (_, userClaims) = ExtractClaims(accessToken!);
 
             cancellationToken.ThrowIfCancellationRequested();
-            var candidate = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(new UserIdAndTypeSpecification(tokenType, userClaims.Id), cancellationToken);
+            var specification = new UserIdAndTypeSpecification(tokenType, userClaims.Id);
+            var candidate = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(specification, cancellationToken);
             if (candidate != null)
             {
                 _logger.LogInformation("Deleting already existing token from database");
@@ -72,7 +75,8 @@ namespace UserServiceApplication.Services
             var tokenId = Guid.NewGuid();
             var (tokenValue, expiresTime) = _jwtProvider.GenerateToken(userClaims, tokenType, tokenId);
 
-            await _unitOfWork.TokenRepository.AddAsync(new Token(tokenId, tokenType, userClaims.Id, tokenValue, expiresTime), cancellationToken);
+            var token = new Token(tokenId, tokenType, userClaims.Id, tokenValue, expiresTime);
+            await _unitOfWork.TokenRepository.AddAsync(token, cancellationToken);
 
             _logger.LogInformation("Generate token and extract email attempt completed successfully");
 
@@ -87,12 +91,13 @@ namespace UserServiceApplication.Services
             {
                 _logger.LogError("Find and delete token attempt failed: token is not valid");
 
-                throw new TokenException("Token is empty");
+                throw new TokenException("Token is not valid");
             }
 
             var (_, userClaims) = ExtractClaims(confirmToken);
 
-            var candidate = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(new UserIdAndTypeSpecification(tokenType, userClaims.Id), cancellationToken);
+            var specification = new UserIdAndTypeSpecification(tokenType, userClaims.Id);
+            var candidate = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(specification, cancellationToken);
 
             if(candidate == null)
             {
@@ -101,6 +106,7 @@ namespace UserServiceApplication.Services
                 throw new NotFoundException("Token not found");
             }
 
+            cancellationToken.ThrowIfCancellationRequested();
             _unitOfWork.TokenRepository.Delete(candidate, cancellationToken);
 
             _logger.LogInformation("Find and delete token attempt completed successfully");
@@ -208,7 +214,7 @@ namespace UserServiceApplication.Services
 
             _ = Guid.TryParse(tokenId, out Guid tokenIdGuid);
 
-            _logger.LogInformation("Extract claims from token attempt completed succesffully");
+            _logger.LogInformation("Extract claims from token attempt completed successfully");
 
             return (tokenIdGuid, new UserClaimsDto(Guid.Parse(userId), email, (Role)Enum.Parse(typeof(Role), role)));
         }

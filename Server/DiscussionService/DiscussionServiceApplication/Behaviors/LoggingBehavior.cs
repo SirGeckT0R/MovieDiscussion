@@ -12,8 +12,6 @@ namespace DiscussionServiceApplication.Behaviors
             RequestHandlerDelegate<TResponse> next,
             CancellationToken cancellationToken)
         {
-            var commandName = request.GetType();
-
             logger.LogInformation("----- Handling command '{Command}'", request.ToString());
 
             var timer = new Stopwatch();
@@ -24,6 +22,7 @@ namespace DiscussionServiceApplication.Behaviors
             timer.Stop();
 
             var timeTaken = timer.Elapsed.TotalSeconds;
+            var commandName = request.GetType();
             logger.LogInformation("----- Command '{CommandName}' handled ({TimeTaken} seconds)", commandName, timeTaken);
 
             return response;

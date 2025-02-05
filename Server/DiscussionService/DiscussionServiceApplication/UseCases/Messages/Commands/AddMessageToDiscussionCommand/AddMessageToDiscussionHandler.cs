@@ -7,7 +7,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
-namespace DiscussionServiceApplication.UseCases.Discussions.Commands.AddMessageToDiscussionCommand
+namespace DiscussionServiceApplication.UseCases.Messages.Commands.AddMessageToDiscussionCommand
 {
     public class AddMessageToDiscussionHandler(IUnitOfWork unitOfWork, IDistributedCache cache, ILogger<AddMessageToDiscussionHandler> logger) : ICommandHandler<AddMessageToDiscussionCommand, UserConnection>
     {
@@ -46,9 +46,8 @@ namespace DiscussionServiceApplication.UseCases.Discussions.Commands.AddMessageT
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-            var message = new Message(request.Text, userConnection.AccountId);
-            discussion.Messages.Add(message);
-            _unitOfWork.Discussions.Update(discussion, cancellationToken);
+            var message = new Message(userConnection.DiscussionId, request.Text, userConnection.AccountId);
+            await _unitOfWork.Messages.AddAsync(message, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);

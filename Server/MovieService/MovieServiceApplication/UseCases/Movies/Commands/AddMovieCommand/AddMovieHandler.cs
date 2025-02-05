@@ -23,7 +23,7 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.AddMovieCommand
 
             if (candidateProfile == null)
             {
-                _logger.LogError("Add movie command failed: user profile with id {Id} not found", request.AccountId);
+                _logger.LogError("Add movie command failed: user profile with account id {Id} not found", request.AccountId);
 
                 throw new NotFoundException("User profile not found");
             }

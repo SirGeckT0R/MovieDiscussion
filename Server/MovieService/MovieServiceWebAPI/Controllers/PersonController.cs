@@ -30,7 +30,7 @@ namespace MovieServiceWebAPI.Controllers
         {
             await _mediator.Send(command, cancellationToken);
 
-            _logger.LogInformation("Person was craeted");
+            _logger.LogInformation("Person was created");
 
             return Created();
         }

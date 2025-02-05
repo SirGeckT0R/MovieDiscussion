@@ -14,13 +14,13 @@ namespace MovieServiceApplication.Jobs
 
         public async Task ExecuteAsync(Guid movieId)
         {
-            _logger.LogInformation("Background job to recalculate movie rating with id {Id} started", movieId);
+            _logger.LogInformation("Background job to calculate movie rating with id {Id} started", movieId);
 
             var movie = await _unitOfWork.Movies.GetByIdTrackingAsync(movieId, default);
 
             if (movie == null) 
             {
-                _logger.LogError("Background job to recalculate movie rating with id {Id} failed: movie not found", movieId);
+                _logger.LogError("Background job to calculate movie rating with id {Id} failed: movie not found", movieId);
 
                 throw new NotFoundException("Movie not found");
             }
@@ -42,8 +42,7 @@ namespace MovieServiceApplication.Jobs
 
             await _unitOfWork.SaveChangesAsync(default);
 
-            _logger.LogInformation("Changes to database were saved");
-            _logger.LogInformation("Background job to recalculate movie rating with id {Id} completed successfully", movieId);
+            _logger.LogInformation("Background job to calculate movie rating with id {Id} completed successfully", movieId);
 
             RecurringJob.RemoveIfExists(movieId.ToString());
         }

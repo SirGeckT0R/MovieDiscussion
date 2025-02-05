@@ -2,6 +2,7 @@
 using MovieServiceDataAccess.DatabaseContext;
 using MovieServiceDomain.Enums;
 using MovieServiceDomain.Models;
+
 namespace MovieServiceDataAccess.DataSeeder
 {
     public class DataSeeder(MovieDbContext context, ILogger<DataSeeder> logger)

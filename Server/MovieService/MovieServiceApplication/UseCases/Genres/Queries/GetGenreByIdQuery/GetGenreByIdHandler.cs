@@ -19,7 +19,7 @@ namespace MovieServiceApplication.UseCases.Genres.Queries.GetGenreByIdQuery
 
             if (genre == null)
             {
-                _logger.LogError("Get genre by id {Id} command failed: genre not found", request.Id);
+                _logger.LogError("Get genre by id {Id} query failed: genre not found", request.Id);
 
                 throw new NotFoundException("Genre not found");
             }

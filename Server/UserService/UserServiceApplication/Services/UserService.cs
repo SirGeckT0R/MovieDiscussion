@@ -49,7 +49,6 @@ namespace UserServiceApplication.Services
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Changes to database were saved");
             _logger.LogInformation("Login attempt completed successfully for {Email}", loginRequest.Email);
 
             return (accessToken, refreshToken);
@@ -63,7 +62,7 @@ namespace UserServiceApplication.Services
 
             if (candidate != null)
             {
-                _logger.LogError("Registration attempt failed for {Email}: user already exists", registerRequest.Email);
+                _logger.LogError("Register attempt failed for {Email}: user already exists", registerRequest.Email);
 
                 throw new ConflictException("User already exists");
             }
@@ -84,7 +83,6 @@ namespace UserServiceApplication.Services
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Changes to database were saved");
             _logger.LogInformation("Register attempt completed successfully for {Email}", registerRequest.Email);
 
             return (accessToken, refreshToken);
@@ -100,7 +98,7 @@ namespace UserServiceApplication.Services
             {
                 _logger.LogError("Update user attempt failed for {Id}: user not found", updateUserRequest.Id);
 
-                throw new NotFoundException("No user was found");
+                throw new NotFoundException("User not found");
             }
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -110,7 +108,6 @@ namespace UserServiceApplication.Services
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Changes to database were saved");
             _logger.LogInformation("Update user attempt completed successfully for {Id}", updateUserRequest.Id);
         }
 
@@ -124,48 +121,58 @@ namespace UserServiceApplication.Services
             {
                 _logger.LogError("Delete user attempt failed for {Id}: user not found", id);
 
-                throw new NotFoundException("No user was found");
+                throw new NotFoundException("User not found");
             }
+
             cancellationToken.ThrowIfCancellationRequested();
             _unitOfWork.UserRepository.Delete(candidate, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Changes to database were saved");
             _logger.LogInformation("Delete user attempt completed successfully for {Id}", id);
         }
 
         public async Task<UserDto> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Get user by email attempt started for {Email}", email);
+
             var user = await _unitOfWork.UserRepository.GetByEmailAsync(email, cancellationToken);
 
             if (user == null)
             {
-                _logger.LogError("Get User by email attempt failed for {Email}: user not found", email);
+                _logger.LogError("Get user by email attempt failed for {Email}: user not found", email);
 
-                throw new NotFoundException("No user was found");
+                throw new NotFoundException("User not found");
             }
 
             cancellationToken.ThrowIfCancellationRequested();
+            var userDto = _mapper.Map<UserDto>(user);
 
-            return _mapper.Map<UserDto>(user);
+            _logger.LogInformation("Get user by email attempt completed successfuly for {Email}", email);
+
+            return userDto;
         }
 
         public async Task<UserDto> GetUserByIdAsync(Guid id, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Get user by id attempt started for {Id}", id);
+
             var user = await _unitOfWork.UserRepository.GetByIdAsync(id, cancellationToken);
 
             if (user == null)
             {
-                _logger.LogError("Get User by id attempt failed for {Id}: user not found", id);
+                _logger.LogError("Get user by id attempt failed for {Id}: user not found", id);
 
-                throw new NotFoundException("No user was found");
+                throw new NotFoundException("User not found");
             }
 
             cancellationToken.ThrowIfCancellationRequested();
+            var userDto = _mapper.Map<UserDto>(user);
 
-            return _mapper.Map<UserDto>(user);
+            _logger.LogInformation("Get user by id attempt completed successfuly for {Id}", id);
+
+            return userDto;
         }
 
         public async Task<string> ConfirmEmailSendAsync(string? accessToken, string callbackUrl, CancellationToken cancellationToken)
@@ -182,7 +189,6 @@ namespace UserServiceApplication.Services
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Changes to database were saved");
             _logger.LogInformation("Confirm email send attempt completed successfully");
 
             return confirmToken;
@@ -198,7 +204,7 @@ namespace UserServiceApplication.Services
             {
                 _logger.LogError("Confirm email recieve attempt failed for {Email}: user not found", confirmEmailRequest.Email);
 
-                throw new NotFoundException("No user was found");
+                throw new NotFoundException("User not found");
             }
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -210,7 +216,6 @@ namespace UserServiceApplication.Services
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Changes to database were saved");
             _logger.LogInformation("Confirm email recieve attempt completed successfully for {Email}", confirmEmailRequest.Email);
 
             return confirmToken;
@@ -222,15 +227,15 @@ namespace UserServiceApplication.Services
             _logger.LogInformation("Forgot password attempt started");
 
             var (resetToken, email) = await _tokenService.GenerateTokenAndExtractEmailAsync(accessToken, TokenType.ResetPassword, cancellationToken);
+            
             cancellationToken.ThrowIfCancellationRequested();
-
             resetToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(resetToken));
+
             BackgroundJob.Enqueue(() => SendEmail(email, resetToken, "Reset Password", callbackUrl, cancellationToken));
 
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Changes to database were saved");
             _logger.LogInformation("Forgot password attempt completed successfully");
 
             return resetToken;
@@ -246,11 +251,10 @@ namespace UserServiceApplication.Services
             {
                 _logger.LogError("Reset password attempt failed for {Email}: user not found", resetPasswordRequest.Email);
 
-                throw new NotFoundException("No user was found");
+                throw new NotFoundException("User not found");
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-
             var resetToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetPasswordRequest.Token));
             await _tokenService.FindAndDeleteTokenAsync(resetToken,TokenType.ResetPassword, cancellationToken);
 
@@ -260,7 +264,6 @@ namespace UserServiceApplication.Services
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Changes to database were saved");
             _logger.LogInformation("Reset password attempt completed successfully for {Email}", resetPasswordRequest.Email);
 
             return resetToken;

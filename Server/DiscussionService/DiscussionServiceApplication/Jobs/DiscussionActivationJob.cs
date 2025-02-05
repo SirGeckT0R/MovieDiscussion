@@ -32,9 +32,9 @@ namespace DiscussionServiceApplication.Jobs
 
             await _unitOfWork.SaveChangesAsync(default);
 
-            RecurringJob.RemoveIfExists(discussionId.ToString());
-
             _logger.LogInformation("Background job to activate discussion with id {DiscussionId} completed successfuly", discussionId);
+
+            RecurringJob.RemoveIfExists(discussionId.ToString());
         }
     }
 }

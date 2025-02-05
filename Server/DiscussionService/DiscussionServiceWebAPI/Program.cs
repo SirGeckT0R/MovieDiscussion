@@ -9,6 +9,4 @@ var app = builder.Build();
 
 startup.Configure(app, app.Environment);
 
-app.MapControllers();
-
 await app.RunAsync();

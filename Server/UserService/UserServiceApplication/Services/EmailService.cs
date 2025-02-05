@@ -18,8 +18,6 @@ namespace UserServiceApplication.Services
             {
                 _logger.LogWarning("No email or password provided. Sending email is ignored.");
 
-                Console.WriteLine("No email or password provided. Sending email is ignored.");
-
                 return Task.CompletedTask;
             }
 

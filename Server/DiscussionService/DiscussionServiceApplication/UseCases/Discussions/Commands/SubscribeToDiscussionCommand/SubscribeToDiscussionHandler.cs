@@ -17,7 +17,7 @@ namespace DiscussionServiceApplication.UseCases.Discussions.Commands.SubscribeTo
 
             if (discussion == null)
             {
-                _logger.LogError("Subscibe to discussion command failed for {DiscussionId}: discussion not found", request.DiscussionId);
+                _logger.LogError("Subscribe to discussion command failed for {DiscussionId}: discussion not found", request.DiscussionId);
 
                 throw new NotFoundException("Discussion not found");
             }

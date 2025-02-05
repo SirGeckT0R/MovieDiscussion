@@ -1,6 +1,6 @@
-﻿using DiscussionServiceApplication.UseCases.Discussions.Commands.AddMessageToDiscussionCommand;
-using DiscussionServiceApplication.UseCases.Discussions.Commands.RemoveUserConnectionCommand;
+﻿using DiscussionServiceApplication.UseCases.Discussions.Commands.RemoveUserConnectionCommand;
 using DiscussionServiceApplication.UseCases.Discussions.Commands.SaveUserConnectionCommand;
+using DiscussionServiceApplication.UseCases.Messages.Commands.AddMessageToDiscussionCommand;
 using DiscussionServiceWebAPI.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
@@ -25,7 +25,7 @@ namespace DiscussionServiceWebAPI.Hubs
 
             var stringDiscussionId = userConnection.DiscussionId.ToString();
 
-            _logger.LogInformation("Attempt to join chat for discussion with id {Id} was successful for {ConectionId}", DiscussionId, Context.ConnectionId);
+            _logger.LogInformation("Attempt to join chat for discussion with id {Id} completed successfuly for {ConnectionId}", DiscussionId, Context.ConnectionId);
 
             await Groups.AddToGroupAsync(Context.ConnectionId, stringDiscussionId);
 
@@ -36,7 +36,7 @@ namespace DiscussionServiceWebAPI.Hubs
 
         public async Task SendMessage(string Message)
         {
-            _logger.LogInformation("Attempt to send message to a discussion started for {ConectionId}", Context.ConnectionId);
+            _logger.LogInformation("Attempt to send message to a discussion started for {ConnectionId}", Context.ConnectionId);
 
             var cancellationToken = Context.ConnectionAborted;
 
@@ -45,7 +45,7 @@ namespace DiscussionServiceWebAPI.Hubs
 
             var stringDiscussionId = userConnection.DiscussionId.ToString();
 
-            _logger.LogInformation("Attempt to send message to a discussion was successful for {ConectionId}", Context.ConnectionId);
+            _logger.LogInformation("Attempt to send message to a discussion completed successfuly for {ConnectionId}", Context.ConnectionId);
 
             await Clients
                     .Group(stringDiscussionId)
@@ -54,7 +54,7 @@ namespace DiscussionServiceWebAPI.Hubs
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            _logger.LogInformation("Attempt to disconnect from a discussion started for {ConectionId}", Context.ConnectionId);
+            _logger.LogInformation("Attempt to disconnect from a discussion started for {ConnectionId}", Context.ConnectionId);
 
             using var cancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = cancellationTokenSource.Token;
@@ -64,7 +64,7 @@ namespace DiscussionServiceWebAPI.Hubs
 
             var stringDiscussionId = userConnection.DiscussionId.ToString();
 
-            _logger.LogInformation("Attempt to disconnect from a discussion was successful for {ConectionId}", Context.ConnectionId);
+            _logger.LogInformation("Attempt to disconnect from a discussion completed successfuly for {ConnectionId}", Context.ConnectionId);
 
             await Groups
                     .RemoveFromGroupAsync(Context.ConnectionId, stringDiscussionId);

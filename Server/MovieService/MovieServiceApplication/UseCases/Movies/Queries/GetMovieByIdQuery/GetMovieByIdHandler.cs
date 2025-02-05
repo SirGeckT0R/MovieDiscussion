@@ -19,7 +19,7 @@ namespace MovieServiceApplication.UseCases.Movies.Queries.GetMovieByIdQuery
 
             if (movie == null)
             {
-                _logger.LogError("Get movie by id {Id} command failed: movie not found", request.Id);
+                _logger.LogError("Get movie by id {Id} query failed: movie not found", request.Id);
 
                 throw new NotFoundException("Movie not found");
             }

@@ -27,12 +27,12 @@ namespace DiscussionServiceWebAPI
                 options.Configuration = builder.Configuration["Redis"]
             );
 
+            builder.Services.AddMongo(Configuration);
+
             var hangfireConnectionString = Configuration["HangfireConnectionString"]!;
             builder.Services.AddDbContext<HangfireDbContext>(options => options.UseMongoDB(hangfireConnectionString, "hangfire"));
 
             builder.Services.AddSignalR();
-
-            builder.Services.AddMongo(Configuration);
 
             builder.Services.AddMediatR();
             builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(DiscussionDtoMappingProfile)));
@@ -56,12 +56,14 @@ namespace DiscussionServiceWebAPI
                                                     .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
                                                     .UseSimpleAssemblyNameTypeSerializer()
                                                     .UseRecommendedSerializerSettings()
-                                                    .UseMongoStorage(hangfireConnectionString, "hangfire",
-                                                        new MongoStorageOptions
-                                                        {
-                                                            MigrationOptions = migrationOptions,
-                                                            CheckQueuedJobsStrategy = CheckQueuedJobsStrategy.TailNotificationsCollection
-                                                        })
+                                                    .UseMongoStorage(hangfireConnectionString, 
+                                                                        "hangfire",
+                                                                        new MongoStorageOptions
+                                                                        {
+                                                                            MigrationOptions = migrationOptions,
+                                                                            CheckQueuedJobsStrategy = CheckQueuedJobsStrategy.TailNotificationsCollection
+                                                                        }
+                                                                    )
                                          );
 
             builder.Services.AddHangfireServer();
@@ -79,6 +81,7 @@ namespace DiscussionServiceWebAPI
         {
             if (env.IsDevelopment())
             {
+                app.SeedAndMigrateDatabases();
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
@@ -89,7 +92,6 @@ namespace DiscussionServiceWebAPI
 
             app.UseAuthorization();
 
-
             var options = new DashboardOptions()
             {
                 Authorization = [new HangfireAuthorizationFilter()]
@@ -97,7 +99,9 @@ namespace DiscussionServiceWebAPI
             app.UseHangfireDashboard("/hangfire", options);
 
             app.MapControllers();
+
             app.MapHangfireDashboard();
+
             app.MapHub<DiscussionHub>("discussion-hub");
         }
     }
