@@ -12,7 +12,7 @@ namespace DiscussionServiceApplication.Behaviors
             RequestHandlerDelegate<TResponse> next,
             CancellationToken cancellationToken)
         {
-            logger.LogInformation("----- Handling command '{Command}'", request.ToString());
+            logger.LogInformation("----- Handling request '{Request}'", request.ToString());
 
             var timer = new Stopwatch();
             timer.Start();
@@ -22,8 +22,8 @@ namespace DiscussionServiceApplication.Behaviors
             timer.Stop();
 
             var timeTaken = timer.Elapsed.TotalSeconds;
-            var commandName = request.GetType();
-            logger.LogInformation("----- Command '{CommandName}' handled ({TimeTaken} seconds)", commandName, timeTaken);
+            var requestName = request.GetType();
+            logger.LogInformation("----- Request '{RequestName}' handled ({TimeTaken} seconds)", requestName, timeTaken);
 
             return response;
         }
