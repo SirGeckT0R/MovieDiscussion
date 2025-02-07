@@ -5,6 +5,7 @@ using MovieServiceApplication.UseCases.Movies.Commands.DeleteMovieCommand;
 using MovieServiceApplication.UseCases.Movies.Commands.UpdateMovieCommand;
 using MovieServiceApplication.UseCases.Movies.Queries.GetAllMoviesQuery;
 using MovieServiceApplication.UseCases.Movies.Queries.GetMovieByIdQuery;
+using MovieServiceWebAPI.Helpers;
 
 namespace MovieServiceWebAPI.Controllers
 {
@@ -28,7 +29,10 @@ namespace MovieServiceWebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] AddMovieCommand command, CancellationToken cancellationToken)
         {
-            await _mediator.Send(command, cancellationToken);
+            var accountId = ClaimHelper.GetAccountIdFromUser(HttpContext.User);
+            var newCommand = command with { AccountId = accountId };
+
+            await _mediator.Send(newCommand, cancellationToken);
 
             _logger.LogInformation("Movie was created");
 
@@ -48,8 +52,9 @@ namespace MovieServiceWebAPI.Controllers
         [HttpPut("{Id:Guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid Id, [FromBody] UpdateMovieCommand command, CancellationToken cancellationToken)
         {
-            command.Id = Id;
-            await _mediator.Send(command, cancellationToken);
+            var newCommand = command with { Id = Id };
+
+            await _mediator.Send(newCommand, cancellationToken);
 
             _logger.LogInformation("Movie was updated");
 

@@ -4,19 +4,23 @@ using MovieServiceApplication.UseCases.Watchlists.Commands.CreateWatchlistComman
 using MovieServiceApplication.UseCases.Watchlists.Commands.DeleteWatchlistCommand;
 using MovieServiceApplication.UseCases.Watchlists.Commands.ManageMovieInWatchlistCommand;
 using MovieServiceApplication.UseCases.Watchlists.Queries.GetWatchlistByAccountIdQuery;
+using MovieServiceWebAPI.Helpers;
 
 namespace MovieServiceWebAPI.Controllers
 {
     [ApiController]
-    [Route("api/watchlists")]
+    [Route("/api/watchlists")]
     public class WatchlistController(IMediator mediator, ILogger<WatchlistController> logger) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
         private readonly ILogger<WatchlistController> _logger = logger;
 
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] CreateWatchlistCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Create(CancellationToken cancellationToken)
         {
+            var accountId = ClaimHelper.GetAccountIdFromUser(HttpContext.User);
+            var command = new CreateWatchlistCommand(accountId);
+
             await _mediator.Send(command, cancellationToken);
 
             _logger.LogInformation("Watchlist was created");
@@ -24,19 +28,12 @@ namespace MovieServiceWebAPI.Controllers
             return Created();
         }
 
-        [HttpGet("{AccountId:Guid}")]
-        public async Task<ActionResult> GetByUserId([FromRoute] GetWatchlistByAccountIdQuery query,CancellationToken cancellationToken)
+        [HttpDelete]
+        public async Task<ActionResult> Delete(CancellationToken cancellationToken)
         {
-            var watchlist = await _mediator.Send(query, cancellationToken);
+            var accountId = ClaimHelper.GetAccountIdFromUser(HttpContext.User);
+            var command = new DeleteWatchlistCommand(accountId);
 
-            _logger.LogInformation("Returning watchlist by account id");
-
-            return Ok(watchlist);
-        }
-
-        [HttpDelete("{AccountId:Guid}")]
-        public async Task<ActionResult> Delete([FromRoute] DeleteWatchlistCommand command, CancellationToken cancellationToken)
-        {
             await _mediator.Send(command, cancellationToken);
 
             _logger.LogInformation("Watchlist was deleted");
@@ -44,15 +41,27 @@ namespace MovieServiceWebAPI.Controllers
             return NoContent();
         }
 
-        [HttpPost("{AccountId:Guid}")]
-        public async Task<ActionResult> ManageMovie([FromRoute] Guid AccountId, [FromBody] ManageMovieInWatchlistCommand command, CancellationToken cancellationToken)
+        [HttpPut]
+        public async Task<ActionResult> ManageMovie([FromBody] ManageMovieInWatchlistCommand command, CancellationToken cancellationToken)
         {
-            command.AccountId = AccountId;
-            await _mediator.Send(command, cancellationToken);
+            var accountId = ClaimHelper.GetAccountIdFromUser(HttpContext.User);
+            var newCommand = command with { AccountId = accountId };
+
+            await _mediator.Send(newCommand, cancellationToken);
 
             _logger.LogInformation("Watchlist updated with action: {WatchlistAction}", command.Action);
 
             return NoContent();
+        }
+
+        [HttpGet("{AccountId:Guid}")]
+        public async Task<ActionResult> GetByAccountId([FromRoute] GetWatchlistByAccountIdQuery query, CancellationToken cancellationToken)
+        {
+            var watchlist = await _mediator.Send(query, cancellationToken);
+
+            _logger.LogInformation("Returning watchlist by account id");
+
+            return Ok(watchlist);
         }
     }
 }

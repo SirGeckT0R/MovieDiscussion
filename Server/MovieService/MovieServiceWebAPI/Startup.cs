@@ -11,6 +11,7 @@ using MovieServiceWebAPI.ExceptionHandler;
 using MovieServiceWebAPI.Hangfire;
 using System.Reflection;
 using MovieServiceWebAPI.Extensions;
+using MovieServiceWebAPI.Middlewares;
 
 namespace MovieServiceWebAPI
 {
@@ -79,6 +80,8 @@ namespace MovieServiceWebAPI
             app.MapHangfireDashboard();
 
             app.UseAuthorization();
+
+            app.UseMiddleware<ExtractAccountIdFromHeaderMiddleware>();
         }
     }
 }

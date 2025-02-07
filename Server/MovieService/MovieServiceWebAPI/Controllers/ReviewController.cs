@@ -6,11 +6,12 @@ using MovieServiceApplication.UseCases.Reviews.Commands.UpdateReviewCommand;
 using MovieServiceApplication.UseCases.Reviews.Queries.GetReviewByIdQuery;
 using MovieServiceApplication.UseCases.Reviews.Queries.GetReviewsByAccountIdQuery;
 using MovieServiceApplication.UseCases.Reviews.Queries.GetReviewsByMovieIdQuery;
+using MovieServiceWebAPI.Helpers;
 
 namespace MovieServiceWebAPI.Controllers
 {
     [ApiController]
-    [Route("api/reviews")]
+    [Route("/api/reviews")]
     public class ReviewController(IMediator mediator, ILogger<ReviewController> logger) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
@@ -19,7 +20,10 @@ namespace MovieServiceWebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AddReviewCommand command, CancellationToken cancellationToken)
         {
-            await _mediator.Send(command, cancellationToken);
+            var accountId = ClaimHelper.GetAccountIdFromUser(HttpContext.User);
+            var newCommand = command with { AccountId = accountId };
+
+            await _mediator.Send(newCommand, cancellationToken);
 
             _logger.LogInformation("Review was created");
 
@@ -45,6 +49,7 @@ namespace MovieServiceWebAPI.Controllers
 
             return Ok(review);
         }
+
         [HttpGet("user/{AccountId:Guid}")]
         public async Task<IActionResult> GetByUser([FromRoute] GetReviewsByAccountIdQuery query, CancellationToken cancellationToken)
         {
@@ -58,8 +63,9 @@ namespace MovieServiceWebAPI.Controllers
         [HttpPut("{Id:Guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid Id, [FromBody] UpdateReviewCommand command, CancellationToken cancellationToken)
         {
-            command.Id = Id;
-            await _mediator.Send(command, cancellationToken);
+            var newCommand = command with { Id = Id };
+
+            await _mediator.Send(newCommand, cancellationToken);
 
             _logger.LogInformation("Review was updated");
 

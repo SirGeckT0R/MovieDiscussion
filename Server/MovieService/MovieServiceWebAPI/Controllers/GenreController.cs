@@ -9,7 +9,7 @@ using MovieServiceApplication.UseCases.Genres.Queries.GetGenreByIdQuery;
 namespace MovieServiceWebAPI.Controllers
 {
     [ApiController]
-    [Route("api/genres")]
+    [Route("/api/genres")]
     public class GenreController(IMediator mediator, ILogger<GenreController> logger): ControllerBase
     {
         private readonly IMediator _mediator = mediator;
@@ -48,8 +48,9 @@ namespace MovieServiceWebAPI.Controllers
         [HttpPut("{Id:Guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid Id, [FromForm] UpdateGenreCommand command, CancellationToken cancellationToken)
         {
-            command.Id = Id;
-            await _mediator.Send(command, cancellationToken);
+            var newCommand = command with { Id = Id };
+
+            await _mediator.Send(newCommand, cancellationToken);
 
             _logger.LogInformation("Genre was updated");
 
