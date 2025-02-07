@@ -1,10 +1,18 @@
 ﻿using DiscussionServiceApplication.Extensions;
 using DiscussionServiceApplication.MappingProfiles;
+using DiscussionServiceDataAccess.DatabaseContext;
 using DiscussionServiceDataAccess.DIExtensions;
+using DiscussionServiceWebAPI.Extensions;
 using DiscussionServiceWebAPI.Hubs;
+using Hangfire.Mongo.Migration.Strategies.Backup;
+using Hangfire.Mongo.Migration.Strategies;
+using Hangfire.Mongo;
+using Hangfire;
+using Microsoft.EntityFrameworkCore;
 using MovieServiceWebAPI.ExceptionHandler;
 using System.Reflection;
 using System.Security.Claims;
+using DiscussionServiceWebAPI.Hangfire;
 
 namespace DiscussionServiceWebAPI
 {
@@ -19,9 +27,12 @@ namespace DiscussionServiceWebAPI
                 options.Configuration = builder.Configuration["Redis"]
             );
 
-            builder.Services.AddSignalR();
-
             builder.Services.AddMongo(Configuration);
+
+            var hangfireConnectionString = Configuration["HangfireConnectionString"]!;
+            builder.Services.AddDbContext<HangfireDbContext>(options => options.UseMongoDB(hangfireConnectionString, "hangfire"));
+
+            builder.Services.AddSignalR();
 
             builder.Services.AddMediatR();
             builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(DiscussionDtoMappingProfile)));
@@ -36,17 +47,41 @@ namespace DiscussionServiceWebAPI
                 });
             });
 
+            var migrationOptions = new MongoMigrationOptions
+            {
+                MigrationStrategy = new DropMongoMigrationStrategy(),
+                BackupStrategy = new CollectionMongoBackupStrategy()
+            };
+            builder.Services.AddHangfire(configuration => configuration
+                                                    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                                                    .UseSimpleAssemblyNameTypeSerializer()
+                                                    .UseRecommendedSerializerSettings()
+                                                    .UseMongoStorage(hangfireConnectionString, 
+                                                                        "hangfire",
+                                                                        new MongoStorageOptions
+                                                                        {
+                                                                            MigrationOptions = migrationOptions,
+                                                                            CheckQueuedJobsStrategy = CheckQueuedJobsStrategy.TailNotificationsCollection
+                                                                        }
+                                                                    )
+                                         );
+
+            builder.Services.AddHangfireServer();
+
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
             builder.Services.AddProblemDetails();
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Host.AddLogging(Configuration);
         }
         public void Configure(WebApplication app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
+                app.SeedAndMigrateDatabases();
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
@@ -56,6 +91,16 @@ namespace DiscussionServiceWebAPI
             app.UseExceptionHandler();
 
             app.UseAuthorization();
+
+            var options = new DashboardOptions()
+            {
+                Authorization = [new HangfireAuthorizationFilter()]
+            };
+            app.UseHangfireDashboard("/hangfire", options);
+
+            app.MapControllers();
+
+            app.MapHangfireDashboard();
 
             app.MapHub<DiscussionHub>("discussion-hub");
         }

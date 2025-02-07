@@ -28,9 +28,9 @@ namespace UserServiceDataAccess.DatabaseHandlers.UnitOfWork
             }
         }
 
-        public async Task SaveAsync()
+        public async Task SaveChangesAsync(CancellationToken cancellationToken)
         {
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
 

@@ -20,11 +20,6 @@ namespace DiscussionServiceApplication.UseCases.Discussions.Commands.UpdateDiscu
                 .MaximumLength(200)
                 .WithMessage("Discussion's {PropertyName} is empty or too long");
 
-            RuleFor(x => x.StartAt)
-                .NotEmpty()
-                .Must(x => x >= DateTime.UtcNow)
-                .WithMessage("Discussion's {PropertyName} is required");
-
             RuleFor(x => x.UpdatedBy)
                 .NotEmpty()
                 .WithMessage("Discussion's {PropertyName} is required");

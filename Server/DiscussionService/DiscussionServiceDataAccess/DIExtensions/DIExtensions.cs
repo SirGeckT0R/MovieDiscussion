@@ -20,6 +20,7 @@ namespace DiscussionServiceDataAccess.DIExtensions
             });
 
             services.AddScoped<IDiscussionRepository, DiscussionRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
 
             services.AddScoped<IUnitOfWork, DiscussionUnitOfWork>();
         }

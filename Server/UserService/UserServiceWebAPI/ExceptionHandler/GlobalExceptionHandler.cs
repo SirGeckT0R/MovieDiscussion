@@ -22,6 +22,7 @@ namespace UserServiceWebAPI.ExceptionHandler
                 TokenException => StatusCodes.Status401Unauthorized,
                 NotFoundException => StatusCodes.Status404NotFound,
                 OperationCanceledException => StatusCodes.Status408RequestTimeout,
+                ConflictException => StatusCodes.Status409Conflict,
                 _ => StatusCodes.Status500InternalServerError
             };
 

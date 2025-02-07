@@ -1,14 +1,16 @@
-﻿using UserServiceDataAccess.DatabaseHandlers.ServiceDbContext;
+﻿using Microsoft.Extensions.Logging;
+using UserServiceDataAccess.DatabaseHandlers.ServiceDbContext;
 using UserServiceDataAccess.Enums;
 using UserServiceDataAccess.Interfaces;
 using UserServiceDataAccess.Models;
 
 namespace UserServiceDataAccess.DatabaseHandlers.Seeder
 {
-    public class UserSeeder(UserServiceDbContext context, IPasswordHasher passwordHasher)
+    public class UserSeeder(UserServiceDbContext context, IPasswordHasher passwordHasher, ILogger<UserSeeder> logger)
     {
         private readonly IPasswordHasher _passwordHasher = passwordHasher;
         private readonly UserServiceDbContext _context = context;
+        private readonly ILogger<UserSeeder> _logger = logger;
 
         public void Seed()
         {
@@ -24,6 +26,8 @@ namespace UserServiceDataAccess.DatabaseHandlers.Seeder
                 _context.Users.AddRange(users);
                 _context.SaveChanges();
             }
+
+            _logger.LogInformation("Seeding completed");
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace DiscussionServiceApplication.UseCases.Discussions.Commands.AddMessageToDiscussionCommand
+namespace DiscussionServiceApplication.UseCases.Messages.Commands.AddMessageToDiscussionCommand
 {
     public class AddMessageToDiscussionValidator : AbstractValidator<AddMessageToDiscussionCommand>
     {

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using MovieServiceApplication.Dto;
 using MovieServiceApplication.Interfaces.UseCases;
 using MovieServiceDataAccess.Interfaces.UnitOfWork;
@@ -8,10 +9,11 @@ using MovieServiceDomain.Exceptions;
 
 namespace MovieServiceApplication.UseCases.Watchlists.Queries.GetWatchlistByAccountIdQuery
 {
-    public class GetWatchlistByAccountIdHandler(IUnitOfWork unitOfWork, IMapper mapper) : IQueryHandler<GetWatchlistByAccountIdQuery, WatchlistDto>
+    public class GetWatchlistByAccountIdHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<GetWatchlistByAccountIdHandler> logger) : IQueryHandler<GetWatchlistByAccountIdQuery, WatchlistDto>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<GetWatchlistByAccountIdHandler> _logger = logger;
 
         public async Task<WatchlistDto> Handle(GetWatchlistByAccountIdQuery request, CancellationToken cancellationToken)
         {
@@ -21,6 +23,8 @@ namespace MovieServiceApplication.UseCases.Watchlists.Queries.GetWatchlistByAcco
 
             if (candidateProfile == null)
             {
+                _logger.LogError("Get watchlist by account id query failed: user profile with account id {Id} not found", request.AccountId);
+
                 throw new NotFoundException("User profile not found");
             }
 
@@ -31,6 +35,8 @@ namespace MovieServiceApplication.UseCases.Watchlists.Queries.GetWatchlistByAcco
 
             if (watchlist == null)
             {
+                _logger.LogError("Get watchlist by account id {Id} query failed: watchlist not found", request.AccountId);
+
                 throw new NotFoundException("Watchlist not found");
             }
 

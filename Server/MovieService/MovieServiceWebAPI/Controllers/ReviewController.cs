@@ -11,14 +11,17 @@ namespace MovieServiceWebAPI.Controllers
 {
     [ApiController]
     [Route("api/reviews")]
-    public class ReviewController(IMediator mediator) : ControllerBase
+    public class ReviewController(IMediator mediator, ILogger<ReviewController> logger) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
+        private readonly ILogger<ReviewController> _logger = logger;
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AddReviewCommand command, CancellationToken cancellationToken)
         {
             await _mediator.Send(command, cancellationToken);
+
+            _logger.LogInformation("Review was created");
 
             return Created();
         }
@@ -28,6 +31,8 @@ namespace MovieServiceWebAPI.Controllers
         {
             var review = await _mediator.Send(query, cancellationToken);
 
+            _logger.LogInformation("Returning review by id");
+
             return Ok(review);
         }
 
@@ -36,12 +41,16 @@ namespace MovieServiceWebAPI.Controllers
         {
             var review = await _mediator.Send(query, cancellationToken);
 
+            _logger.LogInformation("Returning review by movie id");
+
             return Ok(review);
         }
         [HttpGet("user/{AccountId:Guid}")]
         public async Task<IActionResult> GetByUser([FromRoute] GetReviewsByAccountIdQuery query, CancellationToken cancellationToken)
         {
             var review = await _mediator.Send(query, cancellationToken);
+
+            _logger.LogInformation("Returning review by account id");
 
             return Ok(review);
         }
@@ -52,6 +61,8 @@ namespace MovieServiceWebAPI.Controllers
             command.Id = Id;
             await _mediator.Send(command, cancellationToken);
 
+            _logger.LogInformation("Review was updated");
+
             return NoContent();
         }
 
@@ -59,6 +70,8 @@ namespace MovieServiceWebAPI.Controllers
         public async Task<IActionResult> Delete([FromRoute] DeleteReviewCommand command, CancellationToken cancellationToken)
         {
             await _mediator.Send(command, cancellationToken);
+
+            _logger.LogInformation("Review was deleted");
 
             return NoContent();
         }

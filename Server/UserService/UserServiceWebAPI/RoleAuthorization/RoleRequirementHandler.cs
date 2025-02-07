@@ -3,14 +3,18 @@ using UserServiceDataAccess.Enums;
 
 namespace UserServiceWebAPI.RoleAuthorization
 {
-    public class RoleRequirementHandler : AuthorizationHandler<RoleRequirement>
+    public class RoleRequirementHandler(ILogger<RoleRequirementHandler> logger) : AuthorizationHandler<RoleRequirement>
     {
+        private readonly ILogger<RoleRequirementHandler> _logger = logger;
+
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, RoleRequirement requirement)
         {
             IEnumerable<IAuthorizationRequirement> requirements = context.Requirements;
 
             if (!context.User.Claims.Any(x => x.Type == ClaimType.Role.ToString()))
             {
+                _logger.LogError("User token has no role");
+
                 context.Fail(new AuthorizationFailureReason(this, "User token has no role"));
 
                 return Task.CompletedTask;
@@ -26,12 +30,16 @@ namespace UserServiceWebAPI.RoleAuthorization
 
             if (!isMatch)
             {
-                context.Fail(new AuthorizationFailureReason(this, "User token doesn't has the required role"));
+                _logger.LogError("User token doesn't have the required role");
+
+                context.Fail(new AuthorizationFailureReason(this, "User token doesn't have the required role"));
 
                 return Task.CompletedTask;
             }
 
             context.Succeed(requirement);
+
+            _logger.LogInformation("User authorized");
 
             return Task.CompletedTask;
         }

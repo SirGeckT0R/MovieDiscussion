@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using MovieServiceApplication.Enums;
 using MovieServiceApplication.Interfaces.UseCases;
 using MovieServiceDataAccess.Interfaces.UnitOfWork;
@@ -8,9 +9,10 @@ using MovieServiceDomain.Exceptions;
 
 namespace MovieServiceApplication.UseCases.Watchlists.Commands.ManageMovieInWatchlistCommand
 {
-    public class ManageMovieInWatchlistHandler(IUnitOfWork unitOfWork) : ICommandHandler<ManageMovieInWatchlistCommand, Unit>
+    public class ManageMovieInWatchlistHandler(IUnitOfWork unitOfWork, ILogger<ManageMovieInWatchlistHandler> logger) : ICommandHandler<ManageMovieInWatchlistCommand, Unit>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly ILogger<ManageMovieInWatchlistHandler> _logger = logger;
 
         public async Task<Unit> Handle(ManageMovieInWatchlistCommand request, CancellationToken cancellationToken)
         {
@@ -20,6 +22,8 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.ManageMovieInWatc
 
             if (candidateProfile == null)
             {
+                _logger.LogError("Manage movie in watchlist command failed: user profile with account id {Id} not found", request.AccountId);
+
                 throw new NotFoundException("User profile not found");
             }
 
@@ -30,6 +34,8 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.ManageMovieInWatc
 
             if (watchlist == null)
             {
+                _logger.LogError("Manage movie in watchlist command failed: watchlist not found");
+
                 throw new NotFoundException("Watchlist not found");
             }
 
@@ -38,6 +44,8 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.ManageMovieInWatc
 
             if (movie == null)
             {
+                _logger.LogError("Manage movie in watchlist command failed: movie with id {Id} not found", request.MovieId);
+
                 throw new NotFoundException("Movie not found");
             }
 
@@ -48,6 +56,8 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.ManageMovieInWatc
 
                     if (watchlist.MovieIds.Any(m => m.Equals(request.MovieId)))
                     {
+                        _logger.LogError("Manage movie in watchlist command failed: movie with id {Id} already added to watchlist", request.MovieId);
+
                         throw new ConflictException("Movie already added to watchlist");
                     }
 
@@ -58,6 +68,8 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.ManageMovieInWatc
 
                     if (!watchlist.MovieIds.Remove(request.MovieId))
                     {
+                        _logger.LogError("Manage movie in watchlist command failed: movie with id {Id} wasn't present in watchlist", request.MovieId);
+
                         throw new ConflictException("Movie wasn't present in watchlist");
                     }
 

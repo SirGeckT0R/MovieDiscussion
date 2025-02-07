@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using MovieServiceApplication.Interfaces.UseCases;
 using MovieServiceDataAccess.Interfaces.UnitOfWork;
 using MovieServiceDataAccess.Specifications.UserProfileSpecifications;
@@ -8,10 +9,12 @@ using MovieServiceDomain.Models;
 
 namespace MovieServiceApplication.UseCases.UserProfiles.Commands.CreateUserProfileCommand
 {
-    public class CreateUserProfileHandler(IUnitOfWork unitOfWork, IMapper mapper) : ICommandHandler<CreateUserProfileCommand, Unit>
+    public class CreateUserProfileHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<CreateUserProfileHandler> logger) : ICommandHandler<CreateUserProfileCommand, Unit>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<CreateUserProfileHandler> _logger = logger;
+
         public async Task<Unit> Handle(CreateUserProfileCommand request, CancellationToken cancellationToken)
         {
             var profileSpecification = new UserProfileByAccountIdSpecification(request.AccountId);
@@ -20,6 +23,8 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Commands.CreateUserProfi
 
             if (candidateProfile != null)
             {
+                _logger.LogError("Create user profile command failed: user profile with account id {Id} already exists", request.AccountId);
+
                 throw new ConflictException("User profile already exists");
             }
 

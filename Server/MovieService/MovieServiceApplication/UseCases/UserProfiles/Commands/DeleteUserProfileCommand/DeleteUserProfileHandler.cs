@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using MovieServiceApplication.Interfaces.UseCases;
 using MovieServiceDataAccess.Interfaces.UnitOfWork;
 using MovieServiceDataAccess.Specifications.UserProfileSpecifications;
@@ -6,9 +7,11 @@ using MovieServiceDomain.Exceptions;
 
 namespace MovieServiceApplication.UseCases.UserProfiles.Commands.DeleteUserProfileCommand
 {
-    public class DeleteUserProfileHandler(IUnitOfWork unitOfWork) : ICommandHandler<DeleteUserProfileCommand, Unit>
+    public class DeleteUserProfileHandler(IUnitOfWork unitOfWork, ILogger<DeleteUserProfileHandler> logger) : ICommandHandler<DeleteUserProfileCommand, Unit>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly ILogger<DeleteUserProfileHandler> _logger = logger;
+
         public async Task<Unit> Handle(DeleteUserProfileCommand request, CancellationToken cancellationToken)
         {
             var profileSpecification = new UserProfileByAccountIdSpecification(request.AccountId);
@@ -17,6 +20,8 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Commands.DeleteUserProfi
 
             if (candidateProfile == null)
             {
+                _logger.LogError("Delete user profile command failed: user profile with account id {Id} not found", request.AccountId);
+
                 throw new NotFoundException("User profile not found");
             }
 

@@ -2,7 +2,7 @@
 using MediatR;
 using MovieServiceApplication.Interfaces.UseCases;
 
-namespace MovieServiceApplication.Validation
+namespace MovieServiceApplication.Behaviors
 {
     public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : class, ICommand<TResponse>
     {

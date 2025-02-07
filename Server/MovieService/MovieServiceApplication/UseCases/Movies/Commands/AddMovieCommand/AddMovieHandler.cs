@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using MovieServiceApplication.Interfaces.UseCases;
 using MovieServiceDataAccess.Interfaces.UnitOfWork;
 using MovieServiceDataAccess.Specifications.UserProfileSpecifications;
@@ -8,10 +9,11 @@ using MovieServiceDomain.Models;
 
 namespace MovieServiceApplication.UseCases.Movies.Commands.AddMovieCommand
 {
-    public class AddMovieHandler(IUnitOfWork unitOfWork, IMapper mapper) : ICommandHandler<AddMovieCommand, Unit>
+    public class AddMovieHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<AddMovieHandler> logger) : ICommandHandler<AddMovieCommand, Unit>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<AddMovieHandler> _logger = logger;
 
         public async Task<Unit> Handle(AddMovieCommand request, CancellationToken cancellationToken)
         {
@@ -20,7 +22,9 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.AddMovieCommand
             var candidateProfile = candidates.SingleOrDefault();
 
             if (candidateProfile == null)
-            { 
+            {
+                _logger.LogError("Add movie command failed: user profile with account id {Id} not found", request.AccountId);
+
                 throw new NotFoundException("User profile not found");
             }
 
@@ -29,6 +33,8 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.AddMovieCommand
 
             if (!doGenresExist)
             {
+                _logger.LogError("Add movie command failed: some genres are not found");
+
                 throw new NotFoundException("Some genres are not found");
             }
 
@@ -37,6 +43,8 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.AddMovieCommand
 
             if (!doCrewMembersExist)
             {
+                _logger.LogError("Add movie command failed: some crew members are not found");
+
                 throw new NotFoundException("Some crew members are not found");
             }
 

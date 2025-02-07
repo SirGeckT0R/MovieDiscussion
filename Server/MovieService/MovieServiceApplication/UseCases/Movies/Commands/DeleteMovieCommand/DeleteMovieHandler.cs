@@ -1,13 +1,15 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using MovieServiceApplication.Interfaces.UseCases;
 using MovieServiceDataAccess.Interfaces.UnitOfWork;
 using MovieServiceDomain.Exceptions;
 
 namespace MovieServiceApplication.UseCases.Movies.Commands.DeleteMovieCommand
 {
-    public class DeleteMovieHandler(IUnitOfWork unitOfWork) : ICommandHandler<DeleteMovieCommand, Unit>
+    public class DeleteMovieHandler(IUnitOfWork unitOfWork, ILogger<DeleteMovieHandler> logger) : ICommandHandler<DeleteMovieCommand, Unit>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly ILogger<DeleteMovieHandler> _logger = logger;
 
         public async Task<Unit> Handle(DeleteMovieCommand request, CancellationToken cancellationToken)
         {
@@ -15,6 +17,8 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.DeleteMovieCommand
 
             if (movie == null)
             {
+                _logger.LogError("Delete movie command failed for {Id}: movie not found", request.Id);
+
                 throw new NotFoundException("Movie not found");
             }
 

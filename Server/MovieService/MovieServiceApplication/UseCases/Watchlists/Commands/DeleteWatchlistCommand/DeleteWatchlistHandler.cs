@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using MovieServiceApplication.Interfaces.UseCases;
 using MovieServiceDataAccess.Interfaces.UnitOfWork;
 using MovieServiceDataAccess.Specifications.UserProfileSpecifications;
@@ -7,9 +8,10 @@ using MovieServiceDomain.Exceptions;
 
 namespace MovieServiceApplication.UseCases.Watchlists.Commands.DeleteWatchlistCommand
 {
-    public class DeleteWatchlistHandler(IUnitOfWork unitOfWork) : ICommandHandler<DeleteWatchlistCommand, Unit>
+    public class DeleteWatchlistHandler(IUnitOfWork unitOfWork, ILogger<DeleteWatchlistHandler> logger) : ICommandHandler<DeleteWatchlistCommand, Unit>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly ILogger<DeleteWatchlistHandler> _logger = logger;
 
         public async Task<Unit> Handle(DeleteWatchlistCommand request, CancellationToken cancellationToken)
         {
@@ -19,6 +21,8 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.DeleteWatchlistCo
 
             if (candidateProfile == null)
             {
+                _logger.LogError("Delete watchlist command failed: user profile with account id {Id} not found", request.AccountId);
+
                 throw new NotFoundException("User profile not found");
             }
 
@@ -29,6 +33,8 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.DeleteWatchlistCo
 
             if (watchlist == null)
             {
+                _logger.LogError("Delete watchlist command failed: watchlist not found");
+
                 throw new NotFoundException("Watchlist not found");
             }
 

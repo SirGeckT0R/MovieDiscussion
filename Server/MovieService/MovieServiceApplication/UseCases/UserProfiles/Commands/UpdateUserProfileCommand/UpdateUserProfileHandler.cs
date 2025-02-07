@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using MovieServiceApplication.Interfaces.UseCases;
 using MovieServiceDataAccess.Interfaces.UnitOfWork;
 using MovieServiceDataAccess.Specifications.UserProfileSpecifications;
@@ -7,10 +8,11 @@ using MovieServiceDomain.Exceptions;
 
 namespace MovieServiceApplication.UseCases.UserProfiles.Commands.UpdateUserProfileCommand
 {
-    public class UpdateUserProfileHandler(IUnitOfWork unitOfWork, IMapper mapper) : ICommandHandler<UpdateUserProfileCommand, Unit>
+    public class UpdateUserProfileHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateUserProfileHandler> logger) : ICommandHandler<UpdateUserProfileCommand, Unit>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<UpdateUserProfileHandler> _logger = logger;
 
         public async Task<Unit> Handle(UpdateUserProfileCommand request, CancellationToken cancellationToken)
         {
@@ -20,6 +22,8 @@ namespace MovieServiceApplication.UseCases.UserProfiles.Commands.UpdateUserProfi
 
             if (candidateProfile == null)
             {
+                _logger.LogError("Update user profile command failed: user profile with account id {Id} not found", request.AccountId);
+
                 throw new NotFoundException("User profile not found");
             }
 
