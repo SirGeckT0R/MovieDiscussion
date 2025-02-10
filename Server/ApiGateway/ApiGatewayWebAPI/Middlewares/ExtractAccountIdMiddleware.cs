@@ -9,10 +9,12 @@
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext context)
+        public async Task InvokeAsync(HttpContext context, IConfiguration configuration)
         {
             var claim = context.User.FindFirst("UserId")?.Value;
+
             context.Request.Headers["AccountId"] = claim;
+            context.Request.Headers["ApiSecret"] = configuration["ApiGatewaySecretKey"];
 
             await _next(context);
         }
