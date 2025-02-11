@@ -18,6 +18,7 @@ using UserServiceDataAccess.PasswordHasher;
 using Hangfire;
 using Hangfire.PostgreSql;
 using UserServiceWebAPI.Hangfire;
+using MovieGrpcClient;
 
 namespace UserServiceWebAPI
 {
@@ -81,6 +82,13 @@ namespace UserServiceWebAPI
             services.AddAutoMapper(Assembly.GetAssembly(typeof(RegisterRequestMappingProfile)));
 
             builder.Host.AddLogging(Configuration);
+
+            var movieGrpcUrl = Configuration["MovieGrpcUrl"]!;
+
+            builder.Services.AddGrpcClient<MovieService.MovieServiceClient>(options =>
+            {
+                options.Address = new Uri(movieGrpcUrl);
+            });
         }
 
         public void Configure(WebApplication app, IWebHostEnvironment env)

@@ -11,9 +11,9 @@ using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using MovieServiceWebAPI.ExceptionHandler;
 using System.Reflection;
-using System.Security.Claims;
 using DiscussionServiceWebAPI.Hangfire;
 using DiscussionServiceWebAPI.Middlewares;
+using UserGrpcClient;
 
 namespace DiscussionServiceWebAPI
 {
@@ -77,6 +77,14 @@ namespace DiscussionServiceWebAPI
             builder.Services.AddSwaggerGen();
 
             builder.Host.AddLogging(Configuration);
+
+            var userGrpcUrl = Configuration["UserGrpcUrl"]!;
+
+            builder.Services.AddGrpcClient<UserService.UserServiceClient>(options =>
+            {
+                options.Address = new Uri(userGrpcUrl);
+            });
+
         }
         public void Configure(WebApplication app, IWebHostEnvironment env)
         {

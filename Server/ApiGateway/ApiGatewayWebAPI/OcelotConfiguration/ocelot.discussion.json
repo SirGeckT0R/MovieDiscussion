@@ -72,9 +72,9 @@
       "SwaggerKey": "Discussion"
     },
     {
-      "UpstreamPathTemplate": "/api/discussions/{Id}/discussions",
+      "UpstreamPathTemplate": "/api/discussions/{Id}/subscribers",
       "UpstreamHttpMethod": [ "POST" ],
-      "DownstreamPathTemplate": "/api/discussions/{Id}/discussions",
+      "DownstreamPathTemplate": "/api/discussions/{Id}/subscribers",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {

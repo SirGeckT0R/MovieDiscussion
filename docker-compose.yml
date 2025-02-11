@@ -29,6 +29,20 @@ services:
     networks:
       - elastic
 
+  usergrpcserver:
+    image: ${DOCKER_REGISTRY-}usergrpcserver
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    build:
+      context: .
+      dockerfile: Server/UserService/UserGrpcServer/Dockerfile
+    ports:
+      - ${USER_GRPC_PORTS}  
+    networks:
+      - elastic
+
   movieservicewebapi:
     image: ${DOCKER_REGISTRY-}movieservicewebapi
     env_file:
@@ -40,6 +54,20 @@ services:
       dockerfile: Server/MovieService/MovieServiceWebAPI/Dockerfile
     ports:
       - ${MOVIE_SERVICE_PORTS}
+    networks:
+      - elastic
+
+  moviegrpcserver:
+    image: ${DOCKER_REGISTRY-}moviegrpcserver
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    build:
+      context: .
+      dockerfile: Server/MovieService/MovieGrpcServer/Dockerfile
+    ports:
+      - ${MOVIE_GRPC_PORTS}  
     networks:
       - elastic
 

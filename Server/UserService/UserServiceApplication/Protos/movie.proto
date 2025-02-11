@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option csharp_namespace = "MovieGrpcClient";
+
+package movie;
+
+service MovieService {
+  rpc CreateUserProfile (CreateUserProfileRequest) returns (CreateUserProfileReply);
+  rpc DeleteUserProfile (DeleteUserProfileRequest) returns (DeleteUserProfileReply);
+}
+
+message CreateUserProfileRequest {
+  string accountId = 1;
+  string username = 2;
+}
+
+message CreateUserProfileReply {
+  bool isSuccessfull = 1;
+}
+
+message DeleteUserProfileRequest {
+  string accountId = 1;
+}
+
+message DeleteUserProfileReply {
+  bool isSuccessfull = 1;
+}

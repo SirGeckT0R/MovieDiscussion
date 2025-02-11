@@ -2,11 +2,21 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.29.3" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.67.0" />
+    <PackageReference Include="Grpc.Net.ClientFactory" Version="2.67.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.69.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Hangfire.AspNetCore" Version="1.8.17" />
     <PackageReference Include="MediatR" Version="12.4.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DiscussionServiceDataAccess\DiscussionServiceDataAccess.csproj" />
     <ProjectReference Include="..\DiscussionServiceDomain\DiscussionServiceDomain.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Protobuf Include="Protos\user.proto" GrpcServices="Client" />
   </ItemGroup>
 </Project>

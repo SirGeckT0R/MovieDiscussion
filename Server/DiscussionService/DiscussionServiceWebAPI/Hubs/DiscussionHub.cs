@@ -31,7 +31,7 @@ namespace DiscussionServiceWebAPI.Hubs
 
             await Clients
                     .Group(stringDiscussionId)
-                    .ReceiveMessage("Admin", $"{userConnection.AccountId} joined the chat");
+                    .ReceiveMessage("Admin", $"{userConnection.Username} joined the chat");
         }
 
         public async Task SendMessage(string Message)
@@ -49,7 +49,7 @@ namespace DiscussionServiceWebAPI.Hubs
 
             await Clients
                     .Group(stringDiscussionId)
-                    .ReceiveMessage($"{userConnection.AccountId}", Message);
+                    .ReceiveMessage($"{userConnection.Username}", Message);
         }
 
         public override async Task OnDisconnectedAsync(Exception? exception)
@@ -71,7 +71,7 @@ namespace DiscussionServiceWebAPI.Hubs
 
             await Clients
                     .Group(stringDiscussionId)
-                    .ReceiveMessage("Admin", $"{userConnection.AccountId} left the chat");
+                    .ReceiveMessage("Admin", $"{userConnection.Username} left the chat");
 
             await base.OnDisconnectedAsync(exception);
         }

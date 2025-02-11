@@ -30,10 +30,9 @@ namespace DiscussionServiceWebAPI.Middlewares
                     await context.Response.WriteAsync("Request that passed AccountId header had invalid ApiSecret header");
                 }
 
-                var claims = new List<Claim>
-                                            {
-                                                new Claim("AccountId", claim)
-                                            };
+                var claims = new List<Claim> {
+                    new Claim("AccountId", claim)
+                };
 
                 var appIdentity = new ClaimsIdentity(claims);
                 context.User.AddIdentity(appIdentity);
