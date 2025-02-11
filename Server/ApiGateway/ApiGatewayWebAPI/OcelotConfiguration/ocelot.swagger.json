@@ -1,0 +1,34 @@
+﻿{
+  "SwaggerEndPoints": [
+    {
+      "Key": "Auth",
+      "Config": [
+        {
+          "Name": "Authentication",
+          "Version": "v1",
+          "Url": "http://host.docker.internal:5001/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "Movie",
+      "Config": [
+        {
+          "Name": "Movie",
+          "Version": "v1",
+          "Url": "http://host.docker.internal:5002/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "Discussion",
+      "Config": [
+        {
+          "Name": "Discussion",
+          "Version": "v1",
+          "Url": "http://host.docker.internal:5003/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ]
+}

@@ -405,3 +405,4 @@ FodyWeavers.xsd
 /Server/ApiGateway/ApiGatewayWebAPI/secrets.json
 /Server/MovieService/MovieServiceWebAPI/secrets.json
 /Server/DiscussionService/DiscussionServiceWebAPI/secrets.json
+/TemplateEngineHost/vs

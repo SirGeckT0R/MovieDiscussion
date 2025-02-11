@@ -1,5 +1,4 @@
-﻿using DnsClient.Internal;
-using Hangfire;
+﻿using Hangfire;
 using Microsoft.Extensions.Logging;
 using MovieServiceDataAccess.Interfaces.UnitOfWork;
 using MovieServiceDataAccess.Specifications.ReviewSpecifications;

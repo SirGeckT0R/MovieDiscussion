@@ -13,6 +13,7 @@ using MovieServiceWebAPI.ExceptionHandler;
 using System.Reflection;
 using System.Security.Claims;
 using DiscussionServiceWebAPI.Hangfire;
+using DiscussionServiceWebAPI.Middlewares;
 
 namespace DiscussionServiceWebAPI
 {
@@ -92,6 +93,8 @@ namespace DiscussionServiceWebAPI
 
             app.UseAuthorization();
 
+            app.UseMiddleware<ExtractAccountIdFromHeaderMiddleware>();
+
             var options = new DashboardOptions()
             {
                 Authorization = [new HangfireAuthorizationFilter()]
@@ -102,7 +105,7 @@ namespace DiscussionServiceWebAPI
 
             app.MapHangfireDashboard();
 
-            app.MapHub<DiscussionHub>("discussion-hub");
+            app.MapHub<DiscussionHub>("/discussion-hub");
         }
     }
 }

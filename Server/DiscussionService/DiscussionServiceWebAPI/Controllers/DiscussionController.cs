@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DiscussionServiceWebAPI.Controllers
 {
     [ApiController]
-    [Route("api/discussions")]
+    [Route("/api/discussions")]
     public class DiscussionController(IMediator mediator, ILogger<DiscussionController> logger) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;

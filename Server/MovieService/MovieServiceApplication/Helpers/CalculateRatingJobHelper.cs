@@ -26,7 +26,9 @@ namespace MovieServiceApplication.Helpers
                     throw new NotFoundException("No valid hour interval was found in configuration");
                 }
 
-                var cronExpression = Cron.HourInterval(hourInterval);
+                var startJobTime = DateTime.UtcNow.AddHours(hourInterval);
+
+                var cronExpression = Cron.Daily(startJobTime.Hour, startJobTime.Minute);
                 RecurringJob.AddOrUpdate<CalculateRatingJob>(jobIndex, x => x.ExecuteAsync(movieId), cronExpression);
             }
         }

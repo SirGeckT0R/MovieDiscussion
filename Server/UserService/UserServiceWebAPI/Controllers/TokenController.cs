@@ -5,14 +5,13 @@ using UserServiceApplication.Interfaces.Services;
 namespace UserServiceWebAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("tokens")]
     public class TokenController(ITokenService tokenService, ILogger<TokenController> logger) : ControllerBase
     {
         private readonly ITokenService _tokenService = tokenService;
         private readonly ILogger<TokenController> _logger = logger;
 
         [HttpPost("refresh")]
-        [Authorize]
         public async Task<IActionResult> Refresh(CancellationToken cancellationToken)
         {
             string? refreshToken = HttpContext.Request.Cookies["refreshToken"];
