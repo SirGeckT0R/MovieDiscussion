@@ -86,13 +86,13 @@ namespace UserServiceApplication.Services
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var createUserPofileRequest = new CreateUserProfileRequest
+            var createProfileAndWatchlistRequest = new CreateProfileAndWatchlistRequest
             {
                 AccountId = addedUserId.ToString(),
                 Username = user.Username
             };
 
-            await _client.CreateUserProfileAsync(createUserPofileRequest);
+            await _client.CreateProfileAndWatchlistAsync(createProfileAndWatchlistRequest);
 
             _logger.LogInformation("Register attempt completed successfully for {Email}", registerRequest.Email);
 
@@ -138,9 +138,9 @@ namespace UserServiceApplication.Services
             cancellationToken.ThrowIfCancellationRequested();
             _unitOfWork.UserRepository.Delete(candidate, cancellationToken);
 
-            var deleteUserPofileRequest = new DeleteUserProfileRequest { AccountId = candidate.Id.ToString() };
+            var deleteProfileAndWatchlistRequest = new DeleteProfileAndWatchlistRequest { AccountId = candidate.Id.ToString() };
 
-            await _client.DeleteUserProfileAsync(deleteUserPofileRequest);
+            await _client.DeleteProfileAndWatchlistAsync(deleteProfileAndWatchlistRequest);
 
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);

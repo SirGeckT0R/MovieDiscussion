@@ -11,7 +11,7 @@ namespace MovieGrpcServer.Services
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly ILogger<MovieServiceImpl> _logger = logger;
 
-        public override async Task<CreateUserProfileReply> CreateUserProfile(CreateUserProfileRequest request, ServerCallContext context)
+        public override async Task<CreateProfileAndWatchlistReply> CreateProfileAndWatchlist(CreateProfileAndWatchlistRequest request, ServerCallContext context)
         {
             _logger.LogInformation("GRPC movie service request started: Create User Profile for {Id}", request.AccountId);
             var cancellationToken = context.CancellationToken;
@@ -49,14 +49,14 @@ namespace MovieGrpcServer.Services
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var reply = new CreateUserProfileReply { };
+            var reply = new CreateProfileAndWatchlistReply { };
 
             _logger.LogInformation("GRPC movie service request compeleted successfully: Create User Profile for {Id}", request.AccountId);
 
             return reply;
         }
 
-        public override async Task<DeleteUserProfileReply> DeleteUserProfile(DeleteUserProfileRequest request, ServerCallContext context)
+        public override async Task<DeleteProfileAndWatchlistReply> DeleteProfileAndWatchlist(DeleteProfileAndWatchlistRequest request, ServerCallContext context)
         {
             _logger.LogInformation("GRPC movie service request started: Delete User Profile for {Id}", request.AccountId);
             var cancellationToken = context.CancellationToken;
@@ -104,7 +104,7 @@ namespace MovieGrpcServer.Services
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var reply = new DeleteUserProfileReply { };
+            var reply = new DeleteProfileAndWatchlistReply { };
 
             _logger.LogInformation("GRPC movie service request compeleted successfully: Delete User Profile for {Id}", request.AccountId);
 
