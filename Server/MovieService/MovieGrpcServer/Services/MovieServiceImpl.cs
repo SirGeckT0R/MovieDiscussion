@@ -3,6 +3,7 @@ using MovieServiceDataAccess.Interfaces.UnitOfWork;
 using MovieServiceDataAccess.Specifications.UserProfileSpecifications;
 using MovieServiceDataAccess.Specifications.WatchlistSpecifications;
 using MovieServiceDomain.Models;
+
 namespace MovieGrpcServer.Services
 {
     public class MovieServiceImpl(ILogger<MovieServiceImpl> logger, IUnitOfWork unitOfWork) : MovieService.MovieServiceBase
@@ -48,7 +49,7 @@ namespace MovieGrpcServer.Services
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var reply = new CreateUserProfileReply { IsSuccessfull = true };
+            var reply = new CreateUserProfileReply { };
 
             _logger.LogInformation("GRPC movie service request compeleted successfully: Create User Profile for {Id}", request.AccountId);
 
@@ -103,7 +104,7 @@ namespace MovieGrpcServer.Services
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var reply = new DeleteUserProfileReply { IsSuccessfull = true };
+            var reply = new DeleteUserProfileReply { };
 
             _logger.LogInformation("GRPC movie service request compeleted successfully: Delete User Profile for {Id}", request.AccountId);
 

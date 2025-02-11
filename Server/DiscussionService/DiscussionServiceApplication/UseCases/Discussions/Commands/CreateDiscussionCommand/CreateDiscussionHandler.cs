@@ -19,7 +19,7 @@ namespace DiscussionServiceApplication.UseCases.Discussions.Commands.CreateDiscu
         {
             var getUserInfoRequest = new GetUserInfoRequest { UserId = request.CreatedBy.ToString() };
 
-            _ = await _userServiceClient.GetUserInfoAsync(getUserInfoRequest);
+            await _userServiceClient.GetUserInfoAsync(getUserInfoRequest);
 
             var discussion = _mapper.Map<Discussion>(request);
             await _unitOfWork.Discussions.AddAsync(discussion, cancellationToken);

@@ -30,11 +30,6 @@ namespace UserGrpcServer
             });
 
             services.AddDbContext<UserServiceDbContext>(options => options.UseNpgsql(userDbConnectionString));
-            //services.AddDbContext<HangfireDbContext>(options => options.UseNpgsql(hangfireConnectionString));
-
-            //services.AddScoped<IUserService, UserService>();
-            //services.AddScoped<ITokenService, TokenService>();
-            //services.AddScoped<IEmailService, EmailService>();
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITokenRepository, TokenRepository>();

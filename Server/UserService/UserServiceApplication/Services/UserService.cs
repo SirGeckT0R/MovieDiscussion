@@ -92,12 +92,7 @@ namespace UserServiceApplication.Services
                 Username = user.Username
             };
 
-            var reply = await _client.CreateUserProfileAsync(createUserPofileRequest);
-
-            if (!reply.IsSuccessfull)
-            {
-                throw new GrpcException("Error while creating user profile");
-            }
+            await _client.CreateUserProfileAsync(createUserPofileRequest);
 
             _logger.LogInformation("Register attempt completed successfully for {Email}", registerRequest.Email);
 
@@ -145,12 +140,7 @@ namespace UserServiceApplication.Services
 
             var deleteUserPofileRequest = new DeleteUserProfileRequest { AccountId = candidate.Id.ToString() };
 
-            var reply = await _client.DeleteUserProfileAsync(deleteUserPofileRequest);
-
-            if (!reply.IsSuccessfull)
-            {
-                throw new GrpcException("Error while deleting user profile");
-            }
+            await _client.DeleteUserProfileAsync(deleteUserPofileRequest);
 
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
