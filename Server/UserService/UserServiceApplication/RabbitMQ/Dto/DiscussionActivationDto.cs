@@ -1,4 +1,4 @@
 ﻿namespace UserServiceApplication.RabbitMQ.Dto
 {
-    public record DiscussionActivationDto(string DiscussionName, ICollection<Guid> Subscribers);
+    public record DiscussionActivationDto(string Title, ICollection<Guid> Subscribers);
 }

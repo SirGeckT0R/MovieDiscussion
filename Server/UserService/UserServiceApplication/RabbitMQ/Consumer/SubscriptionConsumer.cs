@@ -74,9 +74,9 @@ namespace UserServiceApplication.RabbitMQ.Consumer
 
                 foreach (var email in emails)
                 {
-                    _logger.LogInformation("Sending notification to {Email} about discussion {DiscussionName}", email, messageDto.DiscussionName);
+                    _logger.LogInformation("Sending notification to {Email} about discussion {DiscussionName}", email, messageDto.Title);
 
-                    await emailService.SendEmailAsync(email, $"{messageDto.DiscussionName} has started", "Don't miss it!", eventArgs.CancellationToken);
+                    await emailService.SendEmailAsync(email, $"{messageDto.Title} has started", "Don't miss it!", eventArgs.CancellationToken);
                 }
             }
             

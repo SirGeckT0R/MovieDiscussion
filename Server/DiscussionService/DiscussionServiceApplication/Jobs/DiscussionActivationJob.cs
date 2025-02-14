@@ -1,5 +1,5 @@
-﻿using DiscussionServiceApplication.RabbitMQ.Dto;
-using DiscussionServiceApplication.RabbitMQ.Producer;
+﻿using AutoMapper;
+using DiscussionServiceApplication.RabbitMQ.Dto;
 using DiscussionServiceApplication.RabbitMQ.Service;
 using DiscussionServiceDataAccess.Interfaces.UnitOfWork;
 using DiscussionServiceDomain.Exceptions;
@@ -9,11 +9,13 @@ using Microsoft.Extensions.Logging;
 namespace DiscussionServiceApplication.Jobs
 {
     public class DiscussionActivationJob(IUnitOfWork unitOfWork, 
-                                         IRabbitMQService rabbitService, 
+                                         IRabbitMQService rabbitService,
+                                         IMapper mapper,
                                          ILogger<DiscussionActivationJob> logger)
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IRabbitMQService _rabbitService = rabbitService;
+        private readonly IMapper _mapper = mapper;
         private readonly ILogger<DiscussionActivationJob> _logger = logger;
 
         public async Task ExecuteAsync(Guid discussionId)
@@ -38,13 +40,11 @@ namespace DiscussionServiceApplication.Jobs
 
             await _unitOfWork.SaveChangesAsync(default);
 
-            var subscribers = discussion.Subscribers;
-
-            if (subscribers.Count > 0)
+            if (discussion.Subscribers.Count > 0)
             {
                 _logger.LogInformation("Notifying the subscribers that the discussion with id {Id} was activated", discussionId);
 
-                var messageDto = new DiscussionActivationDto(discussion.Title, subscribers);
+                var messageDto = _mapper.Map<DiscussionActivationDto>(discussion);
 
                 await _rabbitService.SendSubscriptionMessage(messageDto, default);
             }

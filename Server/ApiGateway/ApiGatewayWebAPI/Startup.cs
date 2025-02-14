@@ -19,9 +19,10 @@ namespace ApiGatewayWebAPI
             {
                 options.AddPolicy("AllowAll", builder =>
                 {
-                    builder.AllowAnyOrigin()
+                    builder.WithOrigins(Configuration["FrontendUrl"]!)
                            .AllowAnyMethod()
-                           .AllowAnyHeader();
+                           .AllowAnyHeader()
+                           .AllowCredentials();
                 });
             });
 
@@ -73,6 +74,13 @@ namespace ApiGatewayWebAPI
             }
 
             app.UseCors("AllowAll");
+
+            app.UseCookiePolicy(new CookiePolicyOptions
+            {
+                MinimumSameSitePolicy = SameSiteMode.None,
+                HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.Always,
+                Secure = CookieSecurePolicy.SameAsRequest,
+            });
 
             app.UseWebSockets();
 
