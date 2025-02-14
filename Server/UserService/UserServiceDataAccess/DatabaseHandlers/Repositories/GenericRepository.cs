@@ -46,11 +46,12 @@ namespace UserServiceDataAccess.DatabaseHandlers.Repositories
             return await _dbSet.FirstOrDefaultAsync(user => user.Id == id, cancellationToken);
         }
 
-        public async Task<T?> GetWithSpecificationAsync(Specification<T> specification, CancellationToken cancellationToken)
+        public async Task<ICollection<T>> GetWithSpecificationAsync(Specification<T> specification, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            var collection = await ApplySpecification(specification);
 
-            return (await ApplySpecification(specification)).FirstOrDefault();
+            return collection;
         }
 
         public void Update(T model, CancellationToken cancellationToken)

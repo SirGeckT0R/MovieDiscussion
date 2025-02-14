@@ -1,7 +1,7 @@
 ﻿using UserServiceDataAccess.Enums;
 using UserServiceDataAccess.Models;
 
-namespace UserServiceDataAccess.DatabaseHandlers.Specifications
+namespace UserServiceDataAccess.DatabaseHandlers.Specifications.TokenSpecifications
 {
     public class UserIdAndTypeSpecification : Specification<Token>
     {

@@ -14,5 +14,6 @@ namespace UserServiceApplication.Interfaces.Services
         Task<string> ConfirmEmailRecieveAsync(ConfirmEmailRequest confirmEmailRequest, CancellationToken cancellationToken);
         Task<string> ForgotPasswordAsync(string? accessToken, string callbackUrl, CancellationToken cancellationToken);
         Task<string> ResetPasswordAsync(ResetPasswordRequest resetPasswordRequest, CancellationToken cancellationToken);
+        Task<ICollection<UserDto>> GetFromCollectionAsync(ICollection<Guid> ids, CancellationToken cancellationToken);
     }
 }

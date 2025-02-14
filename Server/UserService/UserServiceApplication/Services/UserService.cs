@@ -12,6 +12,7 @@ using UserServiceDataAccess.Enums;
 using Hangfire;
 using Microsoft.Extensions.Logging;
 using MovieGrpcClient;
+using UserServiceDataAccess.DatabaseHandlers.Specifications.UserSpecifications;
 
 namespace UserServiceApplication.Services
 {
@@ -282,6 +283,21 @@ namespace UserServiceApplication.Services
             _logger.LogInformation("Reset password attempt completed successfully for {Email}", resetPasswordRequest.Email);
 
             return resetToken;
+        }
+
+        public async Task<ICollection<UserDto>> GetFromCollectionAsync(ICollection<Guid> ids, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Get users from collection  attempt started");
+
+            var specification = new UsersFromCollectionSpecification(ids);
+            var users = await _unitOfWork.UserRepository.GetWithSpecificationAsync(specification, cancellationToken);
+
+            cancellationToken.ThrowIfCancellationRequested();
+            var usersDto = _mapper.Map<ICollection<UserDto>>(users);
+
+            _logger.LogInformation("Get users from collection attempt completed successfully");
+
+            return usersDto;
         }
 
         public void SendEmail(string email, string token, string title, string callbackUrl, CancellationToken cancellationToken)

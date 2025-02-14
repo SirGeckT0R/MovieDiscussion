@@ -8,7 +8,7 @@ namespace UserServiceApplication.MappingProfiles
     {
         public UserDtoMappingProfile()
         {
-            CreateMap<User, UserDto>();
+            CreateMap<User, UserDto>().ReverseMap();
         }
     }
 }
