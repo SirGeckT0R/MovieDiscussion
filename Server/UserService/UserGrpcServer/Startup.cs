@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using UserGrpcServer.Extensions;
+using UserGrpcServer.MappingProfiles;
 using UserGrpcServer.Services;
 using UserServiceDataAccess.DatabaseHandlers.Repositories;
 using UserServiceDataAccess.DatabaseHandlers.ServiceDbContext;
@@ -36,6 +38,8 @@ namespace UserGrpcServer
             services.AddScoped<IUserUnitOfWork, UserUnitOfWork>();
 
             builder.Services.AddGrpc(options => options.EnableDetailedErrors = true);
+
+            services.AddAutoMapper(Assembly.GetAssembly(typeof(GetUserInfoReplyMappingProfile)));
 
             builder.Host.AddLogging(Configuration);
         }

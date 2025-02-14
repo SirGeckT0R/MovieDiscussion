@@ -19,6 +19,7 @@ using Hangfire;
 using Hangfire.PostgreSql;
 using UserServiceWebAPI.Hangfire;
 using MovieGrpcClient;
+using UserServiceApplication.DIExtensions;
 
 namespace UserServiceWebAPI
 {
@@ -63,6 +64,8 @@ namespace UserServiceWebAPI
 
             services.AddExceptionHandler<GlobalExceptionHandler>();
             services.AddProblemDetails();
+
+            services.AddRabbitMQ(Configuration);
 
             services.AddApiAuthentication(Configuration);
 

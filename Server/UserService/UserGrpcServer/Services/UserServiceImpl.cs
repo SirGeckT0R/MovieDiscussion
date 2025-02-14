@@ -1,11 +1,15 @@
+using AutoMapper;
 using Grpc.Core;
 using UserServiceDataAccess.Interfaces;
 
 namespace UserGrpcServer.Services
 {
-    public class UserServiceImpl(ILogger<UserServiceImpl> logger, IUserUnitOfWork userUnitOfWork) : UserService.UserServiceBase
+    public class UserServiceImpl(ILogger<UserServiceImpl> logger, 
+                                 IMapper mapper,
+                                 IUserUnitOfWork userUnitOfWork) : UserService.UserServiceBase
     {
         private readonly IUserUnitOfWork _userUnitOfWork = userUnitOfWork;
+        private readonly IMapper _mapper = mapper;
         private readonly ILogger<UserServiceImpl> _logger = logger;
 
         public override async Task<GetUserInfoReply> GetUserInfo(GetUserInfoRequest request, ServerCallContext context)
@@ -31,11 +35,7 @@ namespace UserGrpcServer.Services
                 throw new RpcException(new Status(StatusCode.NotFound, "User not found"));
             }
 
-            var reply = new GetUserInfoReply
-            {
-                Username = user.Username,
-                IsEmailConfirmed = user.IsEmailConfirmed
-            };
+            var reply = _mapper.Map<GetUserInfoReply>(user);
 
             _logger.LogInformation("GRPC user service request completed succesfully: GetUsername for id {Id}", request.UserId);
 

@@ -11,6 +11,7 @@
     </PackageReference>
     <PackageReference Include="Hangfire.AspNetCore" Version="1.8.17" />
     <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="RabbitMQ.Client" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DiscussionServiceDataAccess\DiscussionServiceDataAccess.csproj" />

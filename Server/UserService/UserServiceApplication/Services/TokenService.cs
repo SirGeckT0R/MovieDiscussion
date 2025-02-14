@@ -1,7 +1,8 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Routing.Matching;
 using Microsoft.Extensions.Logging;
 using UserServiceApplication.Interfaces.Services;
-using UserServiceDataAccess.DatabaseHandlers.Specifications;
+using UserServiceDataAccess.DatabaseHandlers.Specifications.TokenSpecifications;
 using UserServiceDataAccess.Dto;
 using UserServiceDataAccess.Enums;
 using UserServiceDataAccess.Exceptions;
@@ -25,13 +26,14 @@ namespace UserServiceApplication.Services
 
             cancellationToken.ThrowIfCancellationRequested();
             var specification = new UserIdAndTypeSpecification(TokenType.Refresh, userClaims.Id);
-            var candidate = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(specification, cancellationToken);
+            var candidates = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(specification, cancellationToken);
+            var candidateToken = candidates?.SingleOrDefault();
 
-            if (candidate != null)
+            if (candidateToken != null)
             {
                 _logger.LogInformation("Deleting already existing token from database");
 
-                _unitOfWork.TokenRepository.Delete(candidate, cancellationToken);
+                _unitOfWork.TokenRepository.Delete(candidateToken, cancellationToken);
             }
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -63,12 +65,14 @@ namespace UserServiceApplication.Services
 
             cancellationToken.ThrowIfCancellationRequested();
             var specification = new UserIdAndTypeSpecification(tokenType, userClaims.Id);
-            var candidate = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(specification, cancellationToken);
-            if (candidate != null)
+            var candidates = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(specification, cancellationToken);
+            var candidateToken = candidates?.SingleOrDefault();
+
+            if (candidateToken != null)
             {
                 _logger.LogInformation("Deleting already existing token from database");
 
-                _unitOfWork.TokenRepository.Delete(candidate, cancellationToken);
+                _unitOfWork.TokenRepository.Delete(candidateToken, cancellationToken);
             }
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -97,9 +101,10 @@ namespace UserServiceApplication.Services
             var (_, userClaims) = ExtractClaims(confirmToken);
 
             var specification = new UserIdAndTypeSpecification(tokenType, userClaims.Id);
-            var candidate = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(specification, cancellationToken);
+            var candidates = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(specification, cancellationToken);
+            var token = candidates?.SingleOrDefault();
 
-            if(candidate == null)
+            if (token == null)
             {
                 _logger.LogError("Find and delete token attempt failed: token not found");
 
@@ -107,7 +112,7 @@ namespace UserServiceApplication.Services
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-            _unitOfWork.TokenRepository.Delete(candidate, cancellationToken);
+            _unitOfWork.TokenRepository.Delete(token, cancellationToken);
 
             _logger.LogInformation("Find and delete token attempt completed successfully");
         }
