@@ -34,6 +34,7 @@ namespace UserServiceApplication.RabbitMQ.Consumer
 
             await _messageConsumer.ConsumeAsync(_options.SubscriptionQueueName, SubscriptionRecievedAsync, stoppingToken);
         }
+
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
             await _messageConsumer.StopAsync(cancellationToken);

@@ -16,6 +16,7 @@ namespace UserServiceApplication.DIExtensions
             services.AddSingleton<IRabbitMQConnection>(provider =>
                 {
                     var rabbitMQConnectionOptions = provider.GetRequiredService<IOptions<RabbitMQConnectionOptions>>().Value;
+
                     return new RabbitMQConnection(rabbitMQConnectionOptions);
                 }
             );

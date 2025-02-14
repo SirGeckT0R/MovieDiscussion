@@ -12,6 +12,7 @@ namespace DiscussionServiceApplication.RabbitMQ.Service
         private readonly RabbitMQConnectionOptions _options = options.Value;
         private readonly IMessageProducer _messageProducer = messageProducer;
         private readonly ILogger<RabbitMQService> _logger = logger;
+
         public async Task SendSubscriptionMessage<T>(T message, CancellationToken cancellationToken)
         {
             var isSubscriptionNameEmpty = string.IsNullOrWhiteSpace(_options.SubscriptionQueueName);
