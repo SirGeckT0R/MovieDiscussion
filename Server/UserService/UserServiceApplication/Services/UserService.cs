@@ -11,26 +11,29 @@ using System.Text;
 using UserServiceDataAccess.Enums;
 using Hangfire;
 using Microsoft.Extensions.Logging;
+using MovieGrpcClient;
 
 namespace UserServiceApplication.Services
 {
-    public class UserService(IUserUnitOfWork unitOfWork, 
-                            ITokenService tokenService, 
-                            IMapper mapper, 
-                            IPasswordHasher passwordHasher, 
+    public class UserService(IUserUnitOfWork unitOfWork,
+                            ITokenService tokenService,
+                            IMapper mapper,
+                            IPasswordHasher passwordHasher,
                             IValidator<User> validator,
-                            IEmailService emailService, 
-                            ILogger<UserService> logger) : BaseService<User>(validator, logger), IUserService
+                            IEmailService emailService,
+                            ILogger<UserService> logger,
+                            MovieService.MovieServiceClient client) : BaseService<User>(validator, logger), IUserService
     {
         private readonly IUserUnitOfWork _unitOfWork = unitOfWork;
         private readonly ITokenService _tokenService = tokenService;
         private readonly IEmailService _emailService = emailService;
         private readonly IMapper _mapper = mapper;
         private readonly IPasswordHasher _passwordHasher = passwordHasher;
+        private readonly MovieService.MovieServiceClient _client = client;
         private readonly ILogger<UserService> _logger = logger;
 
         public async Task<(string, string)> LoginAsync(LoginRequest loginRequest, CancellationToken cancellationToken)
-        {   
+        {
             _logger.LogInformation("Login attempt started for {Email}", loginRequest.Email);
 
             var candidate = await _unitOfWork.UserRepository.GetByEmailAsync(loginRequest.Email, cancellationToken);
@@ -83,6 +86,14 @@ namespace UserServiceApplication.Services
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+            var createProfileAndWatchlistRequest = new CreateProfileAndWatchlistRequest
+            {
+                AccountId = addedUserId.ToString(),
+                Username = user.Username
+            };
+
+            await _client.CreateProfileAndWatchlistAsync(createProfileAndWatchlistRequest);
+
             _logger.LogInformation("Register attempt completed successfully for {Email}", registerRequest.Email);
 
             return (accessToken, refreshToken);
@@ -126,6 +137,10 @@ namespace UserServiceApplication.Services
 
             cancellationToken.ThrowIfCancellationRequested();
             _unitOfWork.UserRepository.Delete(candidate, cancellationToken);
+
+            var deleteProfileAndWatchlistRequest = new DeleteProfileAndWatchlistRequest { AccountId = candidate.Id.ToString() };
+
+            await _client.DeleteProfileAndWatchlistAsync(deleteProfileAndWatchlistRequest);
 
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -179,7 +194,7 @@ namespace UserServiceApplication.Services
         {
             _logger.LogInformation("Confirm email send attempt started");
 
-            var (confirmToken, email) = await _tokenService.GenerateTokenAndExtractEmailAsync(accessToken, TokenType.ConfirmEmail ,cancellationToken);
+            var (confirmToken, email) = await _tokenService.GenerateTokenAndExtractEmailAsync(accessToken, TokenType.ConfirmEmail, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
             confirmToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(confirmToken));
@@ -227,7 +242,7 @@ namespace UserServiceApplication.Services
             _logger.LogInformation("Forgot password attempt started");
 
             var (resetToken, email) = await _tokenService.GenerateTokenAndExtractEmailAsync(accessToken, TokenType.ResetPassword, cancellationToken);
-            
+
             cancellationToken.ThrowIfCancellationRequested();
             resetToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(resetToken));
 
@@ -256,7 +271,7 @@ namespace UserServiceApplication.Services
 
             cancellationToken.ThrowIfCancellationRequested();
             var resetToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetPasswordRequest.Token));
-            await _tokenService.FindAndDeleteTokenAsync(resetToken,TokenType.ResetPassword, cancellationToken);
+            await _tokenService.FindAndDeleteTokenAsync(resetToken, TokenType.ResetPassword, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
             candidate.Password = _passwordHasher.Generate(resetPasswordRequest.NewPassword);

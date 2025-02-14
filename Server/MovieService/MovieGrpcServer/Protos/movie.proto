@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option csharp_namespace = "MovieGrpcServer";
+
+package movie;
+
+service MovieService {
+  rpc CreateProfileAndWatchlist (CreateProfileAndWatchlistRequest) returns (CreateProfileAndWatchlistReply);
+  rpc DeleteProfileAndWatchlist (DeleteProfileAndWatchlistRequest) returns (DeleteProfileAndWatchlistReply);
+}
+
+message CreateProfileAndWatchlistRequest {
+  string accountId = 1;
+  string username = 2;
+}
+
+message CreateProfileAndWatchlistReply {
+}
+
+message DeleteProfileAndWatchlistRequest {
+  string accountId = 1;
+}
+
+message DeleteProfileAndWatchlistReply {
+}

@@ -406,3 +406,5 @@ FodyWeavers.xsd
 /Server/MovieService/MovieServiceWebAPI/secrets.json
 /Server/DiscussionService/DiscussionServiceWebAPI/secrets.json
 /TemplateEngineHost/vs
+/Server/UserService/UserGrpcServer/secrets.json
+/Server/MovieService/MovieGrpcServer/secrets.json

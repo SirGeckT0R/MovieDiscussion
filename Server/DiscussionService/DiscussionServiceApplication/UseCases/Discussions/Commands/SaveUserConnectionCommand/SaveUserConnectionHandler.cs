@@ -5,14 +5,19 @@ using DiscussionServiceDomain.Exceptions;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
+using UserGrpcClient;
 
 namespace DiscussionServiceApplication.UseCases.Discussions.Commands.SaveUserConnectionCommand
 {
-    public class SaveUserConnectionHandler(IUnitOfWork unitOfWork, IDistributedCache cache, ILogger<SaveUserConnectionHandler> logger) : ICommandHandler<SaveUserConnectionCommand, UserConnection>
+    public class SaveUserConnectionHandler(IUnitOfWork unitOfWork, 
+                                           IDistributedCache cache, 
+                                           ILogger<SaveUserConnectionHandler> logger, 
+                                           UserService.UserServiceClient client) : ICommandHandler<SaveUserConnectionCommand, UserConnection>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IDistributedCache _cache = cache;
         private readonly ILogger<SaveUserConnectionHandler> _logger = logger;
+        private readonly UserService.UserServiceClient _userServiceClient = client;
 
         public async Task<UserConnection> Handle(SaveUserConnectionCommand request, CancellationToken cancellationToken)
         {
@@ -25,6 +30,10 @@ namespace DiscussionServiceApplication.UseCases.Discussions.Commands.SaveUserCon
 
                 throw new UnauthorizedException("Account Id not found");
             }
+
+            var getUserInfoRequest = new GetUserInfoRequest { UserId = accountId.ToString() };
+
+            var reply = await _userServiceClient.GetUserInfoAsync(getUserInfoRequest);
 
             Guid discussionId;
             var isDiscussionIdCorrect = Guid.TryParse(request.DiscussionId, out discussionId);
@@ -54,7 +63,7 @@ namespace DiscussionServiceApplication.UseCases.Discussions.Commands.SaveUserCon
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-            var userConnection = new UserConnection(discussion.Id, accountId);
+            var userConnection = new UserConnection(discussion.Id, accountId, reply.Username);
             var connectionString = JsonSerializer.Serialize(userConnection);
 
             cancellationToken.ThrowIfCancellationRequested();

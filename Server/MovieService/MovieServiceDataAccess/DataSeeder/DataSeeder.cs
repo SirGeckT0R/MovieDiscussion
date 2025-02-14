@@ -56,6 +56,7 @@ namespace MovieServiceDataAccess.DataSeeder
                 [
                     new UserProfile(Guid.Parse("f530fc7e-fa6d-4b64-b813-04650f61be29"), "FirstUsername")  { Id = Guid.NewGuid() },
                     new UserProfile(Guid.Parse("2de57bf5-c74e-4d2f-b803-0ea8e6dc63ce"), "SecondUsername") { Id = Guid.NewGuid() },
+                    new UserProfile(Guid.Parse("453d01e1-533f-4609-9988-d243c89aca56"), "Admin") { Id = Guid.NewGuid() },
                 ];
 
 
