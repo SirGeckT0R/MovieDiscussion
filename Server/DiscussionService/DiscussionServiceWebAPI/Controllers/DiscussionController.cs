@@ -6,6 +6,7 @@ using DiscussionServiceApplication.UseCases.Discussions.Commands.UpdateDiscussio
 using DiscussionServiceApplication.UseCases.Discussions.Queries.GetAllDiscussionsQuery;
 using DiscussionServiceApplication.UseCases.Discussions.Queries.GetDiscussionByIdQuery;
 using DiscussionServiceApplication.UseCases.Discussions.Queries.GetDiscussionsByCreatorIdQuery;
+using DiscussionServiceWebAPI.Helpers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,7 +33,10 @@ namespace DiscussionServiceWebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateDiscussionCommand command, CancellationToken cancellationToken)
         {
-            await _mediator.Send(command, cancellationToken);
+            var accountId = ClaimHelper.GetAccountIdFromUser(HttpContext.User);
+            var newCommand = command with { CreatedBy = accountId };
+
+            await _mediator.Send(newCommand, cancellationToken);
 
             _logger.LogInformation("Discussion was created");
 
@@ -63,7 +67,9 @@ namespace DiscussionServiceWebAPI.Controllers
         [HttpPut("{Id:Guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid Id, [FromBody] UpdateDiscussionCommand command, CancellationToken cancellationToken)
         {
-            var newCommand = command with { Id = Id };
+            var accountId = ClaimHelper.GetAccountIdFromUser(HttpContext.User);
+            var newCommand = command with { Id = Id, UpdatedBy = accountId };
+
             await _mediator.Send(newCommand, cancellationToken);
 
             _logger.LogInformation("Discussion was updated");
@@ -82,9 +88,11 @@ namespace DiscussionServiceWebAPI.Controllers
         }
 
         [HttpPost("{Id:Guid}/subscribers")]
-        public async Task<IActionResult> Subscribe([FromRoute] Guid Id, [FromBody] SubscribeToDiscussionCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> Subscribe([FromRoute] Guid Id, CancellationToken cancellationToken)
         {
-            var newCommand = command with { DiscussionId = Id };
+            var accountId = ClaimHelper.GetAccountIdFromUser(HttpContext.User);
+            var newCommand = new SubscribeToDiscussionCommand(Id, accountId);
+
             await _mediator.Send(newCommand, cancellationToken);
 
             _logger.LogInformation("User was subscribed to a discussion");

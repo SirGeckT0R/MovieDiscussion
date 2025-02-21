@@ -15,6 +15,17 @@ namespace ApiGatewayWebAPI
         {
             builder.Configuration.AddJsonFile("secrets.json", optional: false, reloadOnChange: true);
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", builder =>
+                {
+                    builder.WithOrigins(Configuration["FrontendUrl"]!)
+                           .AllowAnyMethod()
+                           .AllowAnyHeader()
+                           .AllowCredentials();
+                });
+            });
+
             builder.Configuration.AddOcelotWithSwaggerSupport((options) =>
             {
                 options.Folder = "OcelotConfiguration";
@@ -61,6 +72,15 @@ namespace ApiGatewayWebAPI
                     opt.PathToSwaggerGenerator = "/swagger/docs";
                 });
             }
+
+            app.UseCors("AllowAll");
+
+            app.UseCookiePolicy(new CookiePolicyOptions
+            {
+                MinimumSameSitePolicy = SameSiteMode.None,
+                HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.Always,
+                Secure = CookieSecurePolicy.SameAsRequest,
+            });
 
             app.UseWebSockets();
 

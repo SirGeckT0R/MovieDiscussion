@@ -38,6 +38,8 @@ namespace DiscussionServiceWebAPI
             builder.Services.AddMediatR();
             builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(DiscussionDtoMappingProfile)));
 
+            builder.Services.AddRabbitMQ(Configuration);
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", builder =>

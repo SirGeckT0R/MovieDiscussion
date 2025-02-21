@@ -1,13 +1,21 @@
-﻿using DiscussionServiceDataAccess.Interfaces.UnitOfWork;
+﻿using AutoMapper;
+using DiscussionServiceApplication.RabbitMQ.Dto;
+using DiscussionServiceApplication.RabbitMQ.Service;
+using DiscussionServiceDataAccess.Interfaces.UnitOfWork;
 using DiscussionServiceDomain.Exceptions;
 using Hangfire;
 using Microsoft.Extensions.Logging;
 
 namespace DiscussionServiceApplication.Jobs
 {
-    public class DiscussionActivationJob(IUnitOfWork unitOfWork, ILogger<DiscussionActivationJob> logger)
+    public class DiscussionActivationJob(IUnitOfWork unitOfWork, 
+                                         IRabbitMQService rabbitService,
+                                         IMapper mapper,
+                                         ILogger<DiscussionActivationJob> logger)
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IRabbitMQService _rabbitService = rabbitService;
+        private readonly IMapper _mapper = mapper;
         private readonly ILogger<DiscussionActivationJob> _logger = logger;
 
         public async Task ExecuteAsync(Guid discussionId)
@@ -31,6 +39,15 @@ namespace DiscussionServiceApplication.Jobs
             _unitOfWork.Discussions.Update(discussion, default);
 
             await _unitOfWork.SaveChangesAsync(default);
+
+            if (discussion.Subscribers.Count > 0)
+            {
+                _logger.LogInformation("Notifying the subscribers that the discussion with id {Id} was activated", discussionId);
+
+                var messageDto = _mapper.Map<DiscussionActivationDto>(discussion);
+
+                await _rabbitService.SendSubscriptionMessage(messageDto, default);
+            }
 
             _logger.LogInformation("Background job to activate discussion with id {DiscussionId} completed successfuly", discussionId);
 
