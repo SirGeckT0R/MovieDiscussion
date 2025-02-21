@@ -9,6 +9,10 @@ namespace MovieServiceDataAccess.Interfaces.Repositories
         Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<T?> GetByIdTrackingAsync(Guid id, CancellationToken cancellationToken);
         Task<ICollection<T>> GetWithSpecificationAsync(Specification<T> specification, CancellationToken cancellationToken);
+        Task<ICollection<T>> GetPaginatedWithSpecificationAsync(Specification<T> specification, 
+                                                                int? pageIndex, 
+                                                                int? pageSize, 
+                                                                CancellationToken cancellationToken);
         Task<Guid> AddAsync(T model, CancellationToken cancellationToken);
         void Delete(T model, CancellationToken cancellationToken);
         void Update(T model, CancellationToken cancellationToken);

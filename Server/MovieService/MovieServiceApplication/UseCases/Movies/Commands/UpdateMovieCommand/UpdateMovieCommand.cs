@@ -12,6 +12,7 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.UpdateMovieCommand
         public DateTime ReleaseDate { get; set; } = DateTime.UtcNow;
         public ICollection<Guid> Genres { get; set; } = [];
         public ICollection<CrewMemberDto> CrewMembers { get; set; } = [];
+        public string? Image { get; set; }
 
         public UpdateMovieCommand() { }
     }

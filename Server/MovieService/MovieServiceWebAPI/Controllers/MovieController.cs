@@ -27,10 +27,10 @@ namespace MovieServiceWebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] AddMovieCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> Add([FromHeader] string Filename, [FromForm] AddMovieCommand command, CancellationToken cancellationToken)
         {
             var accountId = ClaimHelper.GetAccountIdFromUser(HttpContext.User);
-            var newCommand = command with { AccountId = accountId };
+            var newCommand = command with { AccountId = accountId, Image = Filename };
 
             await _mediator.Send(newCommand, cancellationToken);
 
@@ -50,9 +50,9 @@ namespace MovieServiceWebAPI.Controllers
         }
 
         [HttpPut("{Id:Guid}")]
-        public async Task<IActionResult> Update([FromRoute] Guid Id, [FromBody] UpdateMovieCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> Update([FromRoute] Guid Id, [FromHeader] string? Filename, [FromBody] UpdateMovieCommand command, CancellationToken cancellationToken)
         {
-            var newCommand = command with { Id = Id };
+            var newCommand = command with { Id = Id, Image = Filename };
 
             await _mediator.Send(newCommand, cancellationToken);
 

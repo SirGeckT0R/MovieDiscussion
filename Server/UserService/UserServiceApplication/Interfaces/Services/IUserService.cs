@@ -1,4 +1,5 @@
 ﻿using UserServiceApplication.Dto;
+using UserServiceDataAccess.Enums;
 
 namespace UserServiceApplication.Interfaces.Services
 {
@@ -15,5 +16,6 @@ namespace UserServiceApplication.Interfaces.Services
         Task<string> ForgotPasswordAsync(string? accessToken, string callbackUrl, CancellationToken cancellationToken);
         Task<string> ResetPasswordAsync(ResetPasswordRequest resetPasswordRequest, CancellationToken cancellationToken);
         Task<ICollection<UserDto>> GetFromCollectionAsync(ICollection<Guid> ids, CancellationToken cancellationToken);
+        Task<Role> GetUserRoleByTokenAsync(string? accessToken, CancellationToken cancellationToken);
     }
 }

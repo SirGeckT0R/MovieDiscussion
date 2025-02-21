@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using MovieServiceDataAccess.DatabaseContext;
 using MovieServiceDataAccess.Interfaces.Repositories;
+using MovieServiceDataAccess.LinqExtensions;
 using MovieServiceDataAccess.Specifications;
 using MovieServiceDomain.Models;
 
@@ -51,6 +52,20 @@ namespace MovieServiceDataAccess.Repositories
         {
             cancellationToken.ThrowIfCancellationRequested();
             var collection = await ApplySpecification(specification);
+
+            return collection;
+        }
+
+        public async Task<ICollection<T>> GetPaginatedWithSpecificationAsync(Specification<T> specification,
+                                                                                int? pageIndex,
+                                                                                int? pageSize,
+                                                                                CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var collection = await SpecificationEvaluator<T>.GetQuery(_dbSet, specification)
+                                                                 .TrySkip((pageIndex - 1) * pageSize)
+                                                                 .TryTake(pageSize)
+                                                                 .ToListAsync(cancellationToken);
 
             return collection;
         }

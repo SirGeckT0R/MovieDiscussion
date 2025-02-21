@@ -1,5 +1,4 @@
-﻿using MongoDB.Driver;
-using MovieServiceDataAccess.DatabaseContext;
+﻿using MovieServiceDataAccess.DatabaseContext;
 using MovieServiceDataAccess.Interfaces.Repositories;
 using MovieServiceDomain.Models;
 

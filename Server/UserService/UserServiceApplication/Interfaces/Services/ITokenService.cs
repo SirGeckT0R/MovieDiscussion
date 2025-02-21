@@ -14,5 +14,6 @@ namespace UserServiceApplication.Interfaces.Services
         Task DeleteTokenAsync(Guid tokenId, CancellationToken cancellationToken);
         void UpdateToken(Token token, CancellationToken cancellationToken);
         Task<string> RefreshTokenAsync(string? inputToken, CancellationToken cancellationToken);
+        (Guid, UserClaimsDto) ExtractClaims(string token);
     }
 }

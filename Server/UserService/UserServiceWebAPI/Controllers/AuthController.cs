@@ -120,5 +120,15 @@ namespace UserServiceWebAPI.Controllers
         {
             return Ok("Only cool Admins see this message");
         }
+
+        [HttpGet("role")]
+        [Authorize]
+        public async Task<IActionResult> GetRole(CancellationToken cancellationToken)
+        {
+            var accessToken = HttpContext.Request.Cookies["accessToken"];
+            var role = await _userService.GetUserRoleByTokenAsync(accessToken, cancellationToken);
+
+            return Ok(role);
+        }
     }
 }

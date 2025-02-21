@@ -169,6 +169,22 @@
         "Role": "Admin"
       },
       "SwaggerKey": "Auth"
+    },
+    {
+      "UpstreamPathTemplate": "/api/role",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamPathTemplate": "/auth/role",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 5001
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "SwaggerKey": "Auth"
     }
   ]  
 }

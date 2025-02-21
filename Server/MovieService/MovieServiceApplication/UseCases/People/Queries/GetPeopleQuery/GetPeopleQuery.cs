@@ -3,5 +3,5 @@ using MovieServiceApplication.Interfaces.UseCases;
 
 namespace MovieServiceApplication.UseCases.People.Queries.GetAllPeopleQuery
 {
-    public record GetAllPeopleQuery : IQuery<ICollection<PersonDto>>;
+    public record GetPeopleQuery(string? Name, int? PageIndex, int? PageSize) : IQuery<ICollection<PersonDto>>;
 }

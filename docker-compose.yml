@@ -29,19 +29,19 @@ services:
     networks:
       - elastic
 
-  usergrpcserver:
-    image: ${DOCKER_REGISTRY-}usergrpcserver
-    env_file:
-      - .env
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    build:
-      context: .
-      dockerfile: Server/UserService/UserGrpcServer/Dockerfile
-    ports:
-      - ${USER_GRPC_PORTS}  
-    networks:
-      - elastic
+  # usergrpcserver:
+  #   image: ${DOCKER_REGISTRY-}usergrpcserver
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #   build:
+  #     context: .
+  #     dockerfile: Server/UserService/UserGrpcServer/Dockerfile
+  #   ports:
+  #     - ${USER_GRPC_PORTS}  
+  #   networks:
+  #     - elastic
 
   movieservicewebapi:
     image: ${DOCKER_REGISTRY-}movieservicewebapi
@@ -71,19 +71,19 @@ services:
     networks:
       - elastic
 
-  discussionservicewebapi:
-    image: ${DOCKER_REGISTRY-}discussionservicewebapi
-    env_file:
-      - .env
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    build:
-      context: .
-      dockerfile: Server/DiscussionService/DiscussionServiceWebAPI/Dockerfile
-    ports:
-      - ${DISCUSSION_SERVICE_PORTS}
-    networks:
-      - elastic
+  # discussionservicewebapi:
+  #   image: ${DOCKER_REGISTRY-}discussionservicewebapi
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #   build:
+  #     context: .
+  #     dockerfile: Server/DiscussionService/DiscussionServiceWebAPI/Dockerfile
+  #   ports:
+  #     - ${DISCUSSION_SERVICE_PORTS}
+  #   networks:
+  #     - elastic
 
   postgres:
     image: postgres:latest
@@ -115,74 +115,74 @@ services:
     networks:
       - elastic
 
-  discussionmongodb:
-    image: mongo
-    restart: always
-    volumes:
-      - discuss_data:/usr/share/discuss/data
-    env_file:
-      - .env
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_DISCUSSION_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DISCUSSION_PASSWORD}
-    ports:
-      - ${MONGO_DISCUSSION_PORTS}
-    networks:
-      - elastic
+  # discussionmongodb:
+  #   image: mongo
+  #   restart: always
+  #   volumes:
+  #     - discuss_data:/usr/share/discuss/data
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: ${MONGO_DISCUSSION_USERNAME}
+  #     MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DISCUSSION_PASSWORD}
+  #   ports:
+  #     - ${MONGO_DISCUSSION_PORTS}
+  #   networks:
+  #     - elastic
 
-  redis:
-    image: redis:latest
-    env_file:
-      - .env
-    ports:
-      - ${REDIS_PORTS}
-    networks:
-      - elastic
+  # redis:
+  #   image: redis:latest
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - ${REDIS_PORTS}
+  #   networks:
+  #     - elastic
 
-  elasticsearch:
-   container_name: elasticsearch
-   image: elasticsearch:8.14.3
-   environment:
-      - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - xpack.security.enabled=false
-      - xpack.security.http.ssl.enabled=false
-      - xpack.watcher.enabled=false
-   ports:
-    - ${ELASTIC_PORTS}
-   volumes:
-    - elasticsearch-data:/usr/share/elasticsearch/data
-   networks:
-    - elastic    
+  # elasticsearch:
+  #  container_name: elasticsearch
+  #  image: elasticsearch:8.14.3
+  #  environment:
+  #     - discovery.type=single-node
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #     - xpack.security.enabled=false
+  #     - xpack.security.http.ssl.enabled=false
+  #     - xpack.watcher.enabled=false
+  #  ports:
+  #   - ${ELASTIC_PORTS}
+  #  volumes:
+  #   - elasticsearch-data:/usr/share/elasticsearch/data
+  #  networks:
+  #   - elastic    
 
-  logstash:
-    image: logstash:7.9.1
-    container_name: logstash
-    ports:
-      - ${LOGSTASH_PORTS}
-    volumes:
-      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-    depends_on:
-      - elasticsearch
-    networks:
-      - elastic
+  # logstash:
+  #   image: logstash:7.9.1
+  #   container_name: logstash
+  #   ports:
+  #     - ${LOGSTASH_PORTS}
+  #   volumes:
+  #     - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+  #   depends_on:
+  #     - elasticsearch
+  #   networks:
+  #     - elastic
 
-  kibana:
-   container_name: kibana
-   image: kibana:8.14.3
-   ports:
-    - ${KIBANA_PORTS}
-   depends_on:
-    - elasticsearch
-   volumes:
-    - kibana_data:/usr/share/kibana/data
-   environment:
-      - ELASTICSEARCH_URL=${ELASTIC_URL}
-   networks:
-    - elastic
+  # kibana:
+  #  container_name: kibana
+  #  image: kibana:8.14.3
+  #  ports:
+  #   - ${KIBANA_PORTS}
+  #  depends_on:
+  #   - elasticsearch
+  #  volumes:
+  #   - kibana_data:/usr/share/kibana/data
+  #  environment:
+  #     - ELASTICSEARCH_URL=${ELASTIC_URL}
+  #  networks:
+  #   - elastic
 
   rabbitmq:
-    image: rabbitmq:3.10.7-management
+    image: rabbitmq:3.10.7-management   
     hostname: rabbitmq
     restart: always
     environment:
@@ -195,6 +195,19 @@ services:
       - ${RABBITMQ_PORTS}
     networks:
       - elastic
+
+  # react:
+  #  container_name: react
+  #  image: ${DOCKER_REGISTRY-}react
+  #  env_file:
+  #      - .env
+  #  build:
+  #    context: .
+  #    dockerfile: Client/reactclient/Dockerfile
+  #  ports:
+  #   - ${REACT_PORTS}
+  #  networks:
+  #   - elastic
   
 networks:
   elastic:

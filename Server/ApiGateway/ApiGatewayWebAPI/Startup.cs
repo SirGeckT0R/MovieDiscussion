@@ -1,5 +1,7 @@
 ﻿using ApiGatewayWebAPI.Middlewares;
+using ApiGatewayWebAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using MMLib.SwaggerForOcelot.DependencyInjection;
 using Ocelot.DependencyInjection;
@@ -17,7 +19,7 @@ namespace ApiGatewayWebAPI
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowAll", builder =>
+                options.AddPolicy("AllowFrontEnd", builder =>
                 {
                     builder.WithOrigins(Configuration["FrontendUrl"]!)
                            .AllowAnyMethod()
@@ -60,6 +62,8 @@ namespace ApiGatewayWebAPI
                     };
                 });
 
+            builder.Services.AddScoped<IImageService, ImageService>();
+
             builder.Services.AddControllers();
         }
 
@@ -73,7 +77,18 @@ namespace ApiGatewayWebAPI
                 });
             }
 
-            app.UseCors("AllowAll");
+            app.UseDefaultFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images")),
+                RequestPath = "/images",
+                OnPrepareResponse = ctx =>
+                {
+                    ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=1800");
+                }
+            });
+
+            app.UseCors("AllowFrontEnd");
 
             app.UseCookiePolicy(new CookiePolicyOptions
             {
@@ -88,6 +103,7 @@ namespace ApiGatewayWebAPI
             app.UseAuthorization();
 
             app.UseMiddleware<ExtractAccountIdMiddleware>();
+            app.UseMiddleware<SaveImageMiddleware>();
 
             app.UseOcelot().GetAwaiter().GetResult();
 

@@ -12,12 +12,13 @@ namespace MovieServiceDomain.Models
         public Guid SubmittedBy { get; set; }
         public ICollection<Guid> Genres { get; private set; } = [];
         public ICollection<CrewMember> CrewMembers { get; private set; } = [];
+        public string? Image { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime? DeletedAt { get; set; }
 
         public Movie() { }
 
-        public Movie(string title, string description, DateTime releaseDate, Guid submittedBy, ICollection<Guid> genres, ICollection<CrewMember> crewMembers)
+        public Movie(string title, string description, DateTime releaseDate, Guid submittedBy, ICollection<Guid> genres, ICollection<CrewMember> crewMembers, string? image = null)
         {
             Title = title;
             Description = description;
@@ -25,6 +26,7 @@ namespace MovieServiceDomain.Models
             SubmittedBy = submittedBy;
             Genres = genres;
             CrewMembers = crewMembers;
+            Image = image;
         }
     }
 }

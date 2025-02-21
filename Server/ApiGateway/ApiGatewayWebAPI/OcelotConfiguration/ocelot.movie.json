@@ -46,9 +46,9 @@
       "SwaggerKey": "Movie"
     },
     {
-      "UpstreamPathTemplate": "/api/genres/{id}",
+      "UpstreamPathTemplate": "/api/genres/{Id}",
       "UpstreamHttpMethod": [ "PUT", "DELETE" ],
-      "DownstreamPathTemplate": "/api/genres/{id}",
+      "DownstreamPathTemplate": "/api/genres/{Id}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -304,7 +304,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/watchlists/{AccountId}",
-      "UpstreamHttpMethod": [ "GET"],
+      "UpstreamHttpMethod": [ "GET" ],
       "DownstreamPathTemplate": "/api/watchlists/{AccountId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

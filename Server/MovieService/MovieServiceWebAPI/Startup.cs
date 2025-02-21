@@ -21,6 +21,17 @@ namespace MovieServiceWebAPI
         public void ConfigureServices(WebApplicationBuilder builder)
         {
             builder.Configuration.AddJsonFile("secrets.json", optional: false, reloadOnChange: true);
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFrontEnd", builder =>
+                {
+                    builder.WithOrigins(Configuration["FrontendUrl"]!, 
+                                        Configuration["ApiGatewayUrl"]!)
+                           .AllowAnyMethod()
+                           .AllowAnyHeader()
+                           .AllowCredentials();
+                });
+            });
             builder.Services.AddMongo(Configuration);
 
             var hangfireConnectionString = Configuration["HangfireConnectionString"]!;
@@ -67,6 +78,8 @@ namespace MovieServiceWebAPI
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseCors("AllowFrontEnd");
 
             var options = new DashboardOptions()
             {
