@@ -48,6 +48,13 @@ namespace MovieServiceDataAccess.Repositories
             return await _dbSet.FirstOrDefaultAsync(user => user.Id == id, cancellationToken);
         }
 
+        public async Task<ICollection<T>> GetFromListOfIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return await _dbSet.AsNoTracking().Where(user => ids.Contains(user.Id)).ToListAsync(cancellationToken);
+        }
+
         public async Task<ICollection<T>> GetWithSpecificationAsync(Specification<T> specification, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -56,18 +63,20 @@ namespace MovieServiceDataAccess.Repositories
             return collection;
         }
 
-        public async Task<ICollection<T>> GetPaginatedWithSpecificationAsync(Specification<T> specification,
-                                                                                int? pageIndex,
-                                                                                int? pageSize,
+        public async Task<(ICollection<T>, int)> GetPaginatedWithSpecificationAsync(Specification<T> specification,
+                                                                                int pageIndex,
+                                                                                int pageSize,
                                                                                 CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var collection = await SpecificationEvaluator<T>.GetQuery(_dbSet, specification)
-                                                                 .TrySkip((pageIndex - 1) * pageSize)
-                                                                 .TryTake(pageSize)
-                                                                 .ToListAsync(cancellationToken);
+            var filteredCollection = SpecificationEvaluator<T>.GetQuery(_dbSet, specification);
+            var paginatedCollection = await filteredCollection.TrySkip((pageIndex - 1) * pageSize)
+                                                        .TryTake(pageSize)
+                                                        .ToListAsync(cancellationToken);
+            var amountOfFilteredItems = await filteredCollection.CountAsync();
+            int totalPages = (int)Math.Ceiling(amountOfFilteredItems / (float)pageSize);
 
-            return collection;
+            return (paginatedCollection, totalPages);
         }
 
         public void Update(T model, CancellationToken cancellationToken)

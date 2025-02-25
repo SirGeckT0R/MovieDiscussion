@@ -259,7 +259,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/profiles",
-      "UpstreamHttpMethod": [ "POST", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": ["GET", "POST", "PUT", "DELETE" ],
       "DownstreamPathTemplate": "/api/profiles",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -288,7 +288,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/watchlists",
-      "UpstreamHttpMethod": [ "POST", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "DownstreamPathTemplate": "/api/watchlists",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

@@ -11,3 +11,6 @@ export interface UpdateGenreRequest {
   id: string;
   name: string;
 }
+export interface DeleteGenreRequest {
+  id: string;
+}

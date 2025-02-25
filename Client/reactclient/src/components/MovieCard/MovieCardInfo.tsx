@@ -20,6 +20,7 @@ export function MovieCardInfo({ movie }: { movie: Movie }) {
           image={`${import.meta.env.VITE_IMAGES_HOST}/${movie.image}`}
           alt={`${movie.title} - cover`}
           title={`${movie.title} - cover`}
+          sx={{ objectFit: 'cover' }}
         />
       )}
       <div className={classes.overlay}>
@@ -27,7 +28,11 @@ export function MovieCardInfo({ movie }: { movie: Movie }) {
           <Box sx={{ p: 2 }}>
             <Stack
               sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography gutterBottom variant='h5' component='div'>
+              <Typography
+                gutterBottom
+                variant='h5'
+                component='div'
+                color='info'>
                 {movie.title}
               </Typography>
               <Rating value={movie.rating} max={10} precision={0.5} readOnly />

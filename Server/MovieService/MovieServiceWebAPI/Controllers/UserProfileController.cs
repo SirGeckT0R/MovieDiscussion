@@ -15,6 +15,19 @@ namespace MovieServiceWebAPI.Controllers
         private readonly IMediator _mediator = mediator;
         private readonly ILogger<UserProfileController> _logger = logger;
 
+        [HttpGet]
+        public async Task<IActionResult> Get(CancellationToken cancellationToken)
+        {
+            var accountId = ClaimHelper.GetAccountIdFromUser(HttpContext.User);
+            var query = new GetProfileByAccountIdQuery(accountId);
+
+            var profile = await _mediator.Send(query, cancellationToken);
+
+            _logger.LogInformation("Returning profile");
+
+            return Ok(profile);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateUserProfileCommand command, CancellationToken cancellationToken)
         {

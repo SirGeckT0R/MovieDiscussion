@@ -17,7 +17,10 @@ import { AuthProvider } from './providers/AuthProvider.tsx';
 import { ProtectedRoute } from './components/ProtectedRoute.tsx';
 import { Role } from './types/user.ts';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { getMoviesQuery } from './queries/moviesQueries.tsx';
+import {
+  getListOfMoviesQuery,
+  getMovieQuery,
+} from './queries/moviesQueries.tsx';
 import { CardLoader } from './components/CardLoading.tsx';
 import { CreateMoviePage } from './pages/CreateMoviePage/CreateMoviePage.tsx';
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -26,9 +29,13 @@ import { getGenresQuery } from './queries/genresQueries.tsx';
 import { Skeleton } from '@mui/material';
 import { LoginPage } from './pages/LoginPage/LoginPage.tsx';
 import { RegisterPage } from './pages/RegisterPage/RegisterPage.tsx';
-import { MoviesPage } from './pages/MoviesPage/MoviesPage.tsx';
+import { ListOfMoviesPage } from './pages/ListOfMoviesPage/ListOfMoviesPage.tsx';
 import { ModifyGenresPage } from './pages/ModifyGenresPage/ModifyGenresPage.tsx';
 import { Header } from './components/Header.tsx';
+import { MoviePage } from './pages/MoviePage/MoviePage.tsx';
+import { UpdateMoviePage } from './pages/UpdateMoviePage/UpdateMoviePage.tsx';
+import { UserProfilePage } from './pages/UserProfile/UserProfilePage.tsx';
+import { getUserProfileQuery } from './queries/profilesQueries.tsx';
 
 const router = createBrowserRouter([
   {
@@ -54,9 +61,15 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <MoviesPage />,
-            loader: globalLoader(queryClient, getMoviesQuery()),
+            element: <ListOfMoviesPage />,
+            loader: globalLoader(queryClient, getListOfMoviesQuery),
             HydrateFallback: CardLoader,
+          },
+          {
+            path: ':id',
+            element: <MoviePage />,
+            loader: globalLoader(queryClient, getMovieQuery),
+            HydrateFallback: Skeleton,
           },
           {
             path: 'new',
@@ -65,7 +78,17 @@ const router = createBrowserRouter([
                 <CreateMoviePage />
               </ProtectedRoute>
             ),
-            loader: globalLoader(queryClient, getGenresQuery()),
+            loader: globalLoader(queryClient, getGenresQuery),
+            HydrateFallback: Skeleton,
+          },
+          {
+            path: ':id/edit',
+            element: (
+              <ProtectedRoute allowedRoles={[Role.Admin]}>
+                <UpdateMoviePage />
+              </ProtectedRoute>
+            ),
+            loader: globalLoader(queryClient, getMovieQuery),
             HydrateFallback: Skeleton,
           },
         ],
@@ -81,10 +104,16 @@ const router = createBrowserRouter([
                 <ModifyGenresPage />
               </ProtectedRoute>
             ),
-            loader: globalLoader(queryClient, getGenresQuery()),
+            loader: globalLoader(queryClient, getGenresQuery),
             HydrateFallback: Skeleton,
           },
         ],
+      },
+      {
+        path: '/profiles',
+        element: <UserProfilePage />,
+        loader: globalLoader(queryClient, getUserProfileQuery),
+        HydrateFallback: Skeleton,
       },
 
       { path: '*', element: <Navigate to='/404' /> },

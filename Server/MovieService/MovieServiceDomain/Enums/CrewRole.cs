@@ -3,9 +3,9 @@
     public enum CrewRole
     {
         None = 0,
-        Actor = 1,
-        Director = 2,
-        Producer = 3,
-        Screenwriter = 4
+        Director = 1,
+        Producer = 2,
+        Screenwriter = 3,
+        Actor = 4,
     }
 }

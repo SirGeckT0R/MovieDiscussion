@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 
 export default function Index() {
   return (
-    <Typography id='zero-state' variant='h3' color='textPrimary'>
+    <Typography id='zero-state' variant='h3' color='info'>
       This is a Movie Discussion App.
       <br />
       Sign in here

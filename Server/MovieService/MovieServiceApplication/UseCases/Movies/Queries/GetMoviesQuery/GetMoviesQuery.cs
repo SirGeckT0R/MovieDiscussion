@@ -3,5 +3,5 @@ using MovieServiceApplication.Interfaces.UseCases;
 
 namespace MovieServiceApplication.UseCases.Movies.Queries.GetAllMoviesQuery
 {
-    public record GetAllMoviesQuery : IQuery<ICollection<MovieDto>>;
+    public record GetMoviesQuery(string? Name, int PageIndex = 1, int PageSize = 10) : IQuery<PaginatedCollection<MovieDto>>;
 }

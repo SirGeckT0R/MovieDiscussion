@@ -1,9 +1,15 @@
 import { QueryClient } from '@tanstack/react-query';
+import { LoaderFunctionArgs } from 'react-router';
 
 export const globalLoader =
   (
     queryClient: QueryClient,
-    fetcher: { queryKey: Array<string>; queryFn: () => Promise<unknown> }
+    fetcher: (id: string | undefined) => {
+      queryKey: Array<string>;
+      queryFn: () => Promise<unknown>;
+    }
   ) =>
-  async () =>
-    queryClient.ensureQueryData(fetcher);
+  async ({ params }: LoaderFunctionArgs) => {
+    const query = fetcher(params.id);
+    queryClient.ensureQueryData(query);
+  };

@@ -4,11 +4,13 @@ import { Dispatch, SetStateAction } from 'react';
 
 export function ImageInput({
   imageState,
+  existingImagePath = undefined,
 }: {
   imageState: {
     image: Blob | null;
     setImage: Dispatch<SetStateAction<Blob | null>>;
   };
+  existingImagePath: string | undefined;
 }) {
   return (
     <Box alignSelf={'center'}>
@@ -27,9 +29,13 @@ export function ImageInput({
           height: 300,
           background: theme.palette.grey[200],
         })}>
-        {imageState.image ? (
+        {imageState.image || existingImagePath ? (
           <img
-            src={URL.createObjectURL(imageState.image)}
+            src={
+              imageState.image
+                ? URL.createObjectURL(imageState.image)
+                : `${import.meta.env.VITE_IMAGES_HOST}/${existingImagePath}`
+            }
             style={{
               width: '100%',
               height: '100%',

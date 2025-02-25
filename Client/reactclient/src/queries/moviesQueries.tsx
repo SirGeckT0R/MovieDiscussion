@@ -1,8 +1,13 @@
-import { fetchMovies } from '../api/movieService';
+import { fetchMovie, fetchMovies } from '../api/movieService';
 
-export const getMoviesQuery = () => ({
+export const getListOfMoviesQuery = () => ({
   queryKey: ['movies'],
   queryFn: async () => await fetchMovies(),
+});
+
+export const getMovieQuery = (id: string | undefined = '') => ({
+  queryKey: ['movies', id],
+  queryFn: async () => await fetchMovie(id),
 });
 
 export const getMoviesQueryLong = () => ({

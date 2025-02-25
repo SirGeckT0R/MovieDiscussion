@@ -1,12 +1,13 @@
-#root {
+/* #root {
   max-width: 2000px;
   margin: 0 auto;
   padding: 0.5rem;
   text-align: center;
+  color: #244855;
 }
 :root {
   color-scheme: normal;
-  background-color: #f0ffff;
+  background-color: #fbe9de;
 }
 body {
   display: block;
@@ -45,4 +46,4 @@ body {
 
 .read-the-docs {
   color: #888;
-}
+} */

@@ -1,4 +1,9 @@
-import { CreateGenreRequest, Genre, UpdateGenreRequest } from '../types/genre';
+import {
+  CreateGenreRequest,
+  DeleteGenreRequest,
+  Genre,
+  UpdateGenreRequest,
+} from '../types/genre';
 import { axiosInstance } from './global';
 
 export const fetchGenres = async (): Promise<Genre[]> => {
@@ -20,6 +25,14 @@ export const createGenre = async (body: CreateGenreRequest) => {
 export const updateGenre = async (body: UpdateGenreRequest) => {
   const response = await axiosInstance
     .putForm(`/api/genres/${body.id}`, body)
+    .then((response) => response.data);
+
+  return response;
+};
+
+export const deleteGenre = async (body: DeleteGenreRequest) => {
+  const response = await axiosInstance
+    .delete(`/api/genres/${body.id}`)
     .then((response) => response.data);
 
   return response;

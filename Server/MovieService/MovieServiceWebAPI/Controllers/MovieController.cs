@@ -17,17 +17,17 @@ namespace MovieServiceWebAPI.Controllers
         private readonly ILogger<MovieController> _logger = logger;
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        public async Task<IActionResult> Get([FromQuery] GetMoviesQuery query, CancellationToken cancellationToken)
         {
-            var movies = await _mediator.Send(new GetAllMoviesQuery(), cancellationToken);
+            var movies = await _mediator.Send(query, cancellationToken);
 
-            _logger.LogInformation("Returning all movies");
+            _logger.LogInformation("Returning movies");
 
             return Ok(movies);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromHeader] string Filename, [FromForm] AddMovieCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> Add([FromHeader] string? Filename, [FromForm] AddMovieCommand command, CancellationToken cancellationToken)
         {
             var accountId = ClaimHelper.GetAccountIdFromUser(HttpContext.User);
             var newCommand = command with { AccountId = accountId, Image = Filename };
@@ -50,9 +50,9 @@ namespace MovieServiceWebAPI.Controllers
         }
 
         [HttpPut("{Id:Guid}")]
-        public async Task<IActionResult> Update([FromRoute] Guid Id, [FromHeader] string? Filename, [FromBody] UpdateMovieCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> Update([FromRoute] Guid Id, [FromHeader] string? Filename, [FromForm] UpdateMovieCommand command, CancellationToken cancellationToken)
         {
-            var newCommand = command with { Id = Id, Image = Filename };
+            var newCommand = command with { Id = Id, Image = Filename ?? command.Image };
 
             await _mediator.Send(newCommand, cancellationToken);
 

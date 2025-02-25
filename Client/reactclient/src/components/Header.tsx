@@ -13,18 +13,21 @@ export function Header() {
   return (
     <AppBar
       position='static'
-      sx={{ mb: 5, backgroundColor: '#008B8BAA', color: '#FFFFFF' }}>
+      sx={{ mb: 5, color: '#244855', backgroundColor: '#FBE9D0' }}>
       <Stack
         direction='row'
         sx={{
           justifyContent: 'space-between',
           alignItems: 'center',
         }}>
-        <NavLink to='/'>
-          <Typography color='textPrimary' variant='h3'>
-            MovieDiscussion
-          </Typography>
-        </NavLink>
+        <Typography
+          component={NavLink}
+          to='/'
+          variant='h3'
+          color='inherit'
+          sx={{ textDecoration: 'none' }}>
+          MovieDiscussion
+        </Typography>
 
         <Stack
           direction='row'
@@ -32,26 +35,32 @@ export function Header() {
           sx={{
             alignItems: 'center',
           }}>
-          <NavLink to='/movies'>
-            <Typography
-              variant='h5'
-              color='textPrimary'
-              component='div'
-              sx={{ flexGrow: 1, mr: 2 }}>
-              Movies
-            </Typography>
-          </NavLink>
+          <Typography
+            component={NavLink}
+            to='/movies'
+            variant='h5'
+            color='inherit'
+            sx={{ flexGrow: 1, mr: 2, textDecoration: 'none' }}>
+            Movies
+          </Typography>
           {role != Role.Guest ? (
             <>
-              <NavLink to='/movies/new'>
-                <Typography
-                  variant='h5'
-                  color='textPrimary'
-                  component='div'
-                  sx={{ flexGrow: 1, mr: 2 }}>
-                  Create
-                </Typography>
-              </NavLink>
+              <Typography
+                variant='h5'
+                component={NavLink}
+                to='/movies/new'
+                color='inherit'
+                sx={{ flexGrow: 1, mr: 2, textDecoration: 'none' }}>
+                Create
+              </Typography>
+              <Typography
+                component={NavLink}
+                to='/profiles'
+                variant='h5'
+                color='inherit'
+                sx={{ flexGrow: 1, mr: 2, textDecoration: 'none' }}>
+                Profile
+              </Typography>
             </>
           ) : (
             <></>
@@ -59,11 +68,14 @@ export function Header() {
 
           {role == Role.Admin ? (
             <>
-              <NavLink to='/genres'>
-                <Typography variant='h5' color='textPrimary' component='div'>
-                  Genres
-                </Typography>
-              </NavLink>
+              <Typography
+                variant='h5'
+                component={NavLink}
+                to='/genres'
+                color='inherit'
+                sx={{ flexGrow: 1, mr: 2, textDecoration: 'none' }}>
+                Genres
+              </Typography>
             </>
           ) : (
             <></>
@@ -76,16 +88,20 @@ export function Header() {
             sx={{
               alignItems: 'center',
             }}>
-            <NavLink to='/login'>
-              <Button variant='contained' color='primary' component='div'>
-                Login
-              </Button>
-            </NavLink>
-            <NavLink to='/register'>
-              <Button variant='contained' color='primary' component='div'>
-                Register
-              </Button>
-            </NavLink>
+            <Button
+              variant='contained'
+              sx={{ bgcolor: '#874F41' }}
+              component={NavLink}
+              to='/login'>
+              Login
+            </Button>
+            <Button
+              variant='contained'
+              sx={{ bgcolor: '#874F41' }}
+              component={NavLink}
+              to='/register'>
+              Register
+            </Button>
           </Stack>
         ) : (
           <>
