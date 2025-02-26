@@ -2,6 +2,6 @@
 {
     public interface IDiscussionHub 
     {
-        Task ReceiveMessage(string username, string message);
+        Task ReceiveMessage(string username, string text, string sentAt);
     }
 }

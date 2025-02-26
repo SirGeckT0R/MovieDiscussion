@@ -232,9 +232,9 @@
       "SwaggerKey": "Movie"
     },
     {
-      "UpstreamPathTemplate": "/api/reviews/movie/{MovieId}",
+      "UpstreamPathTemplate": "/api/reviews/movie",
       "UpstreamHttpMethod": [ "GET" ],
-      "DownstreamPathTemplate": "/api/reviews/movie/{MovieId}",
+      "DownstreamPathTemplate": "/api/reviews/movie",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {

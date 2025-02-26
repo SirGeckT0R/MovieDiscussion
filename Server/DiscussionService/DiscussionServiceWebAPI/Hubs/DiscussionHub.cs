@@ -31,7 +31,7 @@ namespace DiscussionServiceWebAPI.Hubs
 
             await Clients
                     .Group(stringDiscussionId)
-                    .ReceiveMessage("Admin", $"{userConnection.Username} joined the chat");
+                    .ReceiveMessage("Admin", $"{userConnection.Username} joined the chat", DateTime.UtcNow.ToString());
         }
 
         public async Task SendMessage(string Message)
@@ -41,7 +41,7 @@ namespace DiscussionServiceWebAPI.Hubs
             var cancellationToken = Context.ConnectionAborted;
 
             var saveMessageCommand = new AddMessageToDiscussionCommand(Context.ConnectionId, Message);
-            var userConnection = await _mediator.Send(saveMessageCommand, cancellationToken);
+            var (userConnection, savedMessage) = await _mediator.Send(saveMessageCommand, cancellationToken);
 
             var stringDiscussionId = userConnection.DiscussionId.ToString();
 
@@ -49,7 +49,7 @@ namespace DiscussionServiceWebAPI.Hubs
 
             await Clients
                     .Group(stringDiscussionId)
-                    .ReceiveMessage($"{userConnection.Username}", Message);
+                    .ReceiveMessage($"{userConnection.Username}", savedMessage.Text, savedMessage.SentAt.ToString());
         }
 
         public override async Task OnDisconnectedAsync(Exception? exception)
@@ -71,7 +71,7 @@ namespace DiscussionServiceWebAPI.Hubs
 
             await Clients
                     .Group(stringDiscussionId)
-                    .ReceiveMessage("Admin", $"{userConnection.Username} left the chat");
+                    .ReceiveMessage("Admin", $"{userConnection.Username} left the chat", DateTime.UtcNow.ToString());
 
             await base.OnDisconnectedAsync(exception);
         }

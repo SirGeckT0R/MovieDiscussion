@@ -1,4 +1,4 @@
-import { Button, Chip, Grid2, Typography } from '@mui/material';
+import { Button, Chip, Grid2, Pagination, Typography } from '@mui/material';
 import { Box, Stack } from '@mui/system';
 import { getMovieQuery } from '../../queries/moviesQueries';
 import { NavLink, useParams } from 'react-router';
@@ -6,12 +6,24 @@ import { useQuery } from '@tanstack/react-query';
 import { CrewMembersView } from './components/CrewMembersView';
 import { useAuth } from '../../hooks/useAuth';
 import { Role } from '../../types/user';
+import { DateDisplay } from './components/DateDisplay';
+import { ReviewInput } from '../../components/Inputs/ReviewInput';
+import { ReviewList } from '../../components/ReviewList';
+import { getReviewsQuery } from '../../queries/reviewsQueries';
+import { useState } from 'react';
+import { useReviews } from '../../hooks/useReviews';
 
 export function MoviePage() {
+  const [pageIndex, setPageIndex] = useState(1);
   const { id } = useParams();
   const { data: movie } = useQuery(getMovieQuery(id!));
+  const { data: reviews } = useReviews(id!, pageIndex);
 
   const { role } = useAuth();
+
+  const handlePageClick = (_: unknown, value: number) => {
+    setPageIndex(value);
+  };
 
   return (
     <Grid2 container gap={2} justifyContent={'center'}>
@@ -32,7 +44,7 @@ export function MoviePage() {
           <Typography variant='h3' align='left' color='info'>
             {movie?.description}
           </Typography>
-          <Typography variant='h3'>{movie?.releaseDate}</Typography>
+          <DateDisplay date={new Date(movie?.releaseDate)} />
           <Typography variant='h4' color='info'>
             Genres:
           </Typography>
@@ -56,6 +68,13 @@ export function MoviePage() {
       ) : (
         <></>
       )}
+      <ReviewList reviews={reviews?.items} />
+      <Pagination
+        count={reviews?.totalPages}
+        onChange={handlePageClick}
+        sx={{ mr: 50 }}
+      />
+      <ReviewInput movieId={movie?.id} />
     </Grid2>
   );
 }

@@ -40,8 +40,8 @@ namespace MovieServiceWebAPI.Controllers
             return Ok(review);
         }
 
-        [HttpGet("movie/{MovieId:Guid}")]
-        public async Task<IActionResult> GetByMovie([FromRoute] GetReviewsByMovieIdQuery query, CancellationToken cancellationToken)
+        [HttpGet("movie")]
+        public async Task<IActionResult> GetByMovie([FromQuery] GetReviewsByMovieIdQuery query, CancellationToken cancellationToken)
         {
             var review = await _mediator.Send(query, cancellationToken);
 

@@ -36,6 +36,9 @@ import { MoviePage } from './pages/MoviePage/MoviePage.tsx';
 import { UpdateMoviePage } from './pages/UpdateMoviePage/UpdateMoviePage.tsx';
 import { UserProfilePage } from './pages/UserProfile/UserProfilePage.tsx';
 import { getUserProfileQuery } from './queries/profilesQueries.tsx';
+import { Chat } from './pages/Chat/Chat.tsx';
+import { DiscussionPage } from './pages/DiscussionsPage/DiscussionPage.tsx';
+import { getDiscussionsQuery } from './queries/discussionsQueries.tsx';
 
 const router = createBrowserRouter([
   {
@@ -114,6 +117,28 @@ const router = createBrowserRouter([
         element: <UserProfilePage />,
         loader: globalLoader(queryClient, getUserProfileQuery),
         HydrateFallback: Skeleton,
+      },
+      {
+        path: '/discussions',
+        element: <Outlet />,
+        children: [
+          {
+            index: true,
+            element: <DiscussionPage />,
+            loader: globalLoader(queryClient, getDiscussionsQuery),
+            HydrateFallback: Skeleton,
+          },
+          {
+            path: ':id',
+            element: (
+              <ProtectedRoute allowedRoles={[Role.User, Role.Admin]}>
+                <Chat />
+              </ProtectedRoute>
+            ),
+            // loader: globalLoader(queryClient, getMessagesQuery),
+            // HydrateFallback: Skeleton,
+          },
+        ],
       },
 
       { path: '*', element: <Navigate to='/404' /> },

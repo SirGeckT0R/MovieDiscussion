@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getUserProfileQuery } from '../../queries/profilesQueries';
 import { Grid2, Typography } from '@mui/material';
-import { Watchist } from './components/Watchlist';
+import { Watchlist } from './components/Watchlist';
 
 export function UserProfilePage() {
   const { data: profile } = useQuery(getUserProfileQuery());
@@ -11,7 +11,7 @@ export function UserProfilePage() {
       <Typography variant='h4' color='inherit'>
         {profile?.username}
       </Typography>
-      <Watchist />
+      <Watchlist />
     </Grid2>
   );
 }

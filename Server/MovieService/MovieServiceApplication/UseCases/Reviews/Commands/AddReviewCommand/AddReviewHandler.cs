@@ -26,7 +26,7 @@ namespace MovieServiceApplication.UseCases.Reviews.Commands.AddReviewCommand
 
         public async Task<Unit> Handle(AddReviewCommand request, CancellationToken cancellationToken)
         {
-            var profileSpecification = new UserProfileByAccountIdSpecification(request.AccountId);
+            var profileSpecification = new UserProfileByAccountIdSpecification(request.AccountId ?? Guid.Empty);
             var candidates = await _unitOfWork.UserProfiles.GetWithSpecificationAsync(profileSpecification, cancellationToken);
             var candidateProfile = candidates.SingleOrDefault();
 

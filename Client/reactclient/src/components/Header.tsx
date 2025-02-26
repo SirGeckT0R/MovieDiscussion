@@ -61,6 +61,14 @@ export function Header() {
                 sx={{ flexGrow: 1, mr: 2, textDecoration: 'none' }}>
                 Profile
               </Typography>
+              <Typography
+                component={NavLink}
+                to='/discussions'
+                variant='h5'
+                color='inherit'
+                sx={{ flexGrow: 1, mr: 2, textDecoration: 'none' }}>
+                Discussions
+              </Typography>
             </>
           ) : (
             <></>

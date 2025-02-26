@@ -7,3 +7,9 @@ export interface Discussion {
   isActive: boolean;
   subscribers: unknown;
 }
+
+export interface Message {
+  text: string;
+  username: string;
+  sentAt: string;
+}
