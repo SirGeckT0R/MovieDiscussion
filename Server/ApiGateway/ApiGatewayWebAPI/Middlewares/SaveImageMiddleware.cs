@@ -2,6 +2,9 @@
 using ApiGatewayWebAPI.ImageHandling;
 using ApiGatewayWebAPI.Services;
 using Microsoft.Extensions.Primitives;
+using System.Text.Json;
+using System.Text;
+using Kros.Extensions;
 
 namespace ApiGatewayWebAPI.Middlewares
 {
@@ -20,13 +23,26 @@ namespace ApiGatewayWebAPI.Middlewares
         public async Task InvokeAsync(HttpContext context, IConfiguration configuration, IWebHostEnvironment webHostEnvironment, IImageService imageService)
         {
             var isMoviesRequest = context.Request.Path.StartsWithSegments("/api/movies");
-            //var isDelete =  context.Request.Method == "DELETE";
+            var isDelete = context.Request.Method == "DELETE";
             var isPostOrPut = context.Request.Method == "POST" || context.Request.Method == "PUT";
-            //if(isDelete)
-            //{
-            //    context.Request.EnableBuffering(); 
-            //    var routeId = context.Request.RouteValues["Id"];
-            //}
+            if (isMoviesRequest && isDelete)
+            {
+                context.Request.EnableBuffering();
+                using var reader = new StreamReader(context.Request.Body, Encoding.UTF8,leaveOpen: true);
+                var body = await reader.ReadToEndAsync();
+
+                // Parse the JSON body
+                var json = JsonDocument.Parse(body);
+                if (json.RootElement.TryGetProperty("image", out var imageProperty))
+                {
+                    string image = imageProperty.GetString();
+                    if (!string.IsNullOrWhiteSpace(image))
+                    {
+                        _oldFilename = image;
+                    }
+                }
+                context.Request.Body.Position = 0;
+            }
 
             if (isMoviesRequest && isPostOrPut && context.Request.HasFormContentType)
             {
@@ -47,15 +63,21 @@ namespace ApiGatewayWebAPI.Middlewares
                     _filename = Path.Combine(webHostEnvironment.WebRootPath, apiUrl);
 
                     context.Request.Headers["Filename"] = apiUrl;
-                    context.Request.Body.Position = 0;
                 }
+                context.Request.Body.Position = 0;
             }
 
             await _next(context);
 
+            if (isMoviesRequest && isDelete && context.Response.StatusCode < 300 && !string.IsNullOrWhiteSpace(_oldFilename))
+            {
+                var deleteOld = new DeleteImageRequest(Path.Combine(webHostEnvironment.WebRootPath, _oldFilename));
+                imageService.DeleteImage(deleteOld);
+            }
+
             if (isMoviesRequest && isPostOrPut && context.Response.StatusCode < 300)
             {
-                if(context.Request.Method == "PUT" && !string.IsNullOrWhiteSpace(_oldFilename))
+                if (context.Request.Method == "PUT" && !string.IsNullOrWhiteSpace(_oldFilename))
                 {
                     var deleteOld = new DeleteImageRequest(Path.Combine(webHostEnvironment.WebRootPath, _oldFilename));
                     imageService.DeleteImage(deleteOld);

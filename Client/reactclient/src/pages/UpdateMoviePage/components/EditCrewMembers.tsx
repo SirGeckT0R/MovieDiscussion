@@ -1,7 +1,7 @@
-import { Button, Chip, IconButton, Stack, Typography } from '@mui/material';
+import { Chip, IconButton, Stack, Typography } from '@mui/material';
 import { CrewMember, CrewRole } from '../../../types/movie';
-import { Dispatch, SetStateAction, useState } from 'react';
-import { Delete, RemoveCircle } from '@mui/icons-material';
+import { Dispatch, SetStateAction } from 'react';
+import { RemoveCircle } from '@mui/icons-material';
 
 const groupOnRole = (crew: CrewMember[]): Array<CrewMember[]> =>
   Object.values(
@@ -20,19 +20,15 @@ export function EditCrewMembers({
   crew: CrewMember[];
   setCrew: Dispatch<SetStateAction<CrewMember[]>>;
 }) {
-  const [grouped, setGrouped] = useState<Array<CrewMember[]> | null>(
-    groupOnRole(crew)
-  );
+  const grouped = groupOnRole(crew);
 
   const handleDelete = (member: CrewMember) => {
-    const index = crew.indexOf(member);
+    const index = crew.findIndex(
+      ({ personId }) => personId === member.personId
+    );
     if (index > -1) {
-      crew.splice(index, 1);
-      console.log(crew);
+      setCrew((crew) => [...crew.slice(0, index), ...crew.slice(index + 1)]);
     }
-
-    setCrew(crew);
-    setGrouped(crew ? groupOnRole(crew) : null);
   };
 
   return (

@@ -4,6 +4,7 @@ using MovieServiceApplication.UseCases.Reviews.Commands.AddReviewCommand;
 using MovieServiceApplication.UseCases.Reviews.Commands.DeleteReviewCommand;
 using MovieServiceApplication.UseCases.Reviews.Commands.UpdateReviewCommand;
 using MovieServiceApplication.UseCases.Reviews.Queries.GetReviewByIdQuery;
+using MovieServiceApplication.UseCases.Reviews.Queries.GetReviewByMovieAndAccountIdQuery;
 using MovieServiceApplication.UseCases.Reviews.Queries.GetReviewsByAccountIdQuery;
 using MovieServiceApplication.UseCases.Reviews.Queries.GetReviewsByMovieIdQuery;
 using MovieServiceWebAPI.Helpers;
@@ -28,6 +29,19 @@ namespace MovieServiceWebAPI.Controllers
             _logger.LogInformation("Review was created");
 
             return Created();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetById([FromQuery] GetReviewByMovieAndAccountIdQuery query, CancellationToken cancellationToken)
+        {
+            var accountId = ClaimHelper.GetAccountIdFromUser(HttpContext.User);
+            var newQuery = query with { AccountId = accountId };
+
+            var review = await _mediator.Send(newQuery, cancellationToken);
+
+            _logger.LogInformation("Returning review by id");
+
+            return Ok(review);
         }
 
         [HttpGet("{Id:Guid}")]

@@ -1,4 +1,4 @@
-import { Card, Divider } from '@mui/material';
+import { Card, Stack } from '@mui/material';
 import { Movie } from '../../types/movie';
 import { MovieCardInfo } from './MovieCardInfo';
 import { MovieCardActions } from './MovieCardActions';
@@ -13,16 +13,18 @@ export function MovieCard({
   isInWatchlist: boolean | undefined;
 }) {
   const classes = useMovieCardStyles();
+
   return (
     <Card
-      className={classes.card}
       variant='outlined'
-      sx={{ width: 360, height: 360 }}>
-      <NavLink to={`/movies/${movie.id}`} key={movie.id}>
-        <MovieCardInfo movie={movie} />
-      </NavLink>
-      <Divider />
-      <MovieCardActions movie={movie} isInWatchlist={isInWatchlist} />
+      sx={{ width: 360, height: 600 }}
+      className={classes.card}>
+      <Stack direction={'column'} spacing={2}>
+        <NavLink to={`/movies/${movie.id}`} key={movie.id}>
+          <MovieCardInfo movie={movie} />
+        </NavLink>
+        <MovieCardActions movie={movie} isInWatchlist={isInWatchlist} />
+      </Stack>
     </Card>
   );
 }

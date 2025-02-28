@@ -34,11 +34,20 @@ import { ModifyGenresPage } from './pages/ModifyGenresPage/ModifyGenresPage.tsx'
 import { Header } from './components/Header.tsx';
 import { MoviePage } from './pages/MoviePage/MoviePage.tsx';
 import { UpdateMoviePage } from './pages/UpdateMoviePage/UpdateMoviePage.tsx';
-import { UserProfilePage } from './pages/UserProfile/UserProfilePage.tsx';
+import { UserProfilePage } from './pages/UserProfilePage/UserProfilePage.tsx';
 import { getUserProfileQuery } from './queries/profilesQueries.tsx';
 import { Chat } from './pages/Chat/Chat.tsx';
-import { DiscussionPage } from './pages/DiscussionsPage/DiscussionPage.tsx';
-import { getDiscussionsQuery } from './queries/discussionsQueries.tsx';
+import { ListOfDiscussionsPage } from './pages/ListOfDiscussionsPage/ListOfDiscussionsPage.tsx';
+import {
+  getDiscussionQuery,
+  getListOfDiscussionsQuery,
+} from './queries/discussionsQueries.tsx';
+import { DiscussionPage } from './pages/DiscussionPage/DiscussionPage.tsx';
+import { EditDiscussionPage } from './pages/EditDiscussionPage/EditDiscussionPage.tsx';
+import { getMessagesQuery } from './queries/messagesQueries.tsx';
+import { ConfirmEmailPage } from './pages/ConfirmEmailPage/ConfirmEmailPage.tsx';
+import { ResetPasswordPage } from './pages/ResetPasswordPage/ResetPasswordPage.tsx';
+import { ForgotPasswordPage } from './pages/ForgotPasswordPage/ForgotPasswordPage.tsx';
 
 const router = createBrowserRouter([
   {
@@ -124,22 +133,46 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <DiscussionPage />,
-            loader: globalLoader(queryClient, getDiscussionsQuery),
+            element: <ListOfDiscussionsPage />,
+            loader: globalLoader(queryClient, getListOfDiscussionsQuery),
             HydrateFallback: Skeleton,
           },
           {
             path: ':id',
-            element: (
-              <ProtectedRoute allowedRoles={[Role.User, Role.Admin]}>
-                <Chat />
-              </ProtectedRoute>
-            ),
-            // loader: globalLoader(queryClient, getMessagesQuery),
-            // HydrateFallback: Skeleton,
+            children: [
+              {
+                index: true,
+                element: <DiscussionPage />,
+                loader: globalLoader(queryClient, getDiscussionQuery),
+                HydrateFallback: Skeleton,
+              },
+              {
+                path: 'chat',
+                element: (
+                  <ProtectedRoute allowedRoles={[Role.User, Role.Admin]}>
+                    <Chat />
+                  </ProtectedRoute>
+                ),
+                loader: globalLoader(queryClient, getMessagesQuery),
+                HydrateFallback: Skeleton,
+              },
+              {
+                path: 'edit',
+                element: (
+                  <ProtectedRoute allowedRoles={[Role.User, Role.Admin]}>
+                    <EditDiscussionPage />
+                  </ProtectedRoute>
+                ),
+                loader: globalLoader(queryClient, getDiscussionQuery),
+                HydrateFallback: Skeleton,
+              },
+            ],
           },
         ],
       },
+      { path: '/confirmation', element: <ConfirmEmailPage /> },
+      { path: '/auth/password/reset', element: <ResetPasswordPage /> },
+      { path: '/auth/password/forgot', element: <ForgotPasswordPage /> },
 
       { path: '*', element: <Navigate to='/404' /> },
       { path: '/404', element: <ErrorPage /> },
@@ -148,10 +181,10 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-      <ReactQueryDevtools position='bottom-right' />
-    </QueryClientProvider>
-  </StrictMode>
+  // <StrictMode>
+  <QueryClientProvider client={queryClient}>
+    <RouterProvider router={router} />
+    <ReactQueryDevtools position='bottom-right' />
+  </QueryClientProvider>
+  // </StrictMode>
 );

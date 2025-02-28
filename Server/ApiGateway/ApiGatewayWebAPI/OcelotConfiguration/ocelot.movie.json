@@ -188,7 +188,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/reviews",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [ "GET","POST" ],
       "DownstreamPathTemplate": "/api/reviews",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

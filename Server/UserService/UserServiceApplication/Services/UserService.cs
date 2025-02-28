@@ -36,6 +36,7 @@ namespace UserServiceApplication.Services
         public async Task<(string, string)> LoginAsync(LoginRequest loginRequest, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Login attempt started for {Email}", loginRequest.Email);
+            loginRequest.Email = loginRequest.Email.ToLower();
 
             var candidate = await _unitOfWork.UserRepository.GetByEmailAsync(loginRequest.Email, cancellationToken);
 
@@ -61,6 +62,8 @@ namespace UserServiceApplication.Services
         public async Task<(string, string)> RegisterAsync(RegisterRequest registerRequest, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Register attempt started for {Email}", registerRequest.Email);
+
+            registerRequest.Email = registerRequest.Email.ToLower();
 
             var candidate = await _unitOfWork.UserRepository.GetByEmailAsync(registerRequest.Email, cancellationToken);
 
@@ -152,6 +155,7 @@ namespace UserServiceApplication.Services
         public async Task<UserDto> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Get user by email attempt started for {Email}", email);
+            email = email.ToLower();
 
             var user = await _unitOfWork.UserRepository.GetByEmailAsync(email, cancellationToken);
 
@@ -267,12 +271,30 @@ namespace UserServiceApplication.Services
             return confirmToken;
         }
 
+        public async Task<string> ChangePasswordAsync(string? accessToken, string callbackUrl, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Change password attempt started");
+            var (resetToken, email) = await _tokenService.GenerateTokenAndExtractEmailAsync(accessToken, TokenType.ResetPassword, cancellationToken);
 
-        public async Task<string> ForgotPasswordAsync(string? accessToken, string callbackUrl, CancellationToken cancellationToken)
+            cancellationToken.ThrowIfCancellationRequested();
+            resetToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(resetToken));
+
+            BackgroundJob.Enqueue(() => SendEmail(email, resetToken, "Reset Password", callbackUrl, cancellationToken));
+
+            cancellationToken.ThrowIfCancellationRequested();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            _logger.LogInformation("Change password attempt completed successfully");
+
+            return resetToken;
+        }
+
+        public async Task<string> ForgotPasswordAsync(string email, string callbackUrl, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Forgot password attempt started");
+            email = email.ToLower();
 
-            var (resetToken, email) = await _tokenService.GenerateTokenAndExtractEmailAsync(accessToken, TokenType.ResetPassword, cancellationToken);
+            var resetToken = await _tokenService.GenerateResetTokenAsync(email, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
             resetToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(resetToken));
@@ -290,6 +312,7 @@ namespace UserServiceApplication.Services
         public async Task<string> ResetPasswordAsync(ResetPasswordRequest resetPasswordRequest, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Reset password attempt started for {Email}", resetPasswordRequest.Email);
+            resetPasswordRequest = resetPasswordRequest with { Email = resetPasswordRequest.Email.ToLower() };
 
             var candidate = await _unitOfWork.UserRepository.GetByEmailTrackingAsync(resetPasswordRequest.Email, cancellationToken);
 

@@ -7,9 +7,10 @@ namespace UserServiceWebAPI.Controllers
 {
     [ApiController]
     [Route("auth")]
-    public class AuthController(IUserService userService, ILogger<AuthController> logger) : ControllerBase
+    public class AuthController(IUserService userService, IConfiguration configuration, ILogger<AuthController> logger) : ControllerBase
     {
         private readonly IUserService _userService = userService;
+        private readonly IConfiguration _configuration = configuration;
         private readonly ILogger<AuthController> _logger = logger;
 
         [HttpPost("login")]
@@ -58,17 +59,27 @@ namespace UserServiceWebAPI.Controllers
             return NoContent();
         }
 
-        [HttpPost("password/forgot")]
+        [HttpPost("password/change")]
         [Authorize]
-        public async Task<IActionResult> ForgotPassword(CancellationToken cancellationToken)
+        public async Task<IActionResult> ChangePassword(CancellationToken cancellationToken)
         {
             var accessToken = HttpContext.Request.Cookies["accessToken"];
-            var callbackUrl = Url.RouteUrl(
-                "ResetPassword",
-                values: null,
-                protocol: Request.Scheme);
 
-            var token = await _userService.ForgotPasswordAsync(accessToken, callbackUrl!, cancellationToken);
+            var callbackUrl = $"{_configuration["FrontEndUrl"]}/auth/password/reset";
+
+            var token = await _userService.ChangePasswordAsync(accessToken, callbackUrl!, cancellationToken);
+
+            _logger.LogInformation("Token for resetting password was created");
+
+            return Ok(token);
+        }
+
+        [HttpPost("password/forgot")]
+        public async Task<IActionResult> ForgotPassword([FromForm] string email, CancellationToken cancellationToken)
+        {
+            var callbackUrl = $"{_configuration["FrontEndUrl"]}/auth/password/reset";
+
+            var token = await _userService.ForgotPasswordAsync(email, callbackUrl!, cancellationToken);
 
             _logger.LogInformation("Token for resetting password was created");
 

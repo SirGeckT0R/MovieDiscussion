@@ -12,12 +12,12 @@ export function MovieCardActions({
   movie: Movie;
   isInWatchlist: boolean;
 }) {
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync: manageMovieAsync, isLoading } = useMutation({
     mutationFn: (values: ManageMovieInWatchlist) =>
       manageMovieInWatchlist(values),
   });
 
-  function handleClick(event: React.ChangeEvent<HTMLInputElement>) {
+  const handleClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     const action = event.target.checked
       ? WatchlistAction.Add
       : WatchlistAction.Remove;
@@ -27,8 +27,8 @@ export function MovieCardActions({
       action: action as number,
     };
 
-    mutateAsync(values);
-  }
+    manageMovieAsync(values);
+  };
 
   return (
     <>
@@ -39,7 +39,7 @@ export function MovieCardActions({
             icon={<VisibilityTwoTone />}
             checkedIcon={<VisibilityTwoTone htmlColor='green' />}
             onChange={handleClick}
-            sx={{ display: isLoading ? 'none' : 'block' }}
+            sx={{ display: isLoading ? 'none' : 'initial' }}
           />
         </IconButton>
       </Tooltip>

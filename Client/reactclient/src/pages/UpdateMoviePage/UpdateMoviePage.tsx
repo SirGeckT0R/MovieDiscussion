@@ -1,19 +1,7 @@
-import {
-  Box,
-  Button,
-  Grid2,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Grid2, Stack, TextField } from '@mui/material';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  CrewMember,
-  CrewRole,
-  Movie,
-  UpdateMovieRequest,
-} from '../../types/movie';
+import { CrewMember, Movie, UpdateMovieRequest } from '../../types/movie';
 import { Controller, useForm } from 'react-hook-form';
 import { useState } from 'react';
 import dayjs from 'dayjs';
@@ -25,7 +13,6 @@ import { SelectInput } from '../../components/Inputs/MultipleSelectInput';
 import { CrewMemberInputForm } from '../CreateMoviePage/components/CrewMemberInputForm';
 import { getMovieQuery } from '../../queries/moviesQueries';
 import { updateMovie } from '../../api/movieService';
-import { CrewMembersView } from '../MoviePage/components/CrewMembersView';
 import { EditCrewMembers } from './components/EditCrewMembers';
 
 export function UpdateMoviePage() {
@@ -36,7 +23,12 @@ export function UpdateMoviePage() {
   const { data: genres } = useQuery<Genre[]>(getGenresQuery());
   const [image, setImage] = useState<Blob | null>(null);
   const [crew, setCrew] = useState<CrewMember[]>(movie!.crewMembers);
-  const { register, handleSubmit, control } = useForm<UpdateMovieRequest>({
+
+  const {
+    register: update,
+    handleSubmit: handleUpdate,
+    control,
+  } = useForm<UpdateMovieRequest>({
     defaultValues: {
       id: movie?.id,
       title: movie?.title,
@@ -48,13 +40,13 @@ export function UpdateMoviePage() {
     },
   });
 
-  const { mutateAsync } = useMutation({
+  const { mutateAsync: updateAsync } = useMutation({
     mutationFn: (values: UpdateMovieRequest) =>
       updateMovie(values, image, crew),
   });
 
   const onSubmit = (formBody: UpdateMovieRequest) => {
-    mutateAsync(formBody).then(() => navigate('/movies'));
+    updateAsync(formBody).then(() => navigate(`/movies/${id}`));
   };
 
   return (
@@ -64,20 +56,20 @@ export function UpdateMoviePage() {
           imageState={{ image, setImage }}
           existingImagePath={movie?.image}
         />
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleUpdate(onSubmit)}>
           <Grid2 container direction={'column'} gap={'20px'}>
             <TextField
               type='text'
               id='titleInput'
               label='Title'
-              {...register('title')}
+              {...update('title')}
               required
             />
             <TextField
               type='text'
               id='descriptionInput'
               label='Description'
-              {...register('description')}
+              {...update('description')}
               required
             />
             <Controller

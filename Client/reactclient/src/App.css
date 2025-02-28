@@ -1,11 +1,10 @@
-/* #root {
+#root {
   max-width: 2000px;
   margin: 0 auto;
   padding: 0.5rem;
   text-align: center;
-  color: #244855;
 }
-:root {
+/*:root {
   color-scheme: normal;
   background-color: #fbe9de;
 }

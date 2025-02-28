@@ -82,6 +82,19 @@
           "Port": 5001
         }
       ],
+      "SwaggerKey": "Auth"
+    },
+    {
+      "UpstreamPathTemplate": "/api/auth/change",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/auth/password/change",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 5001
+        }
+      ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
@@ -98,9 +111,6 @@
           "Port": 5001
         }
       ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
-      },
       "SwaggerKey": "Auth"
     },
     {

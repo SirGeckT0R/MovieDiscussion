@@ -8,6 +8,15 @@ export interface RegisterRequest {
   email: string;
   password: string;
 }
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ResetPasswordRequest {
+  email: string | null;
+  token: string | null;
+  newPassword: string;
+}
 
 export enum Role {
   Guest = 0,

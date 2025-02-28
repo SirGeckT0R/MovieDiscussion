@@ -1,31 +1,28 @@
 import { MovieList } from '../../components/MovieList';
 import { useState } from 'react';
-import { Pagination } from '@mui/material';
+import { Pagination, Stack } from '@mui/material';
 import { useMovies } from '../../hooks/useMovies';
-import { useQuery } from '@tanstack/react-query';
-import { getWatchlistQuery } from '../../queries/watchlistsQueries';
+import { CardLoader } from '../../components/CardLoading';
 
 export function ListOfMoviesPage() {
   const [pageIndex, setPageIndex] = useState(1);
 
-  const { data: movies } = useMovies(pageIndex, '');
-  const { data: watchlist } = useQuery(getWatchlistQuery());
+  const { data: movies, isLoading } = useMovies(pageIndex, '');
 
   const handlePageClick = (_: unknown, value: number) => {
     setPageIndex(value);
   };
 
-  return (
-    <div>
-      <MovieList
-        movies={movies?.items}
-        watchlist={watchlist?.movies.map((movie) => movie.id)}
-      />
+  return isLoading ? (
+    <CardLoader amount={3} />
+  ) : (
+    <Stack direction={'column'} spacing={4} alignItems={'center'}>
+      <MovieList movies={movies?.items} />
       <Pagination
         count={movies?.totalPages}
         onChange={handlePageClick}
         sx={{ mr: 50 }}
       />
-    </div>
+    </Stack>
   );
 }

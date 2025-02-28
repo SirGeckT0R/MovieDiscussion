@@ -2,7 +2,7 @@ import {
   CreateMovieRequest,
   CrewMember,
   Movie,
-  PaginatedMovie,
+  PaginatedMovies,
   UpdateMovieRequest,
 } from '../types/movie';
 import { axiosInstance } from './global';
@@ -10,8 +10,8 @@ import { axiosInstance } from './global';
 export const fetchMovies = async (
   pageIndex: number = 1,
   searchName: string | null = null
-): Promise<PaginatedMovie> => {
-  const movies: PaginatedMovie = await axiosInstance
+): Promise<PaginatedMovies> => {
+  const movies: PaginatedMovies = await axiosInstance
     .get(
       `/api/movies?Name=${
         searchName ? searchName.trim() : ''
@@ -64,19 +64,10 @@ export const updateMovie = async (
   return response;
 };
 
-// export const deleteMovie = async (
-//   body: UpdateMovieRequest,
-//   image: Blob | null,
-//   crew: CrewMember[]
-// ) => {
-//   body.crewMembers = crew;
-//   if (image != null) {
-//     body.file = image;
-//   }
+export const deleteMovie = async (id: string, image: string | null) => {
+  const response = await axiosInstance
+    .delete(`/api/movies/${id}`, { data: { image: image } })
+    .then((response) => response.data);
 
-//   const response = await axiosInstance
-//     .delete(`/api/movies/${body.id}`, body)
-//     .then((response) => response.data);
-
-//   return response;
-// };
+  return response;
+};

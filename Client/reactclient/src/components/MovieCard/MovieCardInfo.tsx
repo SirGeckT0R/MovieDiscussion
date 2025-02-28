@@ -8,12 +8,14 @@ import {
 } from '@mui/material';
 import { Movie } from '../../types/movie';
 import { useMovieCardStyles } from './styles/useMovieCardStyles';
+import { ImageSharp } from '@mui/icons-material';
 
 export function MovieCardInfo({ movie }: { movie: Movie }) {
   const classes = useMovieCardStyles();
+
   return (
     <>
-      {movie.image && (
+      {movie.image ? (
         <CardMedia
           className={classes.media}
           component='img'
@@ -21,6 +23,20 @@ export function MovieCardInfo({ movie }: { movie: Movie }) {
           alt={`${movie.title} - cover`}
           title={`${movie.title} - cover`}
           sx={{ objectFit: 'cover' }}
+        />
+      ) : (
+        <ImageSharp
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            cursor: 'pointer',
+            width: 360,
+            height: 300,
+            pb: 28,
+            color: 'grey',
+          }}
         />
       )}
       <div className={classes.overlay}>
@@ -35,11 +51,16 @@ export function MovieCardInfo({ movie }: { movie: Movie }) {
                 color='info'>
                 {movie.title}
               </Typography>
-              <Rating value={movie.rating} max={10} precision={0.5} readOnly />
+              <Rating
+                value={movie.rating / 2}
+                max={5}
+                precision={0.5}
+                readOnly
+              />
+              <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+                {movie.description}
+              </Typography>
             </Stack>
-            <Typography variant='body2' sx={{ color: 'text.secondary' }}>
-              {movie.description}
-            </Typography>
           </Box>
         </CardContent>
       </div>

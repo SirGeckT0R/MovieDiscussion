@@ -1,4 +1,4 @@
-import { Button, Chip, Grid2, Pagination, Typography } from '@mui/material';
+import { Button, Chip, Typography } from '@mui/material';
 import { Box, Stack } from '@mui/system';
 import { getMovieQuery } from '../../queries/moviesQueries';
 import { NavLink, useParams } from 'react-router';
@@ -7,26 +7,21 @@ import { CrewMembersView } from './components/CrewMembersView';
 import { useAuth } from '../../hooks/useAuth';
 import { Role } from '../../types/user';
 import { DateDisplay } from './components/DateDisplay';
-import { ReviewInput } from '../../components/Inputs/ReviewInput';
-import { ReviewList } from '../../components/ReviewList';
-import { getReviewsQuery } from '../../queries/reviewsQueries';
-import { useState } from 'react';
-import { useReviews } from '../../hooks/useReviews';
+import { deleteMovie } from '../../api/movieService';
+import { ReviewView } from './components/ReviewView';
 
 export function MoviePage() {
-  const [pageIndex, setPageIndex] = useState(1);
-  const { id } = useParams();
-  const { data: movie } = useQuery(getMovieQuery(id!));
-  const { data: reviews } = useReviews(id!, pageIndex);
-
   const { role } = useAuth();
 
-  const handlePageClick = (_: unknown, value: number) => {
-    setPageIndex(value);
+  const { id } = useParams();
+  const { data: movie } = useQuery(getMovieQuery(id!));
+
+  const handleDeleteMovie = () => {
+    deleteMovie(movie?.id ?? '', movie?.image ?? '');
   };
 
   return (
-    <Grid2 container gap={2} justifyContent={'center'}>
+    <Stack spacing={2} direction={'column'} justifyContent={'center'}>
       <Stack direction={'row'} spacing={2}>
         {movie?.image ? (
           <Box
@@ -37,20 +32,44 @@ export function MoviePage() {
             title={`${movie.title} - cover`}
           />
         ) : null}
-        <Stack alignItems={'start'} color='info'>
+        <Stack alignItems={'start'} color='info' spacing={2}>
           <Typography variant='h2' align='left' color='info'>
             {movie?.title}
           </Typography>
+          {role == Role.Admin ? (
+            <Stack direction={'row'} spacing={2}>
+              <NavLink to='edit'>
+                <Button color='primary' variant='contained'>
+                  Edit
+                </Button>
+              </NavLink>
+              <Button
+                color='error'
+                variant='contained'
+                onClick={handleDeleteMovie}>
+                Delete
+              </Button>
+            </Stack>
+          ) : (
+            <></>
+          )}
           <Typography variant='h3' align='left' color='info'>
             {movie?.description}
           </Typography>
-          <DateDisplay date={new Date(movie?.releaseDate)} />
+          <DateDisplay date={new Date(movie?.releaseDate ?? '')} />
           <Typography variant='h4' color='info'>
             Genres:
           </Typography>
           <Stack direction={'row'} spacing={1}>
             {movie?.genres?.map((genre) => (
-              <Chip label={genre.name} color='error' key={genre.id} />
+              <Chip
+                label={genre.name}
+                color='primary'
+                sx={{
+                  fontWeight: 'bold',
+                }}
+                key={genre.id}
+              />
             ))}
           </Stack>
           <Typography variant='h4' color='info'>
@@ -59,22 +78,7 @@ export function MoviePage() {
           <CrewMembersView crew={movie?.crewMembers} />
         </Stack>
       </Stack>
-      {role == Role.Admin ? (
-        <NavLink to='edit'>
-          <Button color='primary' variant='contained'>
-            Edit
-          </Button>
-        </NavLink>
-      ) : (
-        <></>
-      )}
-      <ReviewList reviews={reviews?.items} />
-      <Pagination
-        count={reviews?.totalPages}
-        onChange={handlePageClick}
-        sx={{ mr: 50 }}
-      />
-      <ReviewInput movieId={movie?.id} />
-    </Grid2>
+      <ReviewView movieId={id} />
+    </Stack>
   );
 }

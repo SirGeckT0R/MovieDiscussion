@@ -1,6 +1,12 @@
-import { Autocomplete, TextField } from '@mui/material';
+import { Autocomplete, CircularProgress, TextField } from '@mui/material';
 import { useDebounce } from '@uidotdev/usehooks';
-import { SyntheticEvent, useState } from 'react';
+import {
+  Dispatch,
+  ReactElement,
+  SetStateAction,
+  SyntheticEvent,
+  useState,
+} from 'react';
 import { Control, Controller } from 'react-hook-form';
 import { useSearch } from '../../hooks/useSearch';
 
@@ -8,6 +14,8 @@ export function DebounceSearch({
   searchData,
   control,
   inputName,
+  noOptionsRender,
+  setName,
 }: {
   searchData: {
     key: string;
@@ -16,11 +24,13 @@ export function DebounceSearch({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<any, any>;
   inputName: string;
+  noOptionsRender: ReactElement | undefined;
+  setName: Dispatch<SetStateAction<string>>;
 }) {
   const [searchName, setSearchName] = useState<string | null>();
   const debouncedSearchTerm = useDebounce(searchName, 1000);
 
-  const { data: matches } = useSearch(
+  const { data: matches, isLoading } = useSearch(
     searchData.key,
     debouncedSearchTerm!,
     searchData.searchFetch
@@ -34,6 +44,13 @@ export function DebounceSearch({
       rules={{ required: `${inputName} is required` }}
       render={({ field, fieldState: { error } }) => (
         <Autocomplete
+          noOptionsText={
+            isLoading ? (
+              <CircularProgress />
+            ) : (
+              noOptionsRender ?? 'No options found'
+            )
+          }
           {...field}
           defaultValue={{ id: '', name: '' }}
           options={matches ?? [{ id: '', name: '' }]}
@@ -45,6 +62,7 @@ export function DebounceSearch({
             _event: SyntheticEvent,
             newValue: { id: string; name: string } | null
           ) => {
+            setName(newValue?.name ?? '');
             field.onChange(newValue ? newValue.id : '');
           }}
           value={

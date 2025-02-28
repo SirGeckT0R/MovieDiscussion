@@ -1,4 +1,9 @@
-import { LoginRequest, Role } from '../types/user';
+import {
+  ForgotPasswordRequest,
+  LoginRequest,
+  ResetPasswordRequest,
+  Role,
+} from '../types/user';
 import { axiosInstance } from './global';
 
 export const fetchLogin = async (body: LoginRequest) => {
@@ -19,6 +24,47 @@ export async function fetchRole() {
     .then((response) => response?.data);
 
   return response ?? Role.Guest;
+}
+
+export async function sendConfirmationEmail() {
+  const response = await axiosInstance
+    .post('/api/auth/confirm')
+    .then((response) => response?.data);
+
+  return response;
+}
+
+export async function forgotPassword(body: ForgotPasswordRequest) {
+  const response = await axiosInstance
+    .postForm('/api/auth/forgot', body)
+    .then((response) => response?.data);
+
+  return response;
+}
+
+export async function changePassword() {
+  const response = await axiosInstance
+    .post('/api/auth/change')
+    .then((response) => response?.data);
+
+  return response;
+}
+
+export async function resetPassword(body: ResetPasswordRequest) {
+  const response = await axiosInstance
+    .postForm('/api/auth/reset', body)
+    .then((response) => response?.data);
+
+  return response;
+}
+
+export async function confirmEmail(email: string | null, token: string | null) {
+  console.log(email, token);
+  const response = await axiosInstance
+    .get(`/api/auth/confirm?email=${email}&token=${token}`)
+    .then((response) => response?.data);
+
+  return response;
 }
 
 export async function fetchLogout() {

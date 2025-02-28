@@ -9,23 +9,24 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { createGenre, deleteGenre, updateGenre } from '../../api/genreService';
 import { SelectInput } from '../../components/Inputs/MultipleSelectInput';
 import { getGenresQuery } from '../../queries/genresQueries';
-import { useNavigate } from 'react-router-dom';
+import { queryClient } from '../../api/global';
 
 export function ModifyGenresPage() {
-  const navigate = useNavigate();
+  const genresQuery = getGenresQuery();
+  const { data: genres } = useQuery(genresQuery);
 
-  const { data: genres } = useQuery(getGenresQuery());
-  const { register, handleSubmit } = useForm<CreateGenreRequest>();
+  const queryInvalidator = () => {
+    queryClient.invalidateQueries(genresQuery.queryKey);
+  };
+
+  const { register: create, handleSubmit } = useForm<CreateGenreRequest>();
   const {
     register: update,
     control: updateControl,
     handleSubmit: handleUpdate,
   } = useForm<UpdateGenreRequest>();
-  const {
-    register: deleteForm,
-    control: deleteControl,
-    handleSubmit: handleDelete,
-  } = useForm<DeleteGenreRequest>();
+  const { control: deleteControl, handleSubmit: handleDelete } =
+    useForm<DeleteGenreRequest>();
 
   const { mutateAsync: createMutation } = useMutation({
     mutationFn: (values: CreateGenreRequest) => createGenre(values),
@@ -38,15 +39,15 @@ export function ModifyGenresPage() {
   });
 
   const onCreateSubmit = (formBody: CreateGenreRequest) => {
-    createMutation(formBody).then(() => navigate(0));
+    createMutation(formBody).then(queryInvalidator);
   };
 
   const onUpdateSubmit = (formBody: UpdateGenreRequest) => {
-    updateMutation(formBody).then(() => navigate(0));
+    updateMutation(formBody).then(queryInvalidator);
   };
 
   const onDeleteSubmit = (formBody: DeleteGenreRequest) => {
-    deleteMutation(formBody).then(() => navigate(0));
+    deleteMutation(formBody).then(queryInvalidator);
   };
 
   return (
@@ -57,7 +58,7 @@ export function ModifyGenresPage() {
             type='text'
             id='nameInput'
             label='Name'
-            {...register('name')}
+            {...create('name')}
             required
           />
           <Button type='submit' variant='contained'>

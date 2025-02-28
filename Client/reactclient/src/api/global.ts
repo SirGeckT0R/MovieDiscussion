@@ -14,7 +14,7 @@ const handleGlobalError = (error: unknown) => {
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 100,
+      staleTime: 1000 * 1,
     },
   },
   queryCache: new QueryCache({

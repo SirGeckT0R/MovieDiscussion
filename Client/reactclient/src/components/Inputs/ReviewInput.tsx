@@ -1,47 +1,55 @@
-import { Button, TextField } from '@mui/material';
+import { Button, Stack, TextField } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { CreateReviewRequest } from '../../types/review';
 import { useMutation } from '@tanstack/react-query';
 import { createReview } from '../../api/reviewService';
 
-export function ReviewInput({ movieId }: { movieId: string }) {
+export function ReviewInput({
+  movieId,
+  queryInvalidator,
+}: {
+  movieId: string | undefined;
+  queryInvalidator: () => void;
+}) {
   const { register, handleSubmit } = useForm<CreateReviewRequest>();
 
-  const { mutateAsync } = useMutation({
+  const { mutateAsync: addReviewAsync } = useMutation({
     mutationFn: (values: CreateReviewRequest) => createReview(values),
   });
 
   const onSubmit = (values: CreateReviewRequest) => {
-    values.movieId = movieId;
-    mutateAsync(values);
+    values.movieId = movieId ?? '';
+    addReviewAsync(values).then(queryInvalidator);
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <TextField
-        {...register('value')}
-        fullWidth
-        name='value'
-        id='value'
-        type='number'
-        label='Rating'
-        required
-        slotProps={{
-          input: { inputProps: { min: 1, max: 10 } },
-        }}
-      />
-      <TextField
-        {...register('text')}
-        fullWidth
-        name='text'
-        id='text'
-        type='text'
-        label='Text'
-        required
-        multiline
-        rows={6}
-      />
-      <Button type='submit'>Add review</Button>
+      <Stack spacing={2} sx={{ width: 500, margin: '0 auto' }}>
+        <TextField
+          {...register('value')}
+          name='value'
+          id='value'
+          type='number'
+          label='Rating'
+          required
+          slotProps={{
+            input: { inputProps: { min: 1, max: 10 } },
+          }}
+        />
+        <TextField
+          {...register('text')}
+          name='text'
+          id='text'
+          type='text'
+          label='Text'
+          required
+          multiline
+          rows={6}
+        />
+        <Button type='submit' variant='contained'>
+          Add review
+        </Button>
+      </Stack>
     </form>
   );
 }

@@ -10,7 +10,7 @@ export interface Movie {
   crewMembers: Array<CrewMember>;
   image: string;
 }
-export interface PaginatedMovie {
+export interface PaginatedMovies {
   items: Movie[];
   pageIndex: number;
   totalPages: number;

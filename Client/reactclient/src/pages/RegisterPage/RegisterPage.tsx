@@ -9,21 +9,21 @@ import { RegisterRequest } from '../../types/user';
 export function RegisterPage() {
   const navigate = useNavigate();
   const { authenticate } = useAuth();
-  const { register, handleSubmit } = useForm<RegisterRequest>();
+  const { register, handleSubmit: handleRegister } = useForm<RegisterRequest>();
 
-  const { mutateAsync } = useMutation({
+  const { mutateAsync: registerAsync } = useMutation({
     mutationFn: (values: RegisterRequest) => fetchRegister(values),
   });
 
-  const onSubmit = (formBody: RegisterRequest) => {
-    mutateAsync(formBody)
+  const onRegister = (formBody: RegisterRequest) => {
+    registerAsync(formBody)
       .then(async () => await authenticate())
       .then(() => navigate('/movies'));
   };
 
   return (
     <div style={{ width: 500 }}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleRegister(onRegister)}>
         <Grid2 container direction={'column'} gap={'20px'}>
           <TextField
             type='text'

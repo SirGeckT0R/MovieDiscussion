@@ -26,7 +26,7 @@ export function Chat() {
 
   useEffect(() => {
     const newConnection = new signalR.HubConnectionBuilder()
-      .withUrl('http://localhost:5000/discussion-hub')
+      .withUrl(`${import.meta.env.VITE_IMAGES_HOST}/discussion-hub`)
       .withAutomaticReconnect()
       .build();
 

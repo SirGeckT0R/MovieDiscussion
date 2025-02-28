@@ -11,7 +11,7 @@ const groupOnRole = (crew: CrewMember[]): Array<CrewMember[]> =>
       }, Object.create(null))
   );
 
-export function CrewMembersView({ crew }: { crew: CrewMember[] }) {
+export function CrewMembersView({ crew }: { crew: CrewMember[] | undefined }) {
   const grouped = crew ? groupOnRole(crew) : null;
 
   return (
