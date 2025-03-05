@@ -23,7 +23,7 @@ export function MovieAdminActions({
   return (
     <Stack direction={'row'} spacing={2}>
       <NavLink to='edit'>
-        <Button color='primary' variant='contained'>
+        <Button color='warning' variant='contained'>
           Edit
         </Button>
       </NavLink>

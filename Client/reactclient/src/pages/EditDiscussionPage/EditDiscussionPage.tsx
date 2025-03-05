@@ -35,6 +35,7 @@ export function EditDiscussionPage() {
           type='text'
           id='titleInput'
           label='Title'
+          multiline
           {...register('title')}
           required
         />
@@ -42,6 +43,7 @@ export function EditDiscussionPage() {
           type='text'
           id='descriptionInput'
           label='Description'
+          multiline
           {...register('description')}
           required
         />

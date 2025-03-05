@@ -12,15 +12,16 @@ export function MovieList({ movies }: { movies: Movie[] | undefined }) {
   const { data: watchlist } = useWatchlist(isAuthenticated);
 
   return (
-    <Grid2 container spacing={2} columns={3}>
+    <Grid2 container spacing={2} columns={3} height={860}>
       {movies?.map((movie) => (
-        <MovieCard
-          key={movie.id}
-          movie={movie}
-          isInWatchlist={watchlist?.movies
-            ?.map((movie) => movie.id)
-            .includes(movie.id)}
-        />
+        <Grid2 key={movie.id} size={1}>
+          <MovieCard
+            movie={movie}
+            isInWatchlist={watchlist?.movies
+              ?.map((movie) => movie.id)
+              .includes(movie.id)}
+          />
+        </Grid2>
       ))}
     </Grid2>
   );

@@ -1,6 +1,6 @@
 import { MovieList } from '../../components/MovieList';
 import { useState } from 'react';
-import { Pagination, Stack } from '@mui/material';
+import { Box, Grid2, Pagination, Stack } from '@mui/material';
 import { useMovies } from '../../hooks/useMovies';
 import { CardLoader } from '../../components/CardLoading';
 import { MovieFilters } from '../../types/movie';
@@ -22,19 +22,23 @@ export function ListOfMoviesPage() {
 
   return (
     <>
-      {isLoading ? (
-        <CardLoader amount={3} />
-      ) : (
-        <Stack direction={'column'} spacing={4} alignItems={'center'}>
-          <MovieList movies={movies?.items} />
-          <Pagination
-            count={movies?.totalPages}
-            onChange={handlePageClick}
-            sx={{ mr: 50 }}
-          />
-        </Stack>
-      )}
-      <MovieFiltersForm setFilters={setFilters} />
+      <Grid2 container columns={2} spacing={6}>
+        <Box width={900}>
+          {isLoading ? (
+            <CardLoader amount={3} />
+          ) : (
+            <Stack direction={'column'} spacing={4} alignItems={'center'}>
+              <MovieList movies={movies?.items} />
+              <Pagination
+                count={movies?.totalPages}
+                onChange={handlePageClick}
+                sx={{ mr: 50 }}
+              />
+            </Stack>
+          )}
+        </Box>
+        <MovieFiltersForm setFilters={setFilters} />
+      </Grid2>
     </>
   );
 }

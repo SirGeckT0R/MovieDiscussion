@@ -24,7 +24,7 @@ export function ReviewInput({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Stack spacing={2} sx={{ width: 500, margin: '0 auto' }}>
+      <Stack spacing={2} sx={{ width: 500 }}>
         <TextField
           {...register('value')}
           name='value'

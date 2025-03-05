@@ -36,7 +36,7 @@ export function MovieApprovalActions({
         color='error'
         variant='contained'
         onClick={() => handleApprovalMovie(id, false)}>
-        Disprove
+        Deny
       </Button>
     </>
   );

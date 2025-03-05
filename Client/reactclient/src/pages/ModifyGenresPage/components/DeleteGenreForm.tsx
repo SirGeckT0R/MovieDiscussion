@@ -28,6 +28,7 @@ export function DeleteGenreForm({
         <Typography variant='h5'>Delete</Typography>
         <CustomSelectInput
           isMultiple={false}
+          label='Genre'
           options={genres}
           control={control}
           inputName='id'

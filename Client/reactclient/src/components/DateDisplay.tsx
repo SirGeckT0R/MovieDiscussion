@@ -7,7 +7,7 @@ type Props = {
 
 export function DateDisplay({ date, hideTime }: Props) {
   return (
-    <Typography variant='h4'>
+    <Typography variant='body1' sx={{ fontSize: '1.25rem' }} display={'inline'}>
       {date.toLocaleDateString('en-US', {
         day: 'numeric',
         month: 'short',

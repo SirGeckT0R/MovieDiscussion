@@ -13,7 +13,7 @@ export function Header() {
   return (
     <AppBar
       position='static'
-      sx={{ mb: 5, color: '#244855', backgroundColor: '#FBE9D0' }}>
+      sx={{ mb: 5, color: '#1d3a45', backgroundColor: '#90AEAD' }}>
       <Stack
         direction='row'
         sx={{

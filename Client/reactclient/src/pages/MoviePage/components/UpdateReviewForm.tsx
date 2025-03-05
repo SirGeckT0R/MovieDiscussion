@@ -35,7 +35,7 @@ export function UpdateReviewForm({
 
   return (
     <div>
-      <form onClick={handleSubmit(onReviewUpdate)}>
+      <form onSubmit={handleSubmit(onReviewUpdate)}>
         <TextField
           {...register('value')}
           fullWidth

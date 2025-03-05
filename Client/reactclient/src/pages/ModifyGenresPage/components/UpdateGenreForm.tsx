@@ -28,6 +28,7 @@ export function UpdateGenreForm({
         <Typography variant='h5'>Modify existing ones</Typography>
         <CustomSelectInput
           isMultiple={false}
+          label='Genre'
           options={genres}
           control={control}
           inputName='id'

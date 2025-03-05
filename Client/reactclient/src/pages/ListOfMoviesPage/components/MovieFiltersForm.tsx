@@ -32,6 +32,7 @@ export function MovieFiltersForm({
         <CustomSelectInput
           isMultiple={true}
           options={genres}
+          label='Genres'
           control={control}
           inputName='genres'
           isRequired={false}

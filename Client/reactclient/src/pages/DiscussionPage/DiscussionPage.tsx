@@ -5,11 +5,17 @@ import { getDiscussionQuery } from '../../queries/discussionsQueries';
 import { SubscribeDiscussionAction } from './components/SubscribeDiscussionAction';
 import { DeleteDiscussionAction } from './components/DeleteDiscussionAction';
 import { useAuth } from '../../hooks/useAuth';
+import { queryClient } from '../../api/global';
 
 export function DiscussionPage() {
   const { id } = useParams();
   const { user } = useAuth();
-  const { data: discussion } = useQuery(getDiscussionQuery(id!));
+  const discussionQuery = getDiscussionQuery(id);
+  const { data: discussion } = useQuery(discussionQuery);
+
+  const queryInvalidator = () => {
+    queryClient.invalidateQueries(discussionQuery.queryKey);
+  };
 
   return (
     <Stack spacing={2} alignItems={'center'}>
@@ -21,19 +27,29 @@ export function DiscussionPage() {
       <Typography variant='h4' color='inherit'>
         {discussion?.isActive ? 'Active' : 'Not active'}
       </Typography>
-      <NavLink to='edit'>
-        <Button color='primary' variant='contained'>
-          Edit
-        </Button>
-      </NavLink>
-      <NavLink to='chat'>
-        <Button color='primary' variant='contained'>
-          Go to Chat
-        </Button>
-      </NavLink>
-      <DeleteDiscussionAction id={id} />
+      {discussion?.createdBy === user.id && (
+        <>
+          {' '}
+          <NavLink to='edit'>
+            <Button color='primary' variant='contained'>
+              Edit
+            </Button>
+          </NavLink>
+          <DeleteDiscussionAction id={id} />
+        </>
+      )}
+      {discussion?.isActive && (
+        <NavLink to='chat'>
+          <Button color='primary' variant='contained'>
+            Go to Chat
+          </Button>
+        </NavLink>
+      )}
       {!discussion?.subscribers.includes(user.id ?? '') && (
-        <SubscribeDiscussionAction id={id} />
+        <SubscribeDiscussionAction
+          id={id}
+          queryInvalidator={queryInvalidator}
+        />
       )}
     </Stack>
   );

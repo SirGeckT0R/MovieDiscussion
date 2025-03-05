@@ -1,6 +1,7 @@
 import { Card, CardContent, Stack, Typography } from '@mui/material';
 import { Discussion } from '../../../types/discussion';
 import { NavLink } from 'react-router-dom';
+import { DateDisplay } from '../../../components/DateDisplay';
 
 export function DiscussionCard({ discussion }: { discussion: Discussion }) {
   return (
@@ -16,8 +17,9 @@ export function DiscussionCard({ discussion }: { discussion: Discussion }) {
             {discussion?.title}
           </Typography>
           <Typography variant='h4' color='info'>
-            Starting at {discussion?.startAt}
+            Starting at
           </Typography>
+          <DateDisplay date={new Date(discussion?.startAt)} hideTime={true} />
           <Typography variant='h4' color='info'>
             {discussion?.isActive ? 'Active' : 'Not active'}
           </Typography>

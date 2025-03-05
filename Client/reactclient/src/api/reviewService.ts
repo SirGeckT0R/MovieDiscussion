@@ -33,7 +33,6 @@ export const fetchReviewByMovieAndUser = async (
 
 export const createReview = async (body: CreateReviewRequest) => {
   body.accountId = null;
-  console.log(body);
   const response = await axiosInstance
     .post('/api/reviews', body)
     .then((response) => response.data);
@@ -42,7 +41,6 @@ export const createReview = async (body: CreateReviewRequest) => {
 };
 
 export const updateReview = async (body: UpdateReviewRequest) => {
-  console.log(body);
   const response = await axiosInstance
     .put(`/api/reviews/${body.id}`, body)
     .then((response) => response.data);

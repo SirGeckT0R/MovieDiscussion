@@ -38,7 +38,7 @@ export function EditCrewMembers({
             <Stack spacing={1} direction={'row'} key={role}>
               <Chip
                 label={CrewRole[role + 1]}
-                color='secondary'
+                color='primary'
                 sx={{
                   fontWeight: 'bold',
                 }}

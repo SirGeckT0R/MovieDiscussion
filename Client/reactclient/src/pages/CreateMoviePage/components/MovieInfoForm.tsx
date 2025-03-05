@@ -49,6 +49,7 @@ export function MovieInfoForm({
         />
         <CustomSelectInput
           isMultiple={true}
+          label='Genres'
           options={genres}
           control={control}
           inputName='genres'

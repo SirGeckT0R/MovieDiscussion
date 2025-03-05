@@ -6,10 +6,10 @@ import { Outlet } from 'react-router-dom';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#FBE9D0',
+      main: '#90AEAD',
     },
     secondary: {
-      main: '#90AEAD',
+      main: '#f3e7d6',
     },
     error: {
       main: '#E64833',
@@ -18,7 +18,7 @@ const theme = createTheme({
       main: '#874F41',
     },
     info: {
-      main: '#244855',
+      main: '#1d3a45',
     },
   },
 });

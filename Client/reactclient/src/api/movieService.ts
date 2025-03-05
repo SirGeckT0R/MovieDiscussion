@@ -20,7 +20,7 @@ export const fetchMovies = async (
         'Filters.Genres': filters?.genres ?? [],
         'Filters.CrewMember': filters?.crewMember ?? '',
         PageIndex: pageIndex,
-        PageSize: 5,
+        PageSize: 6,
       },
       paramsSerializer: {
         indexes: null,
