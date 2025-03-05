@@ -9,35 +9,35 @@ import { LoginRequest } from '../../types/user';
 export function LoginPage() {
   const navigate = useNavigate();
   const { authenticate } = useAuth();
-  const { register: login, handleSubmit: handleLogin } =
-    useForm<LoginRequest>();
 
-  const { mutateAsync: loginAsync } = useMutation({
+  const { register, handleSubmit } = useForm<LoginRequest>();
+
+  const { mutateAsync } = useMutation({
     mutationFn: (values: LoginRequest) => fetchLogin(values),
   });
 
   const onLogin = (formBody: LoginRequest) => {
-    loginAsync(formBody)
+    mutateAsync(formBody)
       .then(async () => await authenticate())
       .then(() => navigate('/movies'));
   };
 
   return (
     <Stack direction={'column'} spacing={2} sx={{ width: 500 }}>
-      <form onSubmit={handleLogin(onLogin)}>
+      <form onSubmit={handleSubmit(onLogin)}>
         <Stack direction={'column'} spacing={2}>
           <TextField
             type='email'
             id='emailInput'
             label='Email'
-            {...login('email')}
+            {...register('email')}
             required
           />
           <TextField
             type='password'
             id='passwordInput'
             label='Password'
-            {...login('password')}
+            {...register('password')}
             required
           />
           <Button type='submit' variant='contained'>

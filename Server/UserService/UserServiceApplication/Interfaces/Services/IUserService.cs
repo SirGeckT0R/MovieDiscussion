@@ -6,6 +6,7 @@ namespace UserServiceApplication.Interfaces.Services
     public interface IUserService
     {
         Task<UserDto> GetUserByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<UserDto> GetUserByTokenAsync(string? accessToken, CancellationToken cancellationToken);
         Task<UserDto> GetUserByEmailAsync(string email, CancellationToken cancellationToken);
         Task<(string, string)> RegisterAsync(RegisterRequest registerRequest, CancellationToken cancellationToken);
         Task<(string ,string)> LoginAsync(LoginRequest loginRequest, CancellationToken cancellationToken);
@@ -17,6 +18,6 @@ namespace UserServiceApplication.Interfaces.Services
         Task<string> ForgotPasswordAsync(string email, string callbackUrl, CancellationToken cancellationToken);
         Task<string> ResetPasswordAsync(ResetPasswordRequest resetPasswordRequest, CancellationToken cancellationToken);
         Task<ICollection<UserDto>> GetFromCollectionAsync(ICollection<Guid> ids, CancellationToken cancellationToken);
-        Task<Role> GetUserRoleByTokenAsync(string? accessToken, CancellationToken cancellationToken);
+        //Task<Role> GetUserRoleByTokenAsync(string? accessToken, CancellationToken cancellationToken);
     }
 }

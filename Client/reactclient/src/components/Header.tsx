@@ -4,7 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { Role } from '../types/user';
 
 export function Header() {
-  const { role, logout } = useAuth();
+  const { user, logout } = useAuth();
 
   const handleLogout = () => {
     logout();
@@ -43,7 +43,7 @@ export function Header() {
             sx={{ flexGrow: 1, mr: 2, textDecoration: 'none' }}>
             Movies
           </Typography>
-          {role != Role.Guest ? (
+          {user.role != Role.Guest ? (
             <>
               <Typography
                 variant='h5'
@@ -74,7 +74,7 @@ export function Header() {
             <></>
           )}
 
-          {role == Role.Admin ? (
+          {user.role == Role.Admin ? (
             <>
               <Typography
                 variant='h5'
@@ -84,12 +84,28 @@ export function Header() {
                 sx={{ flexGrow: 1, mr: 2, textDecoration: 'none' }}>
                 Genres
               </Typography>
+              <Typography
+                variant='h5'
+                component={NavLink}
+                to='/people'
+                color='inherit'
+                sx={{ flexGrow: 1, mr: 2, textDecoration: 'none' }}>
+                People
+              </Typography>
+              <Typography
+                variant='h5'
+                component={NavLink}
+                to='/movies/not-approved'
+                color='inherit'
+                sx={{ flexGrow: 1, mr: 2, textDecoration: 'none' }}>
+                Not Approved
+              </Typography>
             </>
           ) : (
             <></>
           )}
         </Stack>
-        {role == Role.Guest ? (
+        {user.role == Role.Guest ? (
           <Stack
             direction='row'
             spacing={5}

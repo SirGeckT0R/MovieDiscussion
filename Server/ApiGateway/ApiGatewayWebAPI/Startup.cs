@@ -1,4 +1,5 @@
-﻿using ApiGatewayWebAPI.Middlewares;
+﻿using ApiGatewayWebAPI.Helpers;
+using ApiGatewayWebAPI.Middlewares;
 using ApiGatewayWebAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.FileProviders;
@@ -63,6 +64,7 @@ namespace ApiGatewayWebAPI
                 });
 
             builder.Services.AddScoped<IImageService, ImageService>();
+            builder.Services.AddScoped<IRequestHelper, RequestHelper>();
 
             builder.Services.AddControllers();
         }
@@ -103,7 +105,7 @@ namespace ApiGatewayWebAPI
             app.UseAuthorization();
 
             app.UseMiddleware<ExtractAccountIdMiddleware>();
-            app.UseMiddleware<SaveImageMiddleware>();
+            app.UseMiddleware<ImageHandlingMiddleware>();
 
             app.UseOcelot().GetAwaiter().GetResult();
 

@@ -1,15 +1,15 @@
 import { Button, Typography, Stack, Pagination } from '@mui/material';
 import { ReviewInput } from '../../../components/Inputs/ReviewInput';
 import { ReviewList } from '../../../components/ReviewList';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { deleteReview } from '../../../api/reviewService';
 import {
   getReviewsQuery,
   getUserReviewForMovieQuery,
 } from '../../../queries/reviewsQueries';
 import { queryClient } from '../../../api/global';
 import { UpdateReviewForm } from './UpdateReviewForm';
+import { DeleteReviewAction } from './DeleteReviewAction';
 
 export function ReviewView({ movieId }: { movieId: string | undefined }) {
   const [pageIndex, setPageIndex] = useState(1);
@@ -22,22 +22,12 @@ export function ReviewView({ movieId }: { movieId: string | undefined }) {
   const { data: userReview } = useQuery(userReviewQuery);
 
   const queryInvalidator = () => {
-    queryClient.invalidateQueries({
-      queryKey: userReviewQuery.queryKey,
-    });
-    queryClient.invalidateQueries({ queryKey: reviewsQuery.queryKey });
+    queryClient.invalidateQueries(userReviewQuery.queryKey);
+    queryClient.invalidateQueries(reviewsQuery.queryKey);
   };
 
   const handlePageClick = (_: unknown, value: number) => {
     setPageIndex(value);
-  };
-
-  const { mutateAsync: deleteReviewAsync } = useMutation({
-    mutationFn: () => deleteReview(userReview?.id ?? ''),
-  });
-
-  const handleDeleteReview = () => {
-    deleteReviewAsync().then(queryInvalidator);
   };
 
   return (
@@ -61,12 +51,10 @@ export function ReviewView({ movieId }: { movieId: string | undefined }) {
           <Typography variant='h3'>
             Your review: {userReview?.text + ' ' + userReview?.value}
           </Typography>
-          <Button
-            color='error'
-            variant='contained'
-            onClick={handleDeleteReview}>
-            Delete
-          </Button>
+          <DeleteReviewAction
+            queryInvalidator={queryInvalidator}
+            id={userReview?.id}
+          />
           <Button
             color='warning'
             variant='contained'

@@ -10,6 +10,13 @@ export interface Movie {
   crewMembers: Array<CrewMember>;
   image: string;
 }
+
+export interface MovieFilters {
+  name?: string;
+  genres?: string[];
+  crewMember?: string;
+}
+
 export interface PaginatedMovies {
   items: Movie[];
   pageIndex: number;
@@ -60,3 +67,8 @@ export const crewRoles = [
   CrewRole.Producer,
   CrewRole.Screenwriter,
 ];
+
+export interface ManageMovieApprovalRequest {
+  movieId: string;
+  shouldApprove: boolean;
+}

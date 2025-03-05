@@ -1,32 +1,15 @@
 import { Button, Stack, Typography } from '@mui/material';
-import { NavLink, useNavigate, useParams } from 'react-router-dom';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { NavLink, useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { getDiscussionQuery } from '../../queries/discussionsQueries';
-import {
-  deleteDiscussion,
-  subscribeToDiscussion,
-} from '../../api/discussionsService';
+import { SubscribeDiscussionAction } from './components/SubscribeDiscussionAction';
+import { DeleteDiscussionAction } from './components/DeleteDiscussionAction';
+import { useAuth } from '../../hooks/useAuth';
 
 export function DiscussionPage() {
-  const navigate = useNavigate();
   const { id } = useParams();
+  const { user } = useAuth();
   const { data: discussion } = useQuery(getDiscussionQuery(id!));
-
-  const { mutateAsync: deleteDiscussionAsync } = useMutation({
-    mutationFn: (id: string) => deleteDiscussion(id),
-  });
-
-  const { mutateAsync: subscribeAsync } = useMutation({
-    mutationFn: (id: string) => subscribeToDiscussion(id),
-  });
-
-  const handleDiscussionDelete = () => {
-    deleteDiscussionAsync(id!).then(() => navigate('/discussions'));
-  };
-
-  const handleSubcription = () => {
-    subscribeAsync(id!);
-  };
 
   return (
     <Stack spacing={2} alignItems={'center'}>
@@ -48,15 +31,10 @@ export function DiscussionPage() {
           Go to Chat
         </Button>
       </NavLink>
-      <Button
-        color='error'
-        variant='contained'
-        onClick={handleDiscussionDelete}>
-        Delete
-      </Button>
-      <Button variant='contained' color='warning' onClick={handleSubcription}>
-        Get Notification
-      </Button>
+      <DeleteDiscussionAction id={id} />
+      {!discussion?.subscribers.includes(user.id ?? '') && (
+        <SubscribeDiscussionAction id={id} />
+      )}
     </Stack>
   );
 }

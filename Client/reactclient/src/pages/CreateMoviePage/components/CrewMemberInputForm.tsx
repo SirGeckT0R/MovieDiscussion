@@ -1,10 +1,10 @@
-import { Button, MenuItem, Stack, TextField } from '@mui/material';
+import { Backdrop, Button, MenuItem, Stack, TextField } from '@mui/material';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { CrewMember, CrewRole, crewRoles } from '../../../types/movie';
 import { fetchPeople } from '../../../api/peopleService';
 import { DebounceSearch } from '../../../components/Inputs/DebounceSearch';
-import { CreatePersonInput } from './CreatePersonInput';
+import { CreatePersonInput } from '../../../components/Inputs/CreatePersonInput';
 
 export function CrewMemberInputForm({
   crewState,
@@ -17,22 +17,30 @@ export function CrewMemberInputForm({
   const [open, setOpen] = useState(false);
   const [addedCrewMemberName, setAddedCrewMemberName] = useState('');
 
-  const { handleSubmit: handleCrewSubmit, control: crewControl } =
-    useForm<CrewMember>();
+  const { handleSubmit, control } = useForm<CrewMember>();
 
   const onCrewSubmit = (formBody: CrewMember) => {
     formBody.fullName = addedCrewMemberName;
-    crewState.setCrew(crewState.crew.concat(formBody));
+    crewState.setCrew((crew) => crew.concat(formBody));
   };
 
   return (
     <>
-      <CreatePersonInput openState={{ open, setOpen }} />
-      <form onSubmit={handleCrewSubmit(onCrewSubmit)}>
+      <Backdrop
+        sx={(theme) => ({ zIndex: theme.zIndex.drawer + 1 })}
+        open={open}>
+        <Stack spacing={2} direction={'row'}>
+          <Button variant='contained' onClick={() => setOpen(false)}>
+            Exit
+          </Button>
+          <CreatePersonInput />
+        </Stack>
+      </Backdrop>
+      <form onSubmit={handleSubmit(onCrewSubmit)}>
         <Stack style={{ width: 500 }} spacing={2}>
           <DebounceSearch
             inputName='personId'
-            control={crewControl}
+            control={control}
             setName={setAddedCrewMemberName}
             searchData={{ key: 'people', searchFetch: fetchPeople }}
             noOptionsRender={
@@ -47,7 +55,7 @@ export function CrewMemberInputForm({
 
           <Controller
             name='role'
-            control={crewControl}
+            control={control}
             defaultValue={CrewRole.None}
             rules={{ required: 'Role is required' }}
             render={({ field }) => (

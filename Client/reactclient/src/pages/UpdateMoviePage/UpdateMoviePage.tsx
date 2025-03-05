@@ -9,26 +9,24 @@ import { DateTimePicker } from '@mui/x-date-pickers';
 import { getGenresQuery } from '../../queries/genresQueries';
 import { Genre } from '../../types/genre';
 import { ImageInput } from '../../components/Inputs/ImageInput';
-import { SelectInput } from '../../components/Inputs/MultipleSelectInput';
+import { CustomSelectInput } from '../../components/Inputs/MultipleSelectInput';
 import { CrewMemberInputForm } from '../CreateMoviePage/components/CrewMemberInputForm';
 import { getMovieQuery } from '../../queries/moviesQueries';
 import { updateMovie } from '../../api/movieService';
 import { EditCrewMembers } from './components/EditCrewMembers';
 
 export function UpdateMoviePage() {
-  const { id } = useParams();
-  const { data: movie } = useQuery<Movie>(getMovieQuery(id!));
   const navigate = useNavigate();
 
+  const { id } = useParams();
+  const { data: movie } = useQuery<Movie>(getMovieQuery(id!));
+
   const { data: genres } = useQuery<Genre[]>(getGenresQuery());
+
   const [image, setImage] = useState<Blob | null>(null);
   const [crew, setCrew] = useState<CrewMember[]>(movie!.crewMembers);
 
-  const {
-    register: update,
-    handleSubmit: handleUpdate,
-    control,
-  } = useForm<UpdateMovieRequest>({
+  const { register, handleSubmit, control } = useForm<UpdateMovieRequest>({
     defaultValues: {
       id: movie?.id,
       title: movie?.title,
@@ -40,13 +38,13 @@ export function UpdateMoviePage() {
     },
   });
 
-  const { mutateAsync: updateAsync } = useMutation({
+  const { mutateAsync } = useMutation({
     mutationFn: (values: UpdateMovieRequest) =>
       updateMovie(values, image, crew),
   });
 
   const onSubmit = (formBody: UpdateMovieRequest) => {
-    updateAsync(formBody).then(() => navigate(`/movies/${id}`));
+    mutateAsync(formBody).then(() => navigate(`/movies/${id}`));
   };
 
   return (
@@ -56,20 +54,20 @@ export function UpdateMoviePage() {
           imageState={{ image, setImage }}
           existingImagePath={movie?.image}
         />
-        <form onSubmit={handleUpdate(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Grid2 container direction={'column'} gap={'20px'}>
             <TextField
               type='text'
               id='titleInput'
               label='Title'
-              {...update('title')}
+              {...register('title')}
               required
             />
             <TextField
               type='text'
               id='descriptionInput'
               label='Description'
-              {...update('description')}
+              {...register('description')}
               required
             />
             <Controller
@@ -85,7 +83,7 @@ export function UpdateMoviePage() {
                 />
               )}
             />
-            <SelectInput
+            <CustomSelectInput
               isMultiple={true}
               options={genres}
               control={control}

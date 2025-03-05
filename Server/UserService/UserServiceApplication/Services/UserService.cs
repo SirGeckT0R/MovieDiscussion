@@ -194,10 +194,9 @@ namespace UserServiceApplication.Services
 
             return userDto;
         }
-
-        public async Task<Role> GetUserRoleByTokenAsync(string? accessToken, CancellationToken cancellationToken)
+        public async Task<UserDto> GetUserByTokenAsync(string? accessToken, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Get user role by id attempt started from token");
+            _logger.LogInformation("Get user by id attempt started");
 
             if (string.IsNullOrWhiteSpace(accessToken))
             {
@@ -212,18 +211,48 @@ namespace UserServiceApplication.Services
 
             if (user == null)
             {
-                _logger.LogError("Get user role by id attempt failed: user not found");
+                _logger.LogError("Get user by id attempt failed for {Id}: user not found", userClaims.Id);
 
                 throw new NotFoundException("User not found");
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-            var role = user.Role;
+            var userDto = _mapper.Map<UserDto>(user);
 
-            _logger.LogInformation("Get user role by id attempt completed successfuly");
+            _logger.LogInformation("Get user by id attempt completed successfuly for {Id}", userClaims.Id);
 
-            return role;
+            return userDto;
         }
+
+        //public async Task<Role> GetUserRoleByTokenAsync(string? accessToken, CancellationToken cancellationToken)
+        //{
+        //    _logger.LogInformation("Get user role by id attempt started from token");
+
+        //    if (string.IsNullOrWhiteSpace(accessToken))
+        //    {
+        //        _logger.LogError("Get user role by id attempt failed: token is not valid");
+
+        //        throw new TokenException("Token is not valid");
+        //    }
+
+        //    var (_, userClaims) = _tokenService.ExtractClaims(accessToken);
+
+        //    var user = await _unitOfWork.UserRepository.GetByIdAsync(userClaims.Id, cancellationToken);
+
+        //    if (user == null)
+        //    {
+        //        _logger.LogError("Get user role by id attempt failed: user not found");
+
+        //        throw new NotFoundException("User not found");
+        //    }
+
+        //    cancellationToken.ThrowIfCancellationRequested();
+        //    var role = user.Role;
+
+        //    _logger.LogInformation("Get user role by id attempt completed successfuly");
+
+        //    return role;
+        //}
 
         public async Task<string> ConfirmEmailSendAsync(string? accessToken, string callbackUrl, CancellationToken cancellationToken)
         {

@@ -13,8 +13,10 @@ import { useQuery } from '@tanstack/react-query';
 import { getMessagesQuery } from '../../queries/messagesQueries';
 import { useParams } from 'react-router-dom';
 import { Message } from '../../types/discussion';
+import { useAuth } from '../../hooks/useAuth';
 
 export function Chat() {
+  const { user } = useAuth();
   const [connection, setConnection] = useState<signalR.HubConnection | null>(
     null
   );
@@ -38,16 +40,20 @@ export function Chat() {
       connection.start().then(() => {
         connection
           .invoke('JoinChat', id)
-          .then((res) => console.log('here'))
           .catch((response) => console.error(response));
       });
 
       connection.on(
         'ReceiveMessage',
-        function (username: string, text: string, sentAt: string) {
+        function (
+          userId: string,
+          username: string,
+          text: string,
+          sentAt: string
+        ) {
           setMessages((prevMovies) => [
             ...prevMovies,
-            { text, username, sentAt },
+            { userId, text, username, sentAt },
           ]);
         }
       );
@@ -76,18 +82,29 @@ export function Chat() {
       sx={{ display: 'flex', flexDirection: 'column', height: '100vh', p: 2 }}>
       <Paper sx={{ flexGrow: 1, overflow: 'auto', mb: 2 }}>
         <List>
-          {messages?.map((message, index) => (
-            <ListItem key={index}>
-              <ListItemText
-                primary={message.text}
-                secondary={message.username}
-                sx={{
-                  textAlign: message.username,
-                  //    === 'user' ? 'right' : 'left',
-                }}
-              />
-            </ListItem>
-          ))}
+          {messages?.map((message, index) => {
+            let textAlignment = 'left';
+
+            if (message.username === 'Admin') {
+              textAlignment = 'center';
+            }
+
+            if (message.userId === user.id) {
+              textAlignment = 'right';
+            }
+
+            return (
+              <ListItem key={index}>
+                <ListItemText
+                  primary={message.text}
+                  secondary={message.username}
+                  sx={{
+                    textAlign: textAlignment,
+                  }}
+                />
+              </ListItem>
+            );
+          })}
         </List>
         <div ref={messagesEndRef} />
       </Paper>
@@ -97,7 +114,7 @@ export function Chat() {
           variant='outlined'
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+          onKeyDown={(e) => e.key === 'Enter' && handleSend()}
         />
         <Button variant='contained' onClick={handleSend} sx={{ ml: 2 }}>
           Send

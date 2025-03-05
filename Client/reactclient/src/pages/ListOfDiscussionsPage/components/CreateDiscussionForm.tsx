@@ -14,38 +14,35 @@ export function CreateDiscussionForm({
   queryInvalidator: () => void;
   createMode: Dispatch<SetStateAction<boolean>>;
 }) {
-  const {
-    register: create,
-    handleSubmit: handleCreateDiscussion,
-    control,
-  } = useForm<CreateDiscussionRequest>();
+  const { register, handleSubmit, control } =
+    useForm<CreateDiscussionRequest>();
 
-  const { mutateAsync: createDiscussionAsync } = useMutation({
+  const { mutateAsync } = useMutation({
     mutationFn: (values: CreateDiscussionRequest) => createDiscussion(values),
   });
 
   const onCreateDiscussion = (values: CreateDiscussionRequest) => {
-    createDiscussionAsync(values)
+    mutateAsync(values)
       .then(queryInvalidator)
       .then(() => createMode(false));
   };
 
   return (
-    <form onSubmit={handleCreateDiscussion(onCreateDiscussion)}>
+    <form onSubmit={handleSubmit(onCreateDiscussion)}>
       <Stack spacing={2} sx={{ width: 600, margin: '0 auto' }}>
         <Typography variant='h3'>Create a discussion</Typography>
         <TextField
           type='text'
           id='titleInput'
           label='Title'
-          {...create('title')}
+          {...register('title')}
           required
         />
         <TextField
           type='text'
           id='descriptionInput'
           label='Description'
-          {...create('description')}
+          {...register('description')}
           required
         />
         <Controller

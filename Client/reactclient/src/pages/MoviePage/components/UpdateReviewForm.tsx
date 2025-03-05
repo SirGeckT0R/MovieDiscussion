@@ -14,31 +14,30 @@ export function UpdateReviewForm({
   queryInvalidator: () => void;
   editMode: Dispatch<SetStateAction<boolean>>;
 }) {
-  const { register: update, handleSubmit: handleUpdateReview } =
-    useForm<UpdateReviewRequest>({
-      defaultValues: {
-        id: userReview?.id,
-        text: userReview?.text,
-        value: userReview?.value,
-      },
-    });
+  const { register, handleSubmit } = useForm<UpdateReviewRequest>({
+    defaultValues: {
+      id: userReview?.id,
+      text: userReview?.text,
+      value: userReview?.value,
+    },
+  });
 
-  const { mutateAsync: updateReviewAsync } = useMutation({
+  const { mutateAsync } = useMutation({
     mutationFn: (values: UpdateReviewRequest) => updateReview(values),
   });
 
   const onReviewUpdate = (values: UpdateReviewRequest) => {
     values.id = userReview?.id ?? '';
-    updateReviewAsync(values)
+    mutateAsync(values)
       .then(queryInvalidator)
       .then(() => editMode(false));
   };
 
   return (
     <div>
-      <form onClick={handleUpdateReview(onReviewUpdate)}>
+      <form onClick={handleSubmit(onReviewUpdate)}>
         <TextField
-          {...update('value')}
+          {...register('value')}
           fullWidth
           name='value'
           id='value'
@@ -51,7 +50,7 @@ export function UpdateReviewForm({
           }}
         />
         <TextField
-          {...update('text')}
+          {...register('text')}
           fullWidth
           name='text'
           id='text'

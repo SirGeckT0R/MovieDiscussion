@@ -119,25 +119,11 @@ namespace UserServiceWebAPI.Controllers
         }
 
         [HttpGet("user")]
-        [Authorize(Policy = "User")]
-        public IActionResult UserTest()
-        {
-            return Ok("Only cool Users see this message");
-        }
-
-        [HttpGet("admin")]
-        [Authorize(Policy = "Admin")]
-        public IActionResult AdminTest()
-        {
-            return Ok("Only cool Admins see this message");
-        }
-
-        [HttpGet("role")]
         [Authorize]
-        public async Task<IActionResult> GetRole(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetUser(CancellationToken cancellationToken)
         {
             var accessToken = HttpContext.Request.Cookies["accessToken"];
-            var role = await _userService.GetUserRoleByTokenAsync(accessToken, cancellationToken);
+            var role = await _userService.GetUserByTokenAsync(accessToken, cancellationToken);
 
             return Ok(role);
         }

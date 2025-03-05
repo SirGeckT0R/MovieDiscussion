@@ -16,6 +16,7 @@ export function DebounceSearch({
   inputName,
   noOptionsRender,
   setName,
+  isRequired = true,
 }: {
   searchData: {
     key: string;
@@ -24,8 +25,9 @@ export function DebounceSearch({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<any, any>;
   inputName: string;
-  noOptionsRender: ReactElement | undefined;
-  setName: Dispatch<SetStateAction<string>>;
+  noOptionsRender?: ReactElement;
+  setName?: Dispatch<SetStateAction<string>>;
+  isRequired?: boolean;
 }) {
   const [searchName, setSearchName] = useState<string | null>();
   const debouncedSearchTerm = useDebounce(searchName, 1000);
@@ -33,7 +35,8 @@ export function DebounceSearch({
   const { data: matches, isLoading } = useSearch(
     searchData.key,
     debouncedSearchTerm!,
-    searchData.searchFetch
+    searchData.searchFetch,
+    3
   );
 
   return (
@@ -41,7 +44,7 @@ export function DebounceSearch({
       name={inputName}
       control={control}
       defaultValue={''}
-      rules={{ required: `${inputName} is required` }}
+      rules={isRequired ? { required: `${inputName} is required` } : undefined}
       render={({ field, fieldState: { error } }) => (
         <Autocomplete
           noOptionsText={
@@ -62,7 +65,10 @@ export function DebounceSearch({
             _event: SyntheticEvent,
             newValue: { id: string; name: string } | null
           ) => {
-            setName(newValue?.name ?? '');
+            if (setName) {
+              setName(newValue?.name ?? '');
+            }
+
             field.onChange(newValue ? newValue.id : '');
           }}
           value={

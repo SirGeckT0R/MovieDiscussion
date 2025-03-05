@@ -18,6 +18,13 @@ export interface ResetPasswordRequest {
   newPassword: string;
 }
 
+export interface User {
+  id?: string;
+  username?: string;
+  role?: Role;
+  isEmailConfirmed?: boolean;
+}
+
 export enum Role {
   Guest = 0,
   User = 1,

@@ -7,18 +7,17 @@ import { updateDiscussion } from '../../api/discussionsService';
 import { useForm } from 'react-hook-form';
 
 export function EditDiscussionPage() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const { data: discussion } = useQuery(getDiscussionQuery(id!));
 
-  const navigate = useNavigate();
-  const { register: update, handleSubmit: handleUpdateDiscussion } =
-    useForm<UpdateDiscussionRequest>({
-      defaultValues: {
-        id: discussion?.id,
-        description: discussion?.description,
-        title: discussion?.title,
-      },
-    });
+  const { register, handleSubmit } = useForm<UpdateDiscussionRequest>({
+    defaultValues: {
+      id: discussion?.id,
+      description: discussion?.description,
+      title: discussion?.title,
+    },
+  });
 
   const { mutateAsync } = useMutation({
     mutationFn: (values: UpdateDiscussionRequest) => updateDiscussion(values),
@@ -29,21 +28,21 @@ export function EditDiscussionPage() {
   };
 
   return (
-    <form onSubmit={handleUpdateDiscussion(onUpdateDiscussion)}>
+    <form onSubmit={handleSubmit(onUpdateDiscussion)}>
       <Stack spacing={2}>
         <Typography variant='h3'>Edit a discussion</Typography>
         <TextField
           type='text'
           id='titleInput'
           label='Title'
-          {...update('title')}
+          {...register('title')}
           required
         />
         <TextField
           type='text'
           id='descriptionInput'
           label='Description'
-          {...update('description')}
+          {...register('description')}
           required
         />
         <Button type='submit' variant='contained'>

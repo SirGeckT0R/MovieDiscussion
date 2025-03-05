@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { getWatchlistQuery } from '../../../queries/watchlistsQueries';
-import { Card, Divider, Grid2 } from '@mui/material';
+import { Card, Grid2 } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { MovieCardInfo } from '../../../components/MovieCard/MovieCardInfo';
 import { useMovieCardStyles } from '../../../components/MovieCard/styles/useMovieCardStyles';
@@ -10,30 +10,30 @@ import {
   ManageMovieInWatchlist,
   WatchlistAction,
 } from '../../../types/watchlist';
-import { Movie } from '../../../types/movie';
+import { queryClient } from '../../../api/global';
 
 export function Watchlist() {
-  const { data: watchlist } = useQuery(getWatchlistQuery());
   const classes = useMovieCardStyles();
 
-  const { mutateAsync: manageAsync, isLoading } = useMutation({
+  const watchlistQuery = getWatchlistQuery();
+  const { data: watchlist } = useQuery(watchlistQuery);
+
+  const queryInvalidator = () => {
+    queryClient.invalidateQueries(watchlistQuery.queryKey);
+  };
+
+  const { mutateAsync, isLoading } = useMutation({
     mutationFn: (values: ManageMovieInWatchlist) =>
       manageMovieInWatchlist(values),
   });
 
-  const handleClick = (movie: Movie) => {
+  const handleDelete = (id: string) => {
     const values: ManageMovieInWatchlist = {
-      movieId: movie.id,
+      movieId: id,
       action: WatchlistAction.Remove as number,
     };
 
-    const index = watchlist?.movies.indexOf(movie) ?? -1;
-
-    manageAsync(values).then(() => {
-      if (index > -1) {
-        watchlist?.movies.splice(index, 1);
-      }
-    });
+    mutateAsync(values).then(queryInvalidator);
   };
 
   return (
@@ -48,7 +48,7 @@ export function Watchlist() {
           </NavLink>
           <DeleteFromWatchlist
             isLoading={isLoading}
-            handleClick={() => handleClick(movie)}
+            handleClick={() => handleDelete(movie.id)}
           />
         </Card>
       ))}

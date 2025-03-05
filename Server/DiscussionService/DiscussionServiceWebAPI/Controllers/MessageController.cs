@@ -1,5 +1,6 @@
 ﻿using DiscussionServiceApplication.UseCases.Messages.Queries.GetAllMessagesByDiscussionIdQuery;
 using DiscussionServiceApplication.UseCases.Messages.Queries.GetMessageByIdQuery;
+using DiscussionServiceWebAPI.Helpers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

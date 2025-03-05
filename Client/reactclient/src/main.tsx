@@ -20,6 +20,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {
   getListOfMoviesQuery,
   getMovieQuery,
+  getNotApprovedMoviesQuery,
 } from './queries/moviesQueries.tsx';
 import { CardLoader } from './components/CardLoading.tsx';
 import { CreateMoviePage } from './pages/CreateMoviePage/CreateMoviePage.tsx';
@@ -48,6 +49,8 @@ import { getMessagesQuery } from './queries/messagesQueries.tsx';
 import { ConfirmEmailPage } from './pages/ConfirmEmailPage/ConfirmEmailPage.tsx';
 import { ResetPasswordPage } from './pages/ResetPasswordPage/ResetPasswordPage.tsx';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage/ForgotPasswordPage.tsx';
+import { ModifyPersonPage } from './pages/ModifyPersonPage/ModifyPersonPage.tsx';
+import { NotApprovedMoviesPage } from './pages/NotApprovedMoviesPage/NotApprovedMoviesPage.tsx';
 
 const router = createBrowserRouter([
   {
@@ -94,6 +97,16 @@ const router = createBrowserRouter([
             HydrateFallback: Skeleton,
           },
           {
+            path: 'not-approved',
+            element: (
+              <ProtectedRoute allowedRoles={[Role.Admin]}>
+                <NotApprovedMoviesPage />
+              </ProtectedRoute>
+            ),
+            loader: globalLoader(queryClient, getNotApprovedMoviesQuery),
+            HydrateFallback: CardLoader,
+          },
+          {
             path: ':id/edit',
             element: (
               <ProtectedRoute allowedRoles={[Role.Admin]}>
@@ -112,7 +125,7 @@ const router = createBrowserRouter([
           {
             index: true,
             element: (
-              <ProtectedRoute allowedRoles={[Role.User, Role.Admin]}>
+              <ProtectedRoute allowedRoles={[Role.Admin]}>
                 <ModifyGenresPage />
               </ProtectedRoute>
             ),
@@ -122,8 +135,26 @@ const router = createBrowserRouter([
         ],
       },
       {
+        path: '/people',
+        element: <Outlet />,
+        children: [
+          {
+            index: true,
+            element: (
+              <ProtectedRoute allowedRoles={[Role.Admin]}>
+                <ModifyPersonPage />
+              </ProtectedRoute>
+            ),
+          },
+        ],
+      },
+      {
         path: '/profiles',
-        element: <UserProfilePage />,
+        element: (
+          <ProtectedRoute allowedRoles={[Role.User, Role.Admin]}>
+            <UserProfilePage />
+          </ProtectedRoute>
+        ),
         loader: globalLoader(queryClient, getUserProfileQuery),
         HydrateFallback: Skeleton,
       },

@@ -6,7 +6,9 @@ using DiscussionServiceDataAccess.Specifications.Messages;
 
 namespace DiscussionServiceApplication.UseCases.Messages.Queries.GetAllMessagesByDiscussionIdQuery
 {
-    public class GetAllMessagesByDiscussionIdHandler(IUnitOfWork unitOfWork, IMapper mapper) : IQueryHandler<GetAllMessagesByDiscussionIdQuery, ICollection<MessageDto>>
+    public class GetAllMessagesByDiscussionIdHandler(IUnitOfWork unitOfWork, 
+                                                     IMapper mapper) 
+                                                    : IQueryHandler<GetAllMessagesByDiscussionIdQuery, ICollection<MessageDto>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;

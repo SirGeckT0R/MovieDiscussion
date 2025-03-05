@@ -38,6 +38,7 @@ namespace MovieServiceWebAPI
             builder.Services.AddDbContext<HangfireDbContext>(options => options.UseMongoDB(hangfireConnectionString, "hangfire"));
 
             builder.Services.AddMediatR();
+            builder.Services.AddHelpers();
             builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(AddGenreMappingProfile)));
 
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();

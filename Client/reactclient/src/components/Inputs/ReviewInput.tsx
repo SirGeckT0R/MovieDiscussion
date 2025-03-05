@@ -13,13 +13,13 @@ export function ReviewInput({
 }) {
   const { register, handleSubmit } = useForm<CreateReviewRequest>();
 
-  const { mutateAsync: addReviewAsync } = useMutation({
+  const { mutateAsync } = useMutation({
     mutationFn: (values: CreateReviewRequest) => createReview(values),
   });
 
   const onSubmit = (values: CreateReviewRequest) => {
     values.movieId = movieId ?? '';
-    addReviewAsync(values).then(queryInvalidator);
+    mutateAsync(values).then(queryInvalidator);
   };
 
   return (

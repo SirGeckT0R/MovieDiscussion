@@ -1,5 +1,5 @@
 import { Chip, Stack, Typography } from '@mui/material';
-import { CrewMember, CrewRole } from '../../../types/movie';
+import { CrewMember, CrewRole } from '../types/movie';
 
 const groupOnRole = (crew: CrewMember[]): Array<CrewMember[]> =>
   Object.values(

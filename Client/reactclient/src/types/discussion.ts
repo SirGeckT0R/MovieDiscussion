@@ -5,7 +5,7 @@ export interface Discussion {
   startAt: string;
   createdBy: string;
   isActive: boolean;
-  subscribers: unknown;
+  subscribers: string[];
 }
 
 export interface CreateDiscussionRequest {
@@ -23,6 +23,7 @@ export interface UpdateDiscussionRequest {
 }
 
 export interface Message {
+  userId: string;
   text: string;
   username: string;
   sentAt: string;

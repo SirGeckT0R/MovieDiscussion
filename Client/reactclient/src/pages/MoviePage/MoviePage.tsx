@@ -1,24 +1,21 @@
-import { Button, Chip, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { Box, Stack } from '@mui/system';
 import { getMovieQuery } from '../../queries/moviesQueries';
-import { NavLink, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
-import { CrewMembersView } from './components/CrewMembersView';
+import { CrewMembersView } from '../../components/CrewMembersView';
 import { useAuth } from '../../hooks/useAuth';
 import { Role } from '../../types/user';
-import { DateDisplay } from './components/DateDisplay';
-import { deleteMovie } from '../../api/movieService';
+import { DateDisplay } from '../../components/DateDisplay';
 import { ReviewView } from './components/ReviewView';
+import { MovieAdminActions } from './components/MovieAdminActions';
+import { MovieGenresView } from '../../components/MovieGenresView';
 
 export function MoviePage() {
-  const { role } = useAuth();
+  const { user } = useAuth();
 
   const { id } = useParams();
   const { data: movie } = useQuery(getMovieQuery(id!));
-
-  const handleDeleteMovie = () => {
-    deleteMovie(movie?.id ?? '', movie?.image ?? '');
-  };
 
   return (
     <Stack spacing={2} direction={'column'} justifyContent={'center'}>
@@ -36,20 +33,8 @@ export function MoviePage() {
           <Typography variant='h2' align='left' color='info'>
             {movie?.title}
           </Typography>
-          {role == Role.Admin ? (
-            <Stack direction={'row'} spacing={2}>
-              <NavLink to='edit'>
-                <Button color='primary' variant='contained'>
-                  Edit
-                </Button>
-              </NavLink>
-              <Button
-                color='error'
-                variant='contained'
-                onClick={handleDeleteMovie}>
-                Delete
-              </Button>
-            </Stack>
+          {user.role == Role.Admin ? (
+            <MovieAdminActions id={id} image={movie?.image} />
           ) : (
             <></>
           )}
@@ -60,18 +45,7 @@ export function MoviePage() {
           <Typography variant='h4' color='info'>
             Genres:
           </Typography>
-          <Stack direction={'row'} spacing={1}>
-            {movie?.genres?.map((genre) => (
-              <Chip
-                label={genre.name}
-                color='primary'
-                sx={{
-                  fontWeight: 'bold',
-                }}
-                key={genre.id}
-              />
-            ))}
-          </Stack>
+          <MovieGenresView genres={movie?.genres} />
           <Typography variant='h4' color='info'>
             Crew:
           </Typography>

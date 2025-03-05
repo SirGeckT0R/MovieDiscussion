@@ -1,6 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Configuration;
+using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.EntityFrameworkCore.Extensions;
 using MovieServiceDataAccess.IndexesConfiguration;
@@ -47,7 +50,8 @@ namespace MovieServiceDataAccess.DatabaseContext
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Genre>().ToCollection("genres").HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<Movie>().ToCollection("movies").HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Movie>().ToCollection("movies").HasQueryFilter(x => !x.IsDeleted && x.IsApproved);
+
             modelBuilder.Entity<Person>().ToCollection("people").HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<UserProfile>().ToCollection("userProfiles").HasQueryFilter(x => !x.IsDeleted);
 
@@ -59,6 +63,7 @@ namespace MovieServiceDataAccess.DatabaseContext
 
         private void BuildIndexes()
         {
+            BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
             var client = new MongoClient(_configuration["MovieDbConnection"]!);
             var database = client.GetDatabase(_configuration["MovieDbName"]!);
 
@@ -66,6 +71,7 @@ namespace MovieServiceDataAccess.DatabaseContext
             var genreCollection = database.GetCollection<Genre>("genres");
             var watchlistCollection = database.GetCollection<Watchlist>("watchlists");
             var reviewCollection = database.GetCollection<Review>("reviews");
+
 
             UserProfileIndexConfiguration.CreateIndexes(profileCollection);
             GenreIndexConfiguration.CreateIndexes(genreCollection);

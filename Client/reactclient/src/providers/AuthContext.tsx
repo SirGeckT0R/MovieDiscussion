@@ -2,7 +2,7 @@ import { createContext } from 'react';
 import { Role } from '../types/user';
 
 export const AuthContext = createContext({
-  role: Role.Guest,
+  user: { id: null, role: Role.Guest, username: null, isEmailConfirmed: false },
   logout: () => {},
   authenticate: () => {},
 });

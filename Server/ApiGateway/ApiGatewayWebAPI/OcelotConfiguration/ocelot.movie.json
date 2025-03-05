@@ -78,6 +78,25 @@
       "SwaggerKey": "Movie"
     },
     {
+      "UpstreamPathTemplate": "/api/movies/not-approved",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamPathTemplate": "/api/movies/not-approved",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 5002
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Admin"
+      },
+      "SwaggerKey": "Movie"
+    },
+    {
       "UpstreamPathTemplate": "/api/movies",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/api/movies",
@@ -90,6 +109,25 @@
       ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
+      },
+      "SwaggerKey": "Movie"
+    },
+    {
+      "UpstreamPathTemplate": "/api/movies/not-approved/{Id}",
+      "UpstreamHttpMethod": [ "PUT" ],
+      "DownstreamPathTemplate": "/api/movies/not-approved/{Id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 5002
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Admin"
       },
       "SwaggerKey": "Movie"
     },
@@ -188,7 +226,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/reviews",
-      "UpstreamHttpMethod": [ "GET","POST" ],
+      "UpstreamHttpMethod": [ "GET", "POST" ],
       "DownstreamPathTemplate": "/api/reviews",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -259,7 +297,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/profiles",
-      "UpstreamHttpMethod": ["GET", "POST", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "DownstreamPathTemplate": "/api/profiles",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

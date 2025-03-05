@@ -13,7 +13,7 @@ namespace MovieServiceApplication.UseCases.Movies.Queries.GetAllMoviesQuery
 
         public async Task<PaginatedCollection<MovieDto>> Handle(GetMoviesQuery request, CancellationToken cancellationToken)
         {
-            var specification = new MovieByNameSpecification(request.Name);
+            var specification = new MovieByFiltersSpecification(request.Filters);
             var (movies, totalPages) = await _unitOfWork.Movies.GetPaginatedWithSpecificationAsync(
                                                                                      specification, 
                                                                                      request.PageIndex,

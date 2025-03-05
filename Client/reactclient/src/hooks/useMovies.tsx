@@ -1,9 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchMovies } from '../api/movieService';
+import { MovieFilters } from '../types/movie';
 
-export function useMovies(pageIndex: number, name: string | null) {
+export function useMovies(pageIndex: number, filters: MovieFilters | null) {
   return useQuery({
-    queryKey: ['movies', name + '' + pageIndex],
-    queryFn: async () => await fetchMovies(pageIndex, name),
+    queryKey: [
+      'movies',
+      filters?.name +
+        '' +
+        filters?.genres +
+        '' +
+        filters?.crewMember +
+        '' +
+        pageIndex,
+    ],
+    queryFn: async () => await fetchMovies(pageIndex, filters),
   });
 }

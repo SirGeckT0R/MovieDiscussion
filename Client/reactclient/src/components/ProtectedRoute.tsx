@@ -10,9 +10,9 @@ export function ProtectedRoute({
   children: ReactNode;
   allowedRoles: Role[];
 }) {
-  const { role } = useAuth();
+  const { user } = useAuth();
 
-  if (!allowedRoles.includes(role)) {
+  if (!allowedRoles.includes(user.role)) {
     return <Navigate to='/login' />;
   }
 

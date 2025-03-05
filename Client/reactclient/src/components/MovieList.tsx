@@ -6,8 +6,8 @@ import { Role } from '../types/user';
 import { useWatchlist } from '../hooks/useWatchlist';
 
 export function MovieList({ movies }: { movies: Movie[] | undefined }) {
-  const { role } = useAuth();
-  const isAuthenticated = role === Role.User;
+  const { user } = useAuth();
+  const isAuthenticated = user.role === Role.User;
 
   const { data: watchlist } = useWatchlist(isAuthenticated);
 

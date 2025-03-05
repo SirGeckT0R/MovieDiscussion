@@ -13,30 +13,25 @@ import { useState } from 'react';
 
 export function ForgotPasswordPage() {
   const [hasSubmitted, setHasSubmitted] = useState(false);
-  const { register: forgot, handleSubmit: handleForgot } =
-    useForm<ForgotPasswordRequest>();
+  const { register, handleSubmit } = useForm<ForgotPasswordRequest>();
 
-  const {
-    mutateAsync: forgotAsync,
-    isSuccess,
-    isLoading,
-  } = useMutation({
+  const { mutateAsync, isSuccess, isLoading } = useMutation({
     mutationFn: (values: ForgotPasswordRequest) => forgotPassword(values),
   });
 
   const onForgot = (values: ForgotPasswordRequest) => {
-    forgotAsync(values).then(() => setHasSubmitted(true));
+    mutateAsync(values).then(() => setHasSubmitted(true));
   };
 
   return (
     <>
-      <form onSubmit={handleForgot(onForgot)}>
+      <form onSubmit={handleSubmit(onForgot)}>
         <Stack spacing={2}>
           <TextField
             type='text'
             id='emailInput'
             label='Email'
-            {...forgot('email')}
+            {...register('email')}
             required
           />
           <Button type='submit' variant='contained'>

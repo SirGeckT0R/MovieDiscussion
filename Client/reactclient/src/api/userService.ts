@@ -3,6 +3,7 @@ import {
   LoginRequest,
   ResetPasswordRequest,
   Role,
+  User,
 } from '../types/user';
 import { axiosInstance } from './global';
 
@@ -18,12 +19,12 @@ export const fetchRegister = async (body: LoginRequest) => {
   return response;
 };
 
-export async function fetchRole() {
-  const response: Role = await axiosInstance
-    .get('/api/role')
+export async function fetchUser() {
+  const response: User = await axiosInstance
+    .get('/api/user')
     .then((response) => response?.data);
 
-  return response ?? Role.Guest;
+  return response;
 }
 
 export async function sendConfirmationEmail() {

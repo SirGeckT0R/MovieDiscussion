@@ -12,27 +12,26 @@ export function ResetPasswordPage() {
   const email = searchParams.get('email');
   const token = searchParams.get('token');
 
-  const { mutateAsync: resetAsync } = useMutation({
+  const { mutateAsync } = useMutation({
     mutationFn: (values: ResetPasswordRequest) => resetPassword(values),
   });
 
-  const { register: reset, handleSubmit: handleReset } =
-    useForm<ResetPasswordRequest>({
-      defaultValues: { email, token, newPassword: '' },
-    });
+  const { register, handleSubmit } = useForm<ResetPasswordRequest>({
+    defaultValues: { email, token, newPassword: '' },
+  });
 
   const onSubmit = (values: ResetPasswordRequest) => {
-    resetAsync(values).then(() => navigate('/login'));
+    mutateAsync(values).then(() => navigate('/login'));
   };
 
   return (
-    <form onSubmit={handleReset(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={2}>
         <TextField
           type='text'
           id='newPasswordInput'
           label='New Password'
-          {...reset('newPassword')}
+          {...register('newPassword')}
           required
         />
         <Button type='submit' variant='contained'>

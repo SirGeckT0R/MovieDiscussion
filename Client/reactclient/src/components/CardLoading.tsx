@@ -1,7 +1,7 @@
 import { Box, Grid2, Skeleton } from '@mui/material';
 
-export function CardLoader({ amount }: { amount: number }) {
-  const cards = Array.from({ length: amount }, (_, i) => (
+export function CardLoader({ amount }: { amount?: number }) {
+  const cards = Array.from({ length: amount ?? 3 }, (_, i) => (
     <Box key={i}>
       <Skeleton
         variant='rectangular'

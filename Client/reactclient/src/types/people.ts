@@ -18,3 +18,14 @@ export interface CreatePersonRequest {
   lastName: string;
   dateOfBirth: string;
 }
+
+export interface UpdatePersonRequest {
+  id: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+}
+
+export interface DeletePersonRequest {
+  id: string;
+}

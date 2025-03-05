@@ -8,17 +8,13 @@ export function ConfirmEmailPage() {
   const [searchParams] = useSearchParams();
   const email = searchParams.get('email');
   const token = searchParams.get('token');
-  const {
-    mutateAsync: confirmAsync,
-    isSuccess,
-    isError,
-    isLoading,
-  } = useMutation({
+
+  const { mutateAsync, isSuccess, isError, isLoading } = useMutation({
     mutationFn: () => confirmEmail(email, token),
   });
 
   useEffect(() => {
-    confirmAsync().then((response) => response.data);
+    mutateAsync();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

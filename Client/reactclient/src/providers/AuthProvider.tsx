@@ -1,23 +1,23 @@
 import { ReactNode, useEffect, useState } from 'react';
-import { Role } from '../types/user';
-import { fetchLogout, fetchRole } from '../api/userService';
+import { Role, User } from '../types/user';
+import { fetchLogout, fetchUser } from '../api/userService';
 import { AuthContext } from './AuthContext';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [role, setRole] = useState<Role | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const logout = () => {
     fetchLogout();
-    setRole(Role.Guest);
+    setUser({ role: Role.Guest });
   };
 
   const authenticate = async () => {
-    await updateRole();
+    await updateUser();
   };
 
-  const updateRole = () => {
-    return fetchRole()
-      .then((role) => {
-        setRole(role);
+  const updateUser = () => {
+    return fetchUser()
+      .then((user) => {
+        setUser(user);
       })
       .catch(() => {
         logout();
@@ -25,16 +25,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    updateRole();
+    updateUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (role === null) {
+  if (user === null) {
     return null;
   }
 
   const value = {
-    role,
+    user,
     logout,
     authenticate,
   };
