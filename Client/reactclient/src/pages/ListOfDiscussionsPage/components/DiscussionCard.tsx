@@ -19,7 +19,7 @@ export function DiscussionCard({ discussion }: { discussion: Discussion }) {
           <Typography variant='h4' color='info'>
             Starting at
           </Typography>
-          <DateDisplay date={new Date(discussion?.startAt)} hideTime={true} />
+          <DateDisplay date={new Date(discussion?.startAt)} showTime={true} />
           <Typography variant='h4' color='info'>
             {discussion?.isActive ? 'Active' : 'Not active'}
           </Typography>

@@ -18,6 +18,5 @@ namespace UserServiceApplication.Interfaces.Services
         Task<string> ForgotPasswordAsync(string email, string callbackUrl, CancellationToken cancellationToken);
         Task<string> ResetPasswordAsync(ResetPasswordRequest resetPasswordRequest, CancellationToken cancellationToken);
         Task<ICollection<UserDto>> GetFromCollectionAsync(ICollection<Guid> ids, CancellationToken cancellationToken);
-        //Task<Role> GetUserRoleByTokenAsync(string? accessToken, CancellationToken cancellationToken);
     }
 }

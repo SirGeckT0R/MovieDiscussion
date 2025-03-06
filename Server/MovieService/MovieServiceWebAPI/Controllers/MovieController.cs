@@ -53,7 +53,11 @@ namespace MovieServiceWebAPI.Controllers
         }
 
         [HttpPut("not-approved/{Id:Guid}")]
-        public async Task<IActionResult> ManageNotApprovedMovie([FromRoute] Guid Id, [FromBody] ManageNotApprovedMovieCommand command,CancellationToken cancellationToken)
+        public async Task<IActionResult> ManageNotApprovedMovie(
+                                                                [FromRoute] Guid Id, 
+                                                                [FromBody] ManageNotApprovedMovieCommand command,
+                                                                CancellationToken cancellationToken
+                                                               )
         {
             var newCommand = command with { MovieId = Id};
 

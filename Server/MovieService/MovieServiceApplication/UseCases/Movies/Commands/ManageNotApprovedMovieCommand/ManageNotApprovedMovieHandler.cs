@@ -12,6 +12,7 @@ namespace MovieServiceApplication.UseCases.Movies.Commands.ManageNotApprovedMovi
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly ILogger<ManageNotApprovedMovieCommand> _logger = logger;
+
         public async Task<Unit> Handle(ManageNotApprovedMovieCommand request, CancellationToken cancellationToken)
         {
             var movie = await _unitOfWork.Movies.GetNotApprovedMovieByIdAsync(request.MovieId, cancellationToken);

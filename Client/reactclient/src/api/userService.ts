@@ -63,7 +63,6 @@ export async function resetPassword(body: ResetPasswordRequest) {
 }
 
 export async function confirmEmail(email: string | null, token: string | null) {
-  console.log(email, token);
   const response = await axiosInstance
     .get(`/api/auth/confirm?email=${email}&token=${token}`)
     .then((response) => response?.data);
@@ -90,14 +89,10 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        console.log('Refreshing...');
-
         await axiosInstance.post('/api/auth/refresh', {});
 
         return axiosInstance(originalRequest);
       } catch (refreshError) {
-        console.warn('Token refresh failed:', refreshError);
-
         return Promise.reject(refreshError);
       }
     }

@@ -7,12 +7,13 @@ namespace MovieServiceDataAccess.Specifications.PersonSpecifications
         public PeopleByNameSpecification(string? name)
             : 
             base((person) =>
-                    string.IsNullOrWhiteSpace(name) || name.Split(' ', StringSplitOptions.None)
-                                        .All(
-                                            part => person.FirstName.ToLower().Contains(part.ToLower())
-                                                || person.LastName.ToLower().Contains(part.ToLower())
-                                            )
-)
+                    string.IsNullOrWhiteSpace(name) 
+                    || name.Split(' ', StringSplitOptions.None)
+                           .All(
+                               part => person.FirstName.ToLower().Contains(part.ToLower())
+                                       || person.LastName.ToLower().Contains(part.ToLower())
+                               )
+                )
         {
 
         }

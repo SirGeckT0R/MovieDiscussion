@@ -4,7 +4,6 @@ using MovieServiceApplication.UseCases.People.Commands.AddPersonCommand;
 using MovieServiceApplication.UseCases.People.Commands.DeletePersonCommand;
 using MovieServiceApplication.UseCases.People.Commands.UpdatePersonCommand;
 using MovieServiceApplication.UseCases.People.Queries.GetAllPeopleQuery;
-using MovieServiceApplication.UseCases.People.Queries.GetPeopleByNameQuery;
 using MovieServiceApplication.UseCases.People.Queries.GetPersonByIdQuery;
 
 namespace MovieServiceWebAPI.Controllers

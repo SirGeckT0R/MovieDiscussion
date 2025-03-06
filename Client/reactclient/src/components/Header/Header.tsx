@@ -3,6 +3,8 @@ import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { Role } from '../../types/user';
 
+const navLinkStyle = { flexGrow: 1, mr: 2, textDecoration: 'none' };
+
 export function Header() {
   const { user, logout } = useAuth();
 
@@ -40,7 +42,7 @@ export function Header() {
             to='/movies'
             variant='h5'
             color='inherit'
-            sx={{ flexGrow: 1, mr: 2, textDecoration: 'none' }}>
+            sx={navLinkStyle}>
             Movies
           </Typography>
           <Typography
@@ -48,7 +50,7 @@ export function Header() {
             to='/discussions'
             variant='h5'
             color='inherit'
-            sx={{ flexGrow: 1, mr: 2, textDecoration: 'none' }}>
+            sx={navLinkStyle}>
             Discussions
           </Typography>
           {user.role !== Role.Guest ? (
@@ -58,7 +60,7 @@ export function Header() {
                 component={NavLink}
                 to='/movies/new'
                 color='inherit'
-                sx={{ flexGrow: 1, mr: 2, textDecoration: 'none' }}>
+                sx={navLinkStyle}>
                 Create
               </Typography>
               <Typography
@@ -66,7 +68,7 @@ export function Header() {
                 to='/profiles'
                 variant='h5'
                 color='inherit'
-                sx={{ flexGrow: 1, mr: 2, textDecoration: 'none' }}>
+                sx={navLinkStyle}>
                 Profile
               </Typography>
             </>
@@ -81,7 +83,7 @@ export function Header() {
                 component={NavLink}
                 to='/genres'
                 color='inherit'
-                sx={{ flexGrow: 1, mr: 2, textDecoration: 'none' }}>
+                sx={navLinkStyle}>
                 Genres
               </Typography>
               <Typography
@@ -89,7 +91,7 @@ export function Header() {
                 component={NavLink}
                 to='/people'
                 color='inherit'
-                sx={{ flexGrow: 1, mr: 2, textDecoration: 'none' }}>
+                sx={navLinkStyle}>
                 People
               </Typography>
             </>

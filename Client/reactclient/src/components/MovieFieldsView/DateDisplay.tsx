@@ -2,10 +2,10 @@ import { Typography } from '@mui/material';
 
 type Props = {
   date: Date;
-  hideTime?: boolean;
+  showTime?: boolean;
 };
 
-export function DateDisplay({ date, hideTime }: Props) {
+export function DateDisplay({ date, showTime }: Props) {
   return (
     <Typography variant='body1' sx={{ fontSize: '1.25rem' }} display={'inline'}>
       {date.toLocaleDateString('en-US', {
@@ -13,7 +13,7 @@ export function DateDisplay({ date, hideTime }: Props) {
         month: 'short',
         year: 'numeric',
       })}
-      {hideTime
+      {showTime
         ? ' ' +
           date.toLocaleTimeString('en-US', {
             hour: 'numeric',

@@ -123,9 +123,9 @@ namespace UserServiceWebAPI.Controllers
         public async Task<IActionResult> GetUser(CancellationToken cancellationToken)
         {
             var accessToken = HttpContext.Request.Cookies["accessToken"];
-            var role = await _userService.GetUserByTokenAsync(accessToken, cancellationToken);
+            var user = await _userService.GetUserByTokenAsync(accessToken, cancellationToken);
 
-            return Ok(role);
+            return Ok(user);
         }
     }
 }

@@ -27,7 +27,7 @@ export function DiscussionPage() {
         Starting at{' '}
         <DateDisplay
           date={new Date(discussion?.startAt ?? '')}
-          hideTime={true}
+          showTime={true}
         />
       </Typography>
       <Typography variant='h4' color='inherit'>

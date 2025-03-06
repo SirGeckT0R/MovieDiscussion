@@ -1,16 +1,6 @@
 import { Chip, Stack, Typography } from '@mui/material';
 import { CrewMember, CrewRole } from '../../types/movie';
-
-const groupOnRole = (crew: CrewMember[]): Array<CrewMember[]> =>
-  Object.values(
-    crew
-      ?.sort((x) => x.role)
-      ?.reduce((r, o) => {
-        (r[o.role] = r[o.role] || []).push(o);
-
-        return r;
-      }, Object.create(null))
-  );
+import { groupOnRole } from '../../helpers/crewMemberHelper';
 
 export function CrewMembersView({ crew }: { crew: CrewMember[] | undefined }) {
   const grouped = crew ? groupOnRole(crew) : null;

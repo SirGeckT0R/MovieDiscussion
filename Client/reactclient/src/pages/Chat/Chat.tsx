@@ -19,7 +19,8 @@ export function Chat() {
   const { id } = useParams();
   const { user } = useAuth();
 
-  const { data: history, isSuccess } = useQuery(getMessagesQuery(id));
+  const messagesQuery = getMessagesQuery(id);
+  const { data: history, isSuccess } = useQuery(messagesQuery);
   const [messages, setMessages] = useState<Array<Message>>([]);
 
   const [connection, setConnection] = useState<signalR.HubConnection | null>(

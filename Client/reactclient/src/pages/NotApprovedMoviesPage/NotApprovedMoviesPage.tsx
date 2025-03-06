@@ -7,6 +7,7 @@ import { MovieApprovalActions } from './components/MovieApprovalActions';
 import { ImageSharp } from '@mui/icons-material';
 import { emptyImageStyle } from '../../components/MovieCard/styles/emptyImageStyle';
 import { DateWithListsView } from '../../components/MovieFieldsView/DateWithListsView';
+import { GeneralInfoView } from '../../components/MovieFieldsView/GeneralInfoView';
 
 export function NotApprovedMoviesPage() {
   const classes = useMovieCardStyles();
@@ -50,23 +51,7 @@ export function NotApprovedMoviesPage() {
                   color='info'
                   spacing={2}
                   size='grow'>
-                  <Stack>
-                    <Typography
-                      variant='h2'
-                      align='left'
-                      color='info'
-                      fontWeight={'bold'}>
-                      {movie?.title}
-                    </Typography>
-
-                    <Typography
-                      variant='h3'
-                      align='left'
-                      color='info'
-                      sx={{ wordBreak: 'break-word' }}>
-                      {movie?.description}
-                    </Typography>
-                  </Stack>
+                  <GeneralInfoView movie={movie} allowActions={false} />
                   <Stack direction={'row'} spacing={20} width={'100%'}>
                     <DateWithListsView movie={movie} />
                   </Stack>

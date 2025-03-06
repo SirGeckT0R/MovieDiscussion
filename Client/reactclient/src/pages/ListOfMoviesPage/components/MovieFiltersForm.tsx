@@ -8,12 +8,13 @@ import { MovieFilters } from '../../../types/movie';
 import { DebounceSearch } from '../../../components/Inputs/DebounceSearch';
 import { fetchPeople } from '../../../api/peopleService';
 
-export function MovieFiltersForm({
-  setFilters,
-}: {
+type Props = {
   setFilters: Dispatch<SetStateAction<MovieFilters>>;
-}) {
-  const { data: genres } = useQuery(getGenresQuery());
+};
+
+export function MovieFiltersForm({ setFilters }: Props) {
+  const genresQuery = getGenresQuery();
+  const { data: genres } = useQuery(genresQuery);
   const { register, handleSubmit, control } = useForm<MovieFilters>();
 
   const onFiltersSubmit = (values: MovieFilters) => {

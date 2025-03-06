@@ -22,7 +22,6 @@ namespace MovieServiceApplication.UseCases.Movies.Queries.GetAllMoviesQuery
                                                                                      );
 
             cancellationToken.ThrowIfCancellationRequested();
-
             var movieDtoCollection = _mapper.Map<ICollection<MovieDto>>(movies);
 
             var paginatedCollection = new PaginatedCollection<MovieDto>(movieDtoCollection, request.PageIndex, totalPages);

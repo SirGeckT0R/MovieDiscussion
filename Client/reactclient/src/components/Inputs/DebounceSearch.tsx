@@ -67,7 +67,7 @@ export function DebounceSearch({
           options={matches ?? [{ id: '', name: '' }]}
           getOptionLabel={(option) => option.name}
           onInputChange={(_event: SyntheticEvent, value: string | null) =>
-            setSearchName(value!)
+            setSearchName(value)
           }
           onChange={(
             _event: SyntheticEvent,
@@ -77,7 +77,7 @@ export function DebounceSearch({
               setName(newValue?.name ?? '');
             }
 
-            field.onChange(newValue ? newValue.id : '');
+            field.onChange(newValue?.id ?? '');
           }}
           value={
             matches?.find((option) => option.id === field.value)
@@ -92,7 +92,7 @@ export function DebounceSearch({
           renderInput={(params) => (
             <TextField
               error={!!error}
-              helperText={error ? error.message : null}
+              helperText={error?.message ?? null}
               {...params}
             />
           )}

@@ -63,16 +63,19 @@ namespace MovieServiceDataAccess.Repositories
             return collection;
         }
 
-        public async Task<(ICollection<T>, int)> GetPaginatedWithSpecificationAsync(Specification<T> specification,
-                                                                                int pageIndex,
-                                                                                int pageSize,
-                                                                                CancellationToken cancellationToken)
+        public async Task<(ICollection<T>, int)> GetPaginatedWithSpecificationAsync(
+                                                                                    Specification<T> specification,
+                                                                                    int pageIndex,
+                                                                                    int pageSize,
+                                                                                    CancellationToken cancellationToken
+                                                                                   )
         {
             cancellationToken.ThrowIfCancellationRequested();
             var filteredCollection = SpecificationEvaluator<T>.GetQuery(_dbSet, specification);
             var paginatedCollection = await filteredCollection.TrySkip((pageIndex - 1) * pageSize)
-                                                        .TryTake(pageSize)
-                                                        .ToListAsync(cancellationToken);
+                                                              .TryTake(pageSize)
+                                                              .ToListAsync(cancellationToken);
+
             var amountOfFilteredItems = await filteredCollection.CountAsync();
             int totalPages = (int)Math.Ceiling(amountOfFilteredItems / (float)pageSize);
 

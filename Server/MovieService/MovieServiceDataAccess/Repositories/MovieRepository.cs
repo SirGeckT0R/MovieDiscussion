@@ -10,12 +10,10 @@ namespace MovieServiceDataAccess.Repositories
         public async Task<Movie?> GetNotApprovedMovieByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             var movie = await _dbSet.IgnoreQueryFilters()
-                                    .FirstOrDefaultAsync(movie => 
-                                                                    movie.Id == id 
-                                                                    && !movie.IsApproved
-                                                                    && !movie.IsDeleted, 
+                                    .FirstOrDefaultAsync(
+                                                         movie => movie.Id == id && !movie.IsApproved && !movie.IsDeleted, 
                                                          cancellationToken
-                                                         );
+                                                        );
 
             return movie;
         }
@@ -23,10 +21,7 @@ namespace MovieServiceDataAccess.Repositories
         public async Task<ICollection<Movie>> GetAllNotApprovedMoviesAsync(CancellationToken cancellationToken)
         {
             var movies = await _dbSet.IgnoreQueryFilters()
-                                     .Where(movie => 
-                                                    !movie.IsApproved
-                                                    && !movie.IsDeleted
-                                           )
+                                     .Where(movie => !movie.IsApproved && !movie.IsDeleted)
                                      .ToListAsync(cancellationToken);
 
             return movies;

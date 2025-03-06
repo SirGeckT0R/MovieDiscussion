@@ -20,9 +20,10 @@ namespace MovieServiceApplication.UseCases.Reviews.Queries.GetReviewsByMovieIdQu
                                                                                                     request.PageSize,
                                                                                                     cancellationToken);
 
+            cancellationToken.ThrowIfCancellationRequested();
             var mappedCollection = _mapper.Map<ICollection<ReviewDto>>(reviews);
 
-            var paginatedCollection = new PaginatedCollection<ReviewDto>(mappedCollection,request.PageIndex, totalPages);
+            var paginatedCollection = new PaginatedCollection<ReviewDto>(mappedCollection, request.PageIndex, totalPages);
 
             return paginatedCollection;
         }

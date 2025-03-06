@@ -31,10 +31,7 @@ export function UserReviewView({
           <Button
             color='warning'
             variant='contained'
-            onClick={() => {
-              console.log('here');
-              setIsEditReviewMode(false);
-            }}>
+            onClick={() => setIsEditReviewMode(false)}>
             Cancel Edit
           </Button>
         </Stack>

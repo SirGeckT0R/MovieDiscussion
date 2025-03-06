@@ -7,13 +7,12 @@ import { createDiscussion } from '../../../api/discussionsService';
 import { CreateDiscussionRequest } from '../../../types/discussion';
 import { Dispatch, SetStateAction } from 'react';
 
-export function CreateDiscussionForm({
-  queryInvalidator,
-  createMode,
-}: {
+type Props = {
   queryInvalidator: () => void;
   createMode: Dispatch<SetStateAction<boolean>>;
-}) {
+};
+
+export function CreateDiscussionForm({ queryInvalidator, createMode }: Props) {
   const { register, handleSubmit, control } =
     useForm<CreateDiscussionRequest>();
 

@@ -11,6 +11,7 @@ namespace MovieServiceApplication.UseCases.People.Queries.GetAllPeopleQuery
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
+
         public async Task<PaginatedCollection<PersonDto>> Handle(GetPeopleQuery request, CancellationToken cancellationToken)
         {
             var specification = new PeopleByNameSpecification(request.Name);
@@ -20,6 +21,7 @@ namespace MovieServiceApplication.UseCases.People.Queries.GetAllPeopleQuery
                                                                                     request.PageSize,
                                                                                     cancellationToken
                                                                                     );
+
             cancellationToken.ThrowIfCancellationRequested();
             var peopleDtoCollection = _mapper.Map<ICollection<PersonDto>>(people);
 
