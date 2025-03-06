@@ -2,30 +2,21 @@ import { Chip, IconButton, Stack, Typography } from '@mui/material';
 import { CrewMember, CrewRole } from '../../../types/movie';
 import { Dispatch, SetStateAction } from 'react';
 import { RemoveCircle } from '@mui/icons-material';
+import { groupOnRole } from '../../../helpers/crewMemberHelper';
 
-const groupOnRole = (crew: CrewMember[]): Array<CrewMember[]> =>
-  Object.values(
-    crew
-      ?.sort((x) => x.role)
-      ?.reduce((r, o) => {
-        (r[o.role] = r[o.role] || []).push(o);
-        return r;
-      }, Object.create(null))
-  );
-
-export function EditCrewMembers({
-  crew,
-  setCrew,
-}: {
+type Props = {
   crew: CrewMember[];
   setCrew: Dispatch<SetStateAction<CrewMember[]>>;
-}) {
+};
+
+export function EditCrewMembers({ crew, setCrew }: Props) {
   const grouped = groupOnRole(crew);
 
   const handleDelete = (member: CrewMember) => {
     const index = crew.findIndex(
       ({ personId }) => personId === member.personId
     );
+
     if (index > -1) {
       setCrew((crew) => [...crew.slice(0, index), ...crew.slice(index + 1)]);
     }
@@ -34,10 +25,10 @@ export function EditCrewMembers({
   return (
     <Stack spacing={2}>
       {crew
-        ? grouped?.map((group, role) => (
-            <Stack spacing={1} direction={'row'} key={role}>
+        ? grouped?.map((group) => (
+            <Stack spacing={1} direction={'row'} key={group[0].role}>
               <Chip
-                label={CrewRole[role + 1]}
+                label={CrewRole[group[0].role]}
                 color='primary'
                 sx={{
                   fontWeight: 'bold',

@@ -1,6 +1,7 @@
+import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
-export const useMovieCardStyles = makeStyles((theme) => ({
+export const useMovieCardStyles = makeStyles((theme: Theme) => ({
   card: {
     position: 'relative',
     borderRadius: 20,

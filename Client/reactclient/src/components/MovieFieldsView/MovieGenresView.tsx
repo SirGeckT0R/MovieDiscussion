@@ -1,5 +1,5 @@
 import { Stack, Chip } from '@mui/material';
-import { Genre } from '../types/genre';
+import { Genre } from '../../types/genre';
 
 export function MovieGenresView({ genres }: { genres: Genre[] | undefined }) {
   return (

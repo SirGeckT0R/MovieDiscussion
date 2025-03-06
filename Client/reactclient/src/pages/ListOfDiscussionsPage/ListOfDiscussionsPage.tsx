@@ -5,8 +5,11 @@ import { DiscussionCard } from './components/DiscussionCard';
 import { CreateDiscussionForm } from './components/CreateDiscussionForm';
 import { useState } from 'react';
 import { queryClient } from '../../api/global';
+import { useAuth } from '../../hooks/useAuth';
+import { Role } from '../../types/user';
 
 export function ListOfDiscussionsPage() {
+  const { user } = useAuth();
   const [isCreateMode, setIsCreateMode] = useState<boolean>(false);
 
   const discussionsQuery = getListOfDiscussionsQuery();
@@ -23,16 +26,18 @@ export function ListOfDiscussionsPage() {
           <DiscussionCard discussion={discussion} key={discussion.id} />
         ))}
       </Grid2>
-      {isCreateMode ? (
-        <CreateDiscussionForm
-          queryInvalidator={queryInvalidator}
-          createMode={setIsCreateMode}
-        />
-      ) : (
-        <Button variant='contained' onClick={() => setIsCreateMode(true)}>
-          Create new discussion
-        </Button>
-      )}
+      {user.role !== Role.Guest ? (
+        isCreateMode ? (
+          <CreateDiscussionForm
+            queryInvalidator={queryInvalidator}
+            createMode={setIsCreateMode}
+          />
+        ) : (
+          <Button variant='contained' onClick={() => setIsCreateMode(true)}>
+            Create new discussion
+          </Button>
+        )
+      ) : null}
     </Stack>
   );
 }

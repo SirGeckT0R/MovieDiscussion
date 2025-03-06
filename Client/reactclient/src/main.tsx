@@ -1,6 +1,4 @@
-import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import './index.css';
 import App from './App.tsx';
 import {
   createBrowserRouter,
@@ -12,9 +10,8 @@ import { queryClient } from './api/global.ts';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ErrorPage } from './pages/ErrorPage/ErrorPage.tsx';
 import Index from './pages/Index.tsx';
-import { globalLoader } from './loaders/loader.tsx';
+import { emptyLoader, globalLoader } from './loaders/loader.tsx';
 import { AuthProvider } from './providers/AuthProvider.tsx';
-import { ProtectedRoute } from './components/ProtectedRoute.tsx';
 import { Role } from './types/user.ts';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {
@@ -22,7 +19,7 @@ import {
   getMovieQuery,
   getNotApprovedMoviesQuery,
 } from './queries/moviesQueries.tsx';
-import { CardLoader } from './components/CardLoading.tsx';
+import { CardLoader } from './components/Loaders/CardLoader.tsx';
 import { CreateMoviePage } from './pages/CreateMoviePage/CreateMoviePage.tsx';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -32,7 +29,7 @@ import { LoginPage } from './pages/LoginPage/LoginPage.tsx';
 import { RegisterPage } from './pages/RegisterPage/RegisterPage.tsx';
 import { ListOfMoviesPage } from './pages/ListOfMoviesPage/ListOfMoviesPage.tsx';
 import { ModifyGenresPage } from './pages/ModifyGenresPage/ModifyGenresPage.tsx';
-import { Header } from './components/Header.tsx';
+import { Header } from './components/Header/Header.tsx';
 import { MoviePage } from './pages/MoviePage/MoviePage.tsx';
 import { UpdateMoviePage } from './pages/UpdateMoviePage/UpdateMoviePage.tsx';
 import { UserProfilePage } from './pages/UserProfilePage/UserProfilePage.tsx';
@@ -51,6 +48,7 @@ import { ResetPasswordPage } from './pages/ResetPasswordPage/ResetPasswordPage.t
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage/ForgotPasswordPage.tsx';
 import { ModifyPersonPage } from './pages/ModifyPersonPage/ModifyPersonPage.tsx';
 import { NotApprovedMoviesPage } from './pages/NotApprovedMoviesPage/NotApprovedMoviesPage.tsx';
+import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute.tsx';
 
 const router = createBrowserRouter([
   {
@@ -77,7 +75,7 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <ListOfMoviesPage />,
-            loader: globalLoader(queryClient, getListOfMoviesQuery),
+            loader: emptyLoader(queryClient, getListOfMoviesQuery),
             HydrateFallback: CardLoader,
           },
           {
@@ -212,10 +210,8 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById('root')!).render(
-  // <StrictMode>
   <QueryClientProvider client={queryClient}>
     <RouterProvider router={router} />
-    <ReactQueryDevtools position='bottom-right' />
+    <ReactQueryDevtools position='bottom' />
   </QueryClientProvider>
-  // </StrictMode>
 );

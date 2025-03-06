@@ -2,19 +2,22 @@ import {
   ForgotPasswordRequest,
   LoginRequest,
   ResetPasswordRequest,
-  Role,
   User,
 } from '../types/user';
 import { axiosInstance } from './global';
 
 export const fetchLogin = async (body: LoginRequest) => {
-  const response = await axiosInstance.postForm('/api/auth/login', body);
+  const response = await axiosInstance
+    .postForm('/api/auth/login', body)
+    .then((response) => response?.data);
 
   return response;
 };
 
 export const fetchRegister = async (body: LoginRequest) => {
-  const response = await axiosInstance.postForm('/api/auth/register', body);
+  const response = await axiosInstance
+    .postForm('/api/auth/register', body)
+    .then((response) => response?.data);
 
   return response;
 };

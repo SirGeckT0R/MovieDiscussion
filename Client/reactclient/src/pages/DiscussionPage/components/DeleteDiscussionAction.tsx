@@ -7,7 +7,7 @@ export function DeleteDiscussionAction({ id }: { id: string | undefined }) {
   const navigate = useNavigate();
 
   const { mutateAsync } = useMutation({
-    mutationFn: (id: string) => deleteDiscussion(id),
+    mutationFn: (id: string) => deleteDiscussion({ id }),
   });
 
   const handleDiscussionDelete = () => {

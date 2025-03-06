@@ -2,13 +2,12 @@ import { Button } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
 import { subscribeToDiscussion } from '../../../api/discussionsService';
 
-export function SubscribeDiscussionAction({
-  id,
-  queryInvalidator,
-}: {
+type Props = {
   id: string | undefined;
   queryInvalidator: () => void;
-}) {
+};
+
+export function SubscribeDiscussionAction({ id, queryInvalidator }: Props) {
   const { mutateAsync } = useMutation({
     mutationFn: (id: string) => subscribeToDiscussion(id),
   });

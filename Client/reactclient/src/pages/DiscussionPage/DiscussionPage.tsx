@@ -1,15 +1,17 @@
-import { Button, Stack, Typography } from '@mui/material';
-import { NavLink, useParams } from 'react-router-dom';
+import { Stack, Typography } from '@mui/material';
+import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getDiscussionQuery } from '../../queries/discussionsQueries';
-import { SubscribeDiscussionAction } from './components/SubscribeDiscussionAction';
-import { DeleteDiscussionAction } from './components/DeleteDiscussionAction';
 import { useAuth } from '../../hooks/useAuth';
 import { queryClient } from '../../api/global';
+import { Role } from '../../types/user';
+import { AuthorizedUserActions } from './components/AuthorizedUserActions';
+import { DateDisplay } from '../../components/MovieFieldsView/DateDisplay';
 
 export function DiscussionPage() {
   const { id } = useParams();
   const { user } = useAuth();
+
   const discussionQuery = getDiscussionQuery(id);
   const { data: discussion } = useQuery(discussionQuery);
 
@@ -22,32 +24,18 @@ export function DiscussionPage() {
       <Typography variant='h3'>{discussion?.title}</Typography>
       <Typography variant='h4'>{discussion?.description}</Typography>
       <Typography variant='h4' color='inherit'>
-        Starting at {discussion?.startAt}
+        Starting at{' '}
+        <DateDisplay
+          date={new Date(discussion?.startAt ?? '')}
+          hideTime={true}
+        />
       </Typography>
       <Typography variant='h4' color='inherit'>
         {discussion?.isActive ? 'Active' : 'Not active'}
       </Typography>
-      {discussion?.createdBy === user.id && (
-        <>
-          {' '}
-          <NavLink to='edit'>
-            <Button color='primary' variant='contained'>
-              Edit
-            </Button>
-          </NavLink>
-          <DeleteDiscussionAction id={id} />
-        </>
-      )}
-      {discussion?.isActive && (
-        <NavLink to='chat'>
-          <Button color='primary' variant='contained'>
-            Go to Chat
-          </Button>
-        </NavLink>
-      )}
-      {!discussion?.subscribers.includes(user.id ?? '') && (
-        <SubscribeDiscussionAction
-          id={id}
+      {user.role !== Role.Guest && (
+        <AuthorizedUserActions
+          discussion={discussion}
           queryInvalidator={queryInvalidator}
         />
       )}

@@ -19,6 +19,10 @@ export interface UpdateReviewRequest {
   text: string;
 }
 
+export interface DeleteReviewRequest {
+  id: string;
+}
+
 export interface PaginatedReview {
   items: Review[];
   pageIndex: number;

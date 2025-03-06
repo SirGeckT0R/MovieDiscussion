@@ -1,5 +1,5 @@
 import { Paper, Stack, Rating, Typography } from '@mui/material';
-import { Review } from '../types/review';
+import { Review } from '../../types/review';
 
 export function ReviewCard({ review }: { review: Review }) {
   return (

@@ -13,3 +13,16 @@ export const globalLoader =
     const query = fetcher(params.id);
     queryClient.ensureQueryData(query);
   };
+
+export const emptyLoader =
+  (
+    queryClient: QueryClient,
+    fetcher: () => {
+      queryKey: Array<string>;
+      queryFn: () => Promise<unknown>;
+    }
+  ) =>
+  async () => {
+    const query = fetcher();
+    queryClient.ensureQueryData(query);
+  };

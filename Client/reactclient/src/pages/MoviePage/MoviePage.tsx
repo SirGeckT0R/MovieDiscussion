@@ -1,29 +1,25 @@
-import {
-  FormControl,
-  FormLabel,
-  Grid2,
-  Rating,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Grid2, Rating, Typography } from '@mui/material';
 import { Box, Stack } from '@mui/system';
 import { getMovieQuery } from '../../queries/moviesQueries';
 import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
-import { CrewMembersView } from '../../components/CrewMembersView';
+import { CrewMembersView } from '../../components/MovieFieldsView/CrewMembersView';
 import { useAuth } from '../../hooks/useAuth';
 import { Role } from '../../types/user';
-import { DateDisplay } from '../../components/DateDisplay';
+import { DateDisplay } from '../../components/MovieFieldsView/DateDisplay';
 import { ReviewView } from './components/ReviewView';
 import { MovieAdminActions } from './components/MovieAdminActions';
-import { MovieGenresView } from '../../components/MovieGenresView';
+import { MovieGenresView } from '../../components/MovieFieldsView/MovieGenresView';
 import { ImageSharp } from '@mui/icons-material';
+import { emptyImageStyle } from '../../components/MovieCard/styles/emptyImageStyle';
+import { DateWithListsView } from '../../components/MovieFieldsView/DateWithListsView';
 
 export function MoviePage() {
+  const { id } = useParams();
   const { user } = useAuth();
 
-  const { id } = useParams();
-  const { data: movie } = useQuery(getMovieQuery(id!));
+  const movieQuery = getMovieQuery(id);
+  const { data: movie } = useQuery(movieQuery);
 
   return (
     <Grid2 container direction={'column'} spacing={2}>
@@ -39,18 +35,7 @@ export function MoviePage() {
               sx={{ objectFit: 'contain' }}
             />
           ) : (
-            <ImageSharp
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                cursor: 'pointer',
-                height: 300,
-                pb: 28,
-                color: 'grey',
-              }}
-            />
+            <ImageSharp sx={emptyImageStyle} />
           )}
         </Grid2>
         <Grid2
@@ -60,7 +45,7 @@ export function MoviePage() {
           color='info'
           spacing={2}
           size='grow'>
-          <Stack>
+          <Stack spacing={2}>
             <Typography
               variant='h2'
               align='left'
@@ -68,10 +53,8 @@ export function MoviePage() {
               fontWeight={'bold'}>
               {movie?.title}
             </Typography>
-            {user.role == Role.Admin ? (
+            {user.role === Role.Admin && (
               <MovieAdminActions id={id} image={movie?.image} />
-            ) : (
-              <></>
             )}
 
             <Rating
@@ -89,23 +72,7 @@ export function MoviePage() {
             </Typography>
           </Stack>
           <Stack direction={'row'} spacing={20} width={'100%'}>
-            <Stack alignItems={'flex-start'}>
-              <Typography variant='h5' color='info'>
-                Release Date:&nbsp;
-                <DateDisplay date={new Date(movie?.releaseDate ?? '')} />
-              </Typography>
-              <Typography variant='h6'>Genres:</Typography>
-              <Box
-                sx={{
-                  padding: '0 20px',
-                }}>
-                <MovieGenresView genres={movie?.genres} />
-              </Box>
-              <Typography variant='h5' color='info'>
-                Crew:
-              </Typography>
-              <CrewMembersView crew={movie?.crewMembers} />
-            </Stack>
+            <DateWithListsView movie={movie} />
             <ReviewView movieId={id} />
           </Stack>
         </Grid2>

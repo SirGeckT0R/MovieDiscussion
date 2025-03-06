@@ -1,7 +1,7 @@
 import { Card, CardContent, Stack, Typography } from '@mui/material';
 import { Discussion } from '../../../types/discussion';
 import { NavLink } from 'react-router-dom';
-import { DateDisplay } from '../../../components/DateDisplay';
+import { DateDisplay } from '../../../components/MovieFieldsView/DateDisplay';
 
 export function DiscussionCard({ discussion }: { discussion: Discussion }) {
   return (

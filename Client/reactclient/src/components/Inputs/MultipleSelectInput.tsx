@@ -1,6 +1,6 @@
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { Control, Controller } from 'react-hook-form';
-import { MovieGenresView } from '../MovieGenresView';
+import { MovieGenresView } from '../MovieFieldsView/MovieGenresView';
 
 type Props = {
   options?: Array<{ id: string; name: string }>;

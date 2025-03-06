@@ -46,6 +46,11 @@ export interface UpdateMovieRequest {
   image: string | null;
 }
 
+export interface DeleteMovieRequest {
+  id: string;
+  image: string | null;
+}
+
 export interface CrewMember {
   personId: string;
   role: CrewRole;

@@ -10,17 +10,15 @@ import {
 import { Control, Controller } from 'react-hook-form';
 import { useSearch } from '../../hooks/useSearch';
 
-export function DebounceSearch({
-  searchData,
-  control,
-  inputName,
-  noOptionsRender,
-  setName,
-  isRequired = true,
-}: {
+type Props = {
   searchData: {
     key: string;
-    searchFetch: (name: string) => Promise<Array<{ id: string; name: string }>>;
+    searchFetch: (name: string) => Promise<
+      Array<{
+        id: string;
+        name: string;
+      }>
+    >;
   };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<any, any>;
@@ -28,15 +26,25 @@ export function DebounceSearch({
   noOptionsRender?: ReactElement;
   setName?: Dispatch<SetStateAction<string>>;
   isRequired?: boolean;
-}) {
+};
+
+export function DebounceSearch({
+  searchData,
+  control,
+  inputName,
+  noOptionsRender,
+  setName,
+  isRequired = true,
+}: Props) {
   const [searchName, setSearchName] = useState<string | null>();
-  const debouncedSearchTerm = useDebounce(searchName, 1000);
+
+  const delayTime = 1000;
+  const debouncedSearchTerm = useDebounce(searchName, delayTime);
 
   const { data: matches, isLoading } = useSearch(
     searchData.key,
     debouncedSearchTerm!,
-    searchData.searchFetch,
-    3
+    searchData.searchFetch
   );
 
   return (

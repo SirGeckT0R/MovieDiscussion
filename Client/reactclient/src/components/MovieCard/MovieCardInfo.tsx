@@ -2,6 +2,7 @@ import { Box, CardContent, CardMedia, Rating, Typography } from '@mui/material';
 import { Movie } from '../../types/movie';
 import { useMovieCardStyles } from './styles/useMovieCardStyles';
 import { ImageSharp } from '@mui/icons-material';
+import { emptyImageStyle } from './styles/emptyImageStyle';
 
 export function MovieCardInfo({ movie }: { movie: Movie }) {
   const classes = useMovieCardStyles();
@@ -18,19 +19,7 @@ export function MovieCardInfo({ movie }: { movie: Movie }) {
           sx={{ objectFit: 'cover', width: 360, height: 300 }}
         />
       ) : (
-        <ImageSharp
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            cursor: 'pointer',
-            width: 360,
-            height: 300,
-            pb: 28,
-            color: 'grey',
-          }}
-        />
+        <ImageSharp sx={emptyImageStyle} />
       )}
       <Box className={classes.overlay} height={200}>
         <CardContent className={classes.content}>

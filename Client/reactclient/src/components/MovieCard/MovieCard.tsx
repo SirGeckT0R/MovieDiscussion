@@ -5,13 +5,12 @@ import { MovieCardActions } from './MovieCardActions';
 import { useMovieCardStyles } from './styles/useMovieCardStyles';
 import { NavLink } from 'react-router-dom';
 
-export function MovieCard({
-  movie,
-  isInWatchlist = false,
-}: {
+type Props = {
   movie: Movie;
   isInWatchlist: boolean | undefined;
-}) {
+};
+
+export function MovieCard({ movie, isInWatchlist = false }: Props) {
   const classes = useMovieCardStyles();
 
   return (

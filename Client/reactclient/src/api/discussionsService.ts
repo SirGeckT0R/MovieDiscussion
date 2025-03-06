@@ -1,5 +1,6 @@
 import {
   CreateDiscussionRequest,
+  DeleteDiscussionRequest,
   Discussion,
   UpdateDiscussionRequest,
 } from '../types/discussion';
@@ -47,9 +48,9 @@ export const updateDiscussion = async (body: UpdateDiscussionRequest) => {
   return response;
 };
 
-export const deleteDiscussion = async (id: string) => {
+export const deleteDiscussion = async (body: DeleteDiscussionRequest) => {
   const response = await axiosInstance
-    .delete(`/api/discussions/${id}`)
+    .delete(`/api/discussions/${body.id}`)
     .then((response) => {
       return response.data;
     });

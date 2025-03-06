@@ -4,13 +4,12 @@ import { CreateReviewRequest } from '../../types/review';
 import { useMutation } from '@tanstack/react-query';
 import { createReview } from '../../api/reviewService';
 
-export function ReviewInput({
-  movieId,
-  queryInvalidator,
-}: {
+type Props = {
   movieId: string | undefined;
   queryInvalidator: () => void;
-}) {
+};
+
+export function ReviewInput({ movieId, queryInvalidator }: Props) {
   const { register, handleSubmit } = useForm<CreateReviewRequest>();
 
   const { mutateAsync } = useMutation({

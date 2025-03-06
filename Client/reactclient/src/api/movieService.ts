@@ -1,6 +1,7 @@
 import {
   CreateMovieRequest,
   CrewMember,
+  DeleteMovieRequest,
   ManageMovieApprovalRequest,
   Movie,
   MovieFilters,
@@ -81,9 +82,9 @@ export const updateMovie = async (
   return response;
 };
 
-export const deleteMovie = async (id: string, image: string | null) => {
+export const deleteMovie = async (body: DeleteMovieRequest) => {
   const response = await axiosInstance
-    .delete(`/api/movies/${id}`, { data: { image: image } })
+    .delete(`/api/movies/${body.id}`, { data: { image: body.image } })
     .then((response) => response.data);
 
   return response;

@@ -17,14 +17,16 @@ import { EditCrewMembers } from './components/EditCrewMembers';
 
 export function UpdateMoviePage() {
   const navigate = useNavigate();
-
   const { id } = useParams();
-  const { data: movie } = useQuery<Movie>(getMovieQuery(id!));
 
-  const { data: genres } = useQuery<Genre[]>(getGenresQuery());
+  const movieQuery = getMovieQuery(id);
+  const { data: movie } = useQuery<Movie>(movieQuery);
+
+  const genreQuery = getGenresQuery();
+  const { data: genres } = useQuery<Genre[]>(genreQuery);
 
   const [image, setImage] = useState<Blob | null>(null);
-  const [crew, setCrew] = useState<CrewMember[]>(movie!.crewMembers);
+  const [crew, setCrew] = useState<CrewMember[]>(movie?.crewMembers ?? []);
 
   const { register, handleSubmit, control } = useForm<UpdateMovieRequest>({
     defaultValues: {

@@ -7,19 +7,15 @@ import { createPerson } from '../../api/peopleService';
 import { CreatePersonRequest } from '../../types/people';
 
 export function CreatePersonInput() {
-  const {
-    register,
-    handleSubmit,
-    control,
-    reset: resetCreate,
-  } = useForm<CreatePersonRequest>();
+  const { register, handleSubmit, control, reset } =
+    useForm<CreatePersonRequest>();
 
   const { mutateAsync } = useMutation({
     mutationFn: (values: CreatePersonRequest) => createPerson(values),
   });
 
   const onPersonSubmit = (formBody: CreatePersonRequest) => {
-    mutateAsync(formBody).then(() => resetCreate());
+    mutateAsync(formBody).then(reset);
   };
 
   return (
@@ -53,7 +49,7 @@ export function CreatePersonInput() {
           )}
         />
         <Button type='submit' variant='contained'>
-          Submit
+          Add new
         </Button>
       </Stack>
     </form>

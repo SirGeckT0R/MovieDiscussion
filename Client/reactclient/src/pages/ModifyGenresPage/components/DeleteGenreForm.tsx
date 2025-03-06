@@ -5,13 +5,12 @@ import { deleteGenre } from '../../../api/genreService';
 import { CustomSelectInput } from '../../../components/Inputs/MultipleSelectInput';
 import { Genre, DeleteGenreRequest } from '../../../types/genre';
 
-export function DeleteGenreForm({
-  queryInvalidator,
-  genres,
-}: {
+type Props = {
   queryInvalidator: () => void;
   genres: Genre[] | undefined;
-}) {
+};
+
+export function DeleteGenreForm({ queryInvalidator, genres }: Props) {
   const { control, handleSubmit } = useForm<DeleteGenreRequest>();
 
   const { mutateAsync } = useMutation({

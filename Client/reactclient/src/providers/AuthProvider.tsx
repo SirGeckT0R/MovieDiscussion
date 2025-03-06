@@ -5,6 +5,7 @@ import { AuthContext } from './AuthContext';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+
   const logout = () => {
     fetchLogout();
     setUser({ role: Role.Guest });

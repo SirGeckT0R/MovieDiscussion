@@ -1,15 +1,17 @@
 import { Grid2 } from '@mui/material';
-import { Movie } from '../types/movie';
-import { MovieCard } from './MovieCard/MovieCard';
-import { useAuth } from '../hooks/useAuth';
-import { Role } from '../types/user';
-import { useWatchlist } from '../hooks/useWatchlist';
+import { MovieCard } from '../MovieCard/MovieCard';
+import { useAuth } from '../../hooks/useAuth';
+import { Movie } from '../../types/movie';
+import { Role } from '../../types/user';
+import { getWatchlistQuery } from '../../queries/watchlistsQueries';
+import { useQuery } from '@tanstack/react-query';
 
 export function MovieList({ movies }: { movies: Movie[] | undefined }) {
   const { user } = useAuth();
   const isAuthenticated = user.role === Role.User;
 
-  const { data: watchlist } = useWatchlist(isAuthenticated);
+  const watchlistQuery = getWatchlistQuery(isAuthenticated);
+  const { data: watchlist } = useQuery(watchlistQuery);
 
   return (
     <Grid2 container spacing={2} columns={3} height={860}>

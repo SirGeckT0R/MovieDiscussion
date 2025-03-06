@@ -1,34 +1,36 @@
 import { ImageSharp } from '@mui/icons-material';
-import { Box, InputLabel, Typography } from '@mui/material';
+import { Box, InputLabel, Theme, Typography } from '@mui/material';
 import { Dispatch, SetStateAction } from 'react';
 
-export function ImageInput({
-  imageState,
-  existingImagePath = undefined,
-}: {
+type Props = {
   imageState: {
     image: Blob | null;
     setImage: Dispatch<SetStateAction<Blob | null>>;
   };
-  existingImagePath: string | undefined;
-}) {
+  existingImagePath?: string | undefined;
+};
+
+const imageStyle = (theme: Theme) => ({
+  border: 2,
+  borderRadius: 2,
+  borderColor: theme.palette.primary.light,
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  cursor: 'pointer',
+  width: 300,
+  height: 300,
+  background: theme.palette.grey[200],
+});
+
+export function ImageInput({
+  imageState,
+  existingImagePath = undefined,
+}: Props) {
   return (
     <Box alignSelf={'center'}>
-      <InputLabel
-        htmlFor='image'
-        sx={(theme) => ({
-          border: 2,
-          borderRadius: 2,
-          borderColor: theme.palette.primary.light,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          cursor: 'pointer',
-          width: 300,
-          height: 300,
-          background: theme.palette.grey[200],
-        })}>
+      <InputLabel htmlFor='image' sx={imageStyle}>
         {imageState.image || existingImagePath ? (
           <img
             src={
@@ -57,8 +59,10 @@ export function ImageInput({
         onChange={(event) => {
           if (!event.target.files) {
             imageState.setImage(null);
+
             return;
           }
+
           imageState.setImage(event.target.files[0]);
         }}
       />

@@ -27,10 +27,7 @@ export function CreateMoviePage() {
   return (
     <Stack direction={'row'}>
       <Stack style={{ width: 500 }} spacing={2}>
-        <ImageInput
-          imageState={{ image, setImage }}
-          existingImagePath={undefined}
-        />
+        <ImageInput imageState={{ image, setImage }} />
         <MovieInfoForm onSubmit={onSubmit} />
         <CrewMemberInputForm crewState={{ crew, setCrew }} />
       </Stack>

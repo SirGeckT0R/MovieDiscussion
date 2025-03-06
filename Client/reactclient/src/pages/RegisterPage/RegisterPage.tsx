@@ -9,6 +9,7 @@ import { RegisterRequest } from '../../types/user';
 export function RegisterPage() {
   const navigate = useNavigate();
   const { authenticate } = useAuth();
+
   const { register, handleSubmit } = useForm<RegisterRequest>();
 
   const { mutateAsync } = useMutation({

@@ -5,21 +5,19 @@ import { updateReview } from '../../../api/reviewService';
 import { useForm } from 'react-hook-form';
 import { Dispatch, SetStateAction } from 'react';
 
+type Props = {
+  userReview: Review | undefined;
+  queryInvalidator: () => void;
+  editMode: Dispatch<SetStateAction<boolean>>;
+};
+
 export function UpdateReviewForm({
   userReview,
   queryInvalidator,
   editMode,
-}: {
-  userReview: Review | undefined;
-  queryInvalidator: () => void;
-  editMode: Dispatch<SetStateAction<boolean>>;
-}) {
+}: Props) {
   const { register, handleSubmit } = useForm<UpdateReviewRequest>({
-    defaultValues: {
-      id: userReview?.id,
-      text: userReview?.text,
-      value: userReview?.value,
-    },
+    defaultValues: userReview,
   });
 
   const { mutateAsync } = useMutation({

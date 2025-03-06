@@ -6,14 +6,14 @@ import { fetchPeople } from '../../../api/peopleService';
 import { DebounceSearch } from '../../../components/Inputs/DebounceSearch';
 import { CreatePersonInput } from '../../../components/Inputs/CreatePersonInput';
 
-export function CrewMemberInputForm({
-  crewState,
-}: {
+type Props = {
   crewState: {
     crew: CrewMember[];
     setCrew: Dispatch<SetStateAction<CrewMember[]>>;
   };
-}) {
+};
+
+export function CrewMemberInputForm({ crewState }: Props) {
   const [open, setOpen] = useState(false);
   const [addedCrewMemberName, setAddedCrewMemberName] = useState('');
 

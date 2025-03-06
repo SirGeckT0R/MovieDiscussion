@@ -1,16 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { getNotApprovedMoviesQuery } from '../../queries/moviesQueries';
 import { queryClient } from '../../api/global';
-import { Box, Card, Grid2, Rating, Stack, Typography } from '@mui/material';
+import { Box, Card, Grid2, Stack, Typography } from '@mui/material';
 import { useMovieCardStyles } from '../../components/MovieCard/styles/useMovieCardStyles';
-import { CrewMembersView } from '../../components/CrewMembersView';
-import { DateDisplay } from '../../components/DateDisplay';
-import { MovieGenresView } from '../../components/MovieGenresView';
 import { MovieApprovalActions } from './components/MovieApprovalActions';
 import { ImageSharp } from '@mui/icons-material';
-import { Role } from '../../types/user';
-import { MovieAdminActions } from '../MoviePage/components/MovieAdminActions';
-import { ReviewView } from '../MoviePage/components/ReviewView';
+import { emptyImageStyle } from '../../components/MovieCard/styles/emptyImageStyle';
+import { DateWithListsView } from '../../components/MovieFieldsView/DateWithListsView';
 
 export function NotApprovedMoviesPage() {
   const classes = useMovieCardStyles();
@@ -44,18 +40,7 @@ export function NotApprovedMoviesPage() {
                       sx={{ objectFit: 'contain' }}
                     />
                   ) : (
-                    <ImageSharp
-                      sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        cursor: 'pointer',
-                        height: 300,
-                        pb: 28,
-                        color: 'grey',
-                      }}
-                    />
+                    <ImageSharp sx={emptyImageStyle} />
                   )}
                 </Grid2>
                 <Grid2
@@ -83,25 +68,7 @@ export function NotApprovedMoviesPage() {
                     </Typography>
                   </Stack>
                   <Stack direction={'row'} spacing={20} width={'100%'}>
-                    <Stack alignItems={'flex-start'}>
-                      <Typography variant='h5' color='info'>
-                        Release Date:&nbsp;
-                        <DateDisplay
-                          date={new Date(movie?.releaseDate ?? '')}
-                        />
-                      </Typography>
-                      <Typography variant='h6'>Genres:</Typography>
-                      <Box
-                        sx={{
-                          padding: '0 20px',
-                        }}>
-                        <MovieGenresView genres={movie?.genres} />
-                      </Box>
-                      <Typography variant='h5' color='info'>
-                        Crew:
-                      </Typography>
-                      <CrewMembersView crew={movie?.crewMembers} />
-                    </Stack>
+                    <DateWithListsView movie={movie} />
                   </Stack>
                 </Grid2>
               </Grid2>

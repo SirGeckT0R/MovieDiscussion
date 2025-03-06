@@ -3,13 +3,12 @@ import { useMutation } from '@tanstack/react-query';
 import { manageMovieApproval } from '../../../api/movieService';
 import { ManageMovieApprovalRequest } from '../../../types/movie';
 
-export function MovieApprovalActions({
-  id,
-  queryInvalidator,
-}: {
+type Props = {
   id: string | undefined;
   queryInvalidator: () => void;
-}) {
+};
+
+export function MovieApprovalActions({ id, queryInvalidator }: Props) {
   const { mutateAsync } = useMutation({
     mutationFn: (values: ManageMovieApprovalRequest) =>
       manageMovieApproval(values),

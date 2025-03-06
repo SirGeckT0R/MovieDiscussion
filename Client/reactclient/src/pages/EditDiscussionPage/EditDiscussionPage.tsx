@@ -9,14 +9,12 @@ import { useForm } from 'react-hook-form';
 export function EditDiscussionPage() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { data: discussion } = useQuery(getDiscussionQuery(id!));
+
+  const discussionQuery = getDiscussionQuery(id);
+  const { data: discussion } = useQuery(discussionQuery);
 
   const { register, handleSubmit } = useForm<UpdateDiscussionRequest>({
-    defaultValues: {
-      id: discussion?.id,
-      description: discussion?.description,
-      title: discussion?.title,
-    },
+    defaultValues: discussion,
   });
 
   const { mutateAsync } = useMutation({

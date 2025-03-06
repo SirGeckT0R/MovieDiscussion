@@ -8,12 +8,13 @@ import { getGenresQuery } from '../../../queries/genresQueries';
 import { Genre } from '../../../types/genre';
 import { CreateMovieRequest } from '../../../types/movie';
 
-export function MovieInfoForm({
-  onSubmit,
-}: {
+type Props = {
   onSubmit: (values: CreateMovieRequest) => void;
-}) {
-  const { data: genres } = useQuery<Genre[]>(getGenresQuery());
+};
+
+export function MovieInfoForm({ onSubmit }: Props) {
+  const genreQuery = getGenresQuery();
+  const { data: genres } = useQuery<Genre[]>(genreQuery);
 
   const { register, handleSubmit, control } = useForm<CreateMovieRequest>();
 

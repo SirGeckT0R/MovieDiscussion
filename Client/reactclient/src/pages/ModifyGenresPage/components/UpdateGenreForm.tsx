@@ -5,13 +5,12 @@ import { updateGenre } from '../../../api/genreService';
 import { CustomSelectInput } from '../../../components/Inputs/MultipleSelectInput';
 import { Genre, UpdateGenreRequest } from '../../../types/genre';
 
-export function UpdateGenreForm({
-  queryInvalidator,
-  genres,
-}: {
+type Props = {
   queryInvalidator: () => void;
   genres: Genre[] | undefined;
-}) {
+};
+
+export function UpdateGenreForm({ queryInvalidator, genres }: Props) {
   const { register, control, handleSubmit } = useForm<UpdateGenreRequest>();
 
   const { mutateAsync } = useMutation({

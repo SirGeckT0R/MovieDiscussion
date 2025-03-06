@@ -1,15 +1,14 @@
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
 import { ReactNode } from 'react';
-import { Role } from '../types/user';
+import { useAuth } from '../../hooks/useAuth';
+import { Role } from '../../types/user';
 
-export function ProtectedRoute({
-  children,
-  allowedRoles,
-}: {
+type Props = {
   children: ReactNode;
   allowedRoles: Role[];
-}) {
+};
+
+export function ProtectedRoute({ children, allowedRoles }: Props) {
   const { user } = useAuth();
 
   if (!allowedRoles.includes(user.role)) {

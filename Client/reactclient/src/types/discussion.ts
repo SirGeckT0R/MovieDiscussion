@@ -22,6 +22,10 @@ export interface UpdateDiscussionRequest {
   description: string;
 }
 
+export interface DeleteDiscussionRequest {
+  id: string;
+}
+
 export interface Message {
   userId: string;
   text: string;

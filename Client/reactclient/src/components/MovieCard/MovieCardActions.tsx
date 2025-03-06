@@ -5,14 +5,13 @@ import { useMutation } from '@tanstack/react-query';
 import { manageMovieInWatchlist } from '../../api/watchlistService';
 import { ManageMovieInWatchlist, WatchlistAction } from '../../types/watchlist';
 
-export function MovieCardActions({
-  movie,
-  isInWatchlist = false,
-}: {
+type Props = {
   movie: Movie;
   isInWatchlist: boolean;
-}) {
-  const { mutateAsync: manageMovieAsync, isLoading } = useMutation({
+};
+
+export function MovieCardActions({ movie, isInWatchlist = false }: Props) {
+  const { mutateAsync, isLoading } = useMutation({
     mutationFn: (values: ManageMovieInWatchlist) =>
       manageMovieInWatchlist(values),
   });
@@ -27,22 +26,20 @@ export function MovieCardActions({
       action: action as number,
     };
 
-    manageMovieAsync(values);
+    mutateAsync(values);
   };
 
   return (
-    <>
-      <Tooltip title='Add to watchlist'>
-        <IconButton loading={isLoading}>
-          <Checkbox
-            defaultChecked={isInWatchlist}
-            icon={<VisibilityTwoTone />}
-            checkedIcon={<VisibilityTwoTone htmlColor='green' />}
-            onChange={handleClick}
-            sx={{ display: isLoading ? 'none' : 'initial' }}
-          />
-        </IconButton>
-      </Tooltip>
-    </>
+    <Tooltip title='Add to watchlist'>
+      <IconButton loading={isLoading}>
+        <Checkbox
+          defaultChecked={isInWatchlist}
+          icon={<VisibilityTwoTone />}
+          checkedIcon={<VisibilityTwoTone htmlColor='green' />}
+          onChange={handleClick}
+          sx={{ display: isLoading ? 'none' : 'initial' }}
+        />
+      </IconButton>
+    </Tooltip>
   );
 }

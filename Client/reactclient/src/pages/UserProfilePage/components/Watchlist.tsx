@@ -42,7 +42,8 @@ export function Watchlist() {
         <Card
           className={classes.card}
           variant='outlined'
-          sx={{ width: 360, height: 600 }}>
+          sx={{ width: 360, height: 600 }}
+          key={movie.id}>
           <NavLink to={`/movies/${movie.id}`} key={movie.id}>
             <MovieCardInfo movie={movie} />
           </NavLink>

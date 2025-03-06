@@ -1,4 +1,4 @@
-import { Button, Stack, TextField } from '@mui/material';
+import { Button, Stack, TextField, Typography } from '@mui/material';
 import { UpdatePersonRequest } from '../../../types/people';
 import { Controller, useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
@@ -22,6 +22,7 @@ export function UpdatePersonForm() {
   return (
     <form onSubmit={handleSubmit(onUpdateSubmit)}>
       <Stack spacing={2}>
+        <Typography variant='h5'>Modify existing ones</Typography>
         <DebounceSearch
           inputName='id'
           control={control}

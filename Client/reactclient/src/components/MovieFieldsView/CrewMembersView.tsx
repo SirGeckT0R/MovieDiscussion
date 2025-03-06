@@ -1,5 +1,5 @@
 import { Chip, Stack, Typography } from '@mui/material';
-import { CrewMember, CrewRole } from '../types/movie';
+import { CrewMember, CrewRole } from '../../types/movie';
 
 const groupOnRole = (crew: CrewMember[]): Array<CrewMember[]> =>
   Object.values(
@@ -7,6 +7,7 @@ const groupOnRole = (crew: CrewMember[]): Array<CrewMember[]> =>
       ?.sort((x) => x.role)
       ?.reduce((r, o) => {
         (r[o.role] = r[o.role] || []).push(o);
+
         return r;
       }, Object.create(null))
   );
@@ -16,10 +17,10 @@ export function CrewMembersView({ crew }: { crew: CrewMember[] | undefined }) {
 
   return (
     <Stack spacing={2}>
-      {grouped?.map((group, role) => (
-        <Stack spacing={1} direction={'row'} key={role}>
+      {grouped?.map((group) => (
+        <Stack spacing={1} direction={'row'} key={group[0].role}>
           <Chip
-            label={CrewRole[role + 1]}
+            label={CrewRole[group[0].role]}
             color='primary'
             sx={{
               fontWeight: 'bold',

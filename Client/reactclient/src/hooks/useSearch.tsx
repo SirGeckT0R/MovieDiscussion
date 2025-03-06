@@ -5,12 +5,12 @@ export function useSearch(
   name: string,
   searchFetch: (
     name: string,
-    pageIndex: number
+    pageSize: number
   ) => Promise<Array<{ id: string; name: string }>>,
-  pageIndex: number
+  pageSize: number = 3
 ) {
   return useQuery({
     queryKey: [key, name],
-    queryFn: async () => await searchFetch(name, pageIndex),
+    queryFn: async () => await searchFetch(name, pageSize),
   });
 }

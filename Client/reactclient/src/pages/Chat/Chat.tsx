@@ -16,15 +16,17 @@ import { Message } from '../../types/discussion';
 import { useAuth } from '../../hooks/useAuth';
 
 export function Chat() {
+  const { id } = useParams();
   const { user } = useAuth();
+
+  const { data: history, isSuccess } = useQuery(getMessagesQuery(id));
+  const [messages, setMessages] = useState<Array<Message>>([]);
+
   const [connection, setConnection] = useState<signalR.HubConnection | null>(
     null
   );
-  const { id } = useParams();
-  const { data: history, isSuccess } = useQuery(getMessagesQuery(id));
 
-  const messagesEndRef = useRef(null);
-  const [messages, setMessages] = useState<Array<Message>>([]);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const newConnection = new signalR.HubConnectionBuilder()
@@ -34,6 +36,9 @@ export function Chat() {
 
     setConnection(newConnection);
   }, []);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => history && setMessages(history), [isSuccess]);
 
   useEffect(() => {
     if (connection != null) {
@@ -58,9 +63,13 @@ export function Chat() {
         }
       );
     }
-  }, [connection]);
+  }, [connection, id]);
 
-  useEffect(() => setMessages(history), [isSuccess]);
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
 
   const [input, setInput] = useState('');
 
@@ -71,15 +80,9 @@ export function Chat() {
     }
   };
 
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [messages]);
-
   return (
     <Box
-      sx={{ display: 'flex', flexDirection: 'column', height: '100vh', p: 2 }}>
+      sx={{ display: 'flex', flexDirection: 'column', height: '60vh', p: 2 }}>
       <Paper sx={{ flexGrow: 1, overflow: 'auto', mb: 2 }}>
         <List>
           {messages?.map((message, index) => {

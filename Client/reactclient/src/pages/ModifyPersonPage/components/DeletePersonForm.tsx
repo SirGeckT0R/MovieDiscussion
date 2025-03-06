@@ -1,4 +1,4 @@
-import { Button, Stack } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { fetchPeople, deletePerson } from '../../../api/peopleService';
@@ -19,6 +19,7 @@ export function DeletePersonForm() {
   return (
     <form onSubmit={handleSubmit(onDeleteSubmit)}>
       <Stack spacing={2}>
+        <Typography variant='h5'>Delete</Typography>
         <DebounceSearch
           inputName='id'
           control={control}

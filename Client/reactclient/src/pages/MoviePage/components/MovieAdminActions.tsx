@@ -3,17 +3,16 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { deleteMovie } from '../../../api/movieService';
 import { useMutation } from '@tanstack/react-query';
 
-export function MovieAdminActions({
-  id,
-  image,
-}: {
+type Props = {
   id: string | undefined;
   image: string | undefined;
-}) {
+};
+
+export function MovieAdminActions({ id, image }: Props) {
   const navigate = useNavigate();
 
   const { mutateAsync } = useMutation({
-    mutationFn: () => deleteMovie(id ?? '', image ?? ''),
+    mutationFn: () => deleteMovie({ id: id ?? '', image: image ?? '' }),
   });
 
   const handleDeleteMovie = () => {

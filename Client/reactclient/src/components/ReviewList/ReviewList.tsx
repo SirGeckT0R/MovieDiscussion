@@ -1,6 +1,6 @@
 import { Grid2, Typography } from '@mui/material';
-import { Review } from '../types/review';
-import { ReviewCard } from './ReviewCard';
+import { Review } from '../../types/review';
+import { ReviewCard } from '../ReviewCard/ReviewCard';
 
 export function ReviewList({ reviews }: { reviews: Review[] | undefined }) {
   return (

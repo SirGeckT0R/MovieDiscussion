@@ -4,11 +4,11 @@ import { useMutation } from '@tanstack/react-query';
 import { createGenre } from '../../../api/genreService';
 import { useForm } from 'react-hook-form';
 
-export function CreateGenreForm({
-  queryInvalidator,
-}: {
+type Props = {
   queryInvalidator: () => void;
-}) {
+};
+
+export function CreateGenreForm({ queryInvalidator }: Props) {
   const { register, handleSubmit } = useForm<CreateGenreRequest>();
 
   const { mutateAsync } = useMutation({

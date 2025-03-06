@@ -1,5 +1,6 @@
 import {
   CreateReviewRequest,
+  DeleteReviewRequest,
   PaginatedReview,
   Review,
   UpdateReviewRequest,
@@ -48,9 +49,9 @@ export const updateReview = async (body: UpdateReviewRequest) => {
   return response;
 };
 
-export const deleteReview = async (id: string) => {
+export const deleteReview = async (body: DeleteReviewRequest) => {
   const response = await axiosInstance
-    .delete(`/api/reviews/${id}`)
+    .delete(`/api/reviews/${body.id}`)
     .then((response) => response.data);
 
   return response;
