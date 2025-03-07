@@ -1,5 +1,5 @@
 import { Button, Stack, TextField } from '@mui/material';
-import { DateTimePicker } from '@mui/x-date-pickers';
+import { DatePicker } from '@mui/x-date-pickers';
 import { useMutation } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { Controller, useForm } from 'react-hook-form';
@@ -40,7 +40,7 @@ export function CreatePersonInput() {
           name='dateOfBirth'
           rules={{ required: true }}
           render={({ field: { value, ...props } }) => (
-            <DateTimePicker
+            <DatePicker
               label='Date of Birth *'
               value={value ? dayjs(value) : null}
               {...props}

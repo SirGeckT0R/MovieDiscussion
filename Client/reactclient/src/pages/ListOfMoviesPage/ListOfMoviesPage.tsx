@@ -43,7 +43,7 @@ export function ListOfMoviesPage() {
           {isLoading ? (
             <CardLoader amount={3} />
           ) : (
-            <Stack direction={'column'} spacing={4} alignItems={'center'}>
+            <Stack direction={'column'} spacing={4}>
               <MovieList movies={movies?.items} />
               <Pagination
                 count={movies?.totalPages}

@@ -1,5 +1,5 @@
 import { Grid2, TextField, Button } from '@mui/material';
-import { DateTimePicker } from '@mui/x-date-pickers';
+import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { Controller, useForm } from 'react-hook-form';
 import { CustomSelectInput } from '../../../components/Inputs/MultipleSelectInput';
@@ -40,7 +40,7 @@ export function MovieInfoForm({ onSubmit }: Props) {
           name='releaseDate'
           rules={{ required: true }}
           render={({ field: { value, ...props } }) => (
-            <DateTimePicker
+            <DatePicker
               label='Release Date *'
               value={value ? dayjs(value) : null}
               {...props}

@@ -5,7 +5,7 @@ import { CrewMember, Movie, UpdateMovieRequest } from '../../types/movie';
 import { Controller, useForm } from 'react-hook-form';
 import { useState } from 'react';
 import dayjs from 'dayjs';
-import { DateTimePicker } from '@mui/x-date-pickers';
+import { DatePicker } from '@mui/x-date-pickers';
 import { getGenresQuery } from '../../queries/genresQueries';
 import { Genre } from '../../types/genre';
 import { ImageInput } from '../../components/Inputs/ImageInput';
@@ -77,7 +77,7 @@ export function UpdateMoviePage() {
               name='releaseDate'
               rules={{ required: true }}
               render={({ field: { value, ...props } }) => (
-                <DateTimePicker
+                <DatePicker
                   label='Release Date *'
                   value={value ? dayjs(value) : null}
                   {...props}

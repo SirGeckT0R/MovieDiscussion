@@ -4,7 +4,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import { fetchPeople, updatePerson } from '../../../api/peopleService';
 import { DebounceSearch } from '../../../components/Inputs/DebounceSearch';
-import { DateTimePicker } from '@mui/x-date-pickers';
+import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 
 export function UpdatePersonForm() {
@@ -47,7 +47,7 @@ export function UpdatePersonForm() {
           name='dateOfBirth'
           rules={{ required: true }}
           render={({ field: { value, ...props } }) => (
-            <DateTimePicker
+            <DatePicker
               label='Date of Birth *'
               value={value ? dayjs(value) : null}
               {...props}
