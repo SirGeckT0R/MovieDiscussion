@@ -12,4 +12,7 @@
     <ProjectReference Include="..\UserServiceApplication\UserServiceApplication.csproj" />
     <ProjectReference Include="..\UserServiceDataAccess\UserServiceDataAccess.csproj" />
   </ItemGroup>
+	<ItemGroup>
+		<InternalsVisibleTo Include="MovieDiscussionTests" />
+	</ItemGroup>
 </Project>

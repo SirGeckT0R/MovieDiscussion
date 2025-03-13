@@ -23,15 +23,17 @@ using UserServiceApplication.DIExtensions;
 
 namespace UserServiceWebAPI
 {
-    public class Startup(IConfiguration configuration)
+    public class Startup(IConfiguration configuration, IWebHostEnvironment env)
     {
         public IConfiguration Configuration { get; } = configuration;
+        public IWebHostEnvironment Env { get; } = env;
+
         public void ConfigureServices(WebApplicationBuilder builder)
         {
             builder.Configuration.AddJsonFile("secrets.json", optional: false, reloadOnChange: true);
             var services = builder.Services;
             string userDbConnectionString = Configuration["SqlConnectionString"] ?? throw new InvalidOperationException("No database connection string");
-            var hangfireConnectionString = Configuration["HangfireConnectionString"];
+            var hangfireConnectionString = Configuration["HangfireConnectionString"]; 
 
             services.Configure<JwtOptions>(Configuration.GetSection("Jwt"));
 
@@ -76,9 +78,7 @@ namespace UserServiceWebAPI
                                                     .UsePostgreSqlStorage(options => options.UseNpgsqlConnection(hangfireConnectionString))
                                 );
 
-            services.AddHangfireServer();
-
-            services.AddControllers();
+            services.AddControllers().AddControllersAsServices();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
 
@@ -94,7 +94,7 @@ namespace UserServiceWebAPI
             });
         }
 
-        public void Configure(WebApplication app, IWebHostEnvironment env)
+        public void Configure(WebApplication app)
         {
             app.UseCookiePolicy(new CookiePolicyOptions
             {
@@ -105,7 +105,7 @@ namespace UserServiceWebAPI
 
             app.UseDefaultFiles();
 
-            if (env.IsDevelopment())
+            if (Env.IsDevelopment())
             {
                 app.SeedAndMigrateDatabases();
                 app.UseSwagger();
@@ -118,6 +118,7 @@ namespace UserServiceWebAPI
             {
                 Authorization = [new HangfireAuthorizationFilter()]
             };
+            app.UseHangfireServer();
             app.UseHangfireDashboard("/hangfire", options);
 
             app.UseExceptionHandler();

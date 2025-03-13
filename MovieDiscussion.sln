@@ -53,6 +53,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{BEFE06
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "reactclient", "Client\ReactClient\reactclient.esproj", "{660B6340-6975-414B-BACB-5EB815DA3ACF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7BC051E6-5AEB-4DE3-9DD8-EC495DC98D49}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieDiscussionTests", "Tests\MovieDiscussionTests\MovieDiscussionTests.csproj", "{D0FCD7EB-7134-4347-80D6-88998918097F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,6 +129,10 @@ Global
 		{660B6340-6975-414B-BACB-5EB815DA3ACF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{660B6340-6975-414B-BACB-5EB815DA3ACF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{660B6340-6975-414B-BACB-5EB815DA3ACF}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{D0FCD7EB-7134-4347-80D6-88998918097F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0FCD7EB-7134-4347-80D6-88998918097F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0FCD7EB-7134-4347-80D6-88998918097F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0FCD7EB-7134-4347-80D6-88998918097F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -145,6 +153,7 @@ Global
 		{5A8804D6-2776-423E-A028-D4BDEC99B748} = {93C6BA69-C346-4862-978E-35D42A8DB285}
 		{25EB7687-4690-416D-AFE8-0E43C935606A} = {6A2AD4EF-27C1-4768-9B5C-A0DF0A0FD5CA}
 		{660B6340-6975-414B-BACB-5EB815DA3ACF} = {BEFE062E-296A-427D-804B-5C143BDB61E4}
+		{D0FCD7EB-7134-4347-80D6-88998918097F} = {7BC051E6-5AEB-4DE3-9DD8-EC495DC98D49}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A962B6D7-2EAA-4EF5-B6DD-8B62A32AB1C1}

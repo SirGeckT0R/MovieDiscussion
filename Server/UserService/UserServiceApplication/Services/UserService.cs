@@ -13,6 +13,8 @@ using Hangfire;
 using Microsoft.Extensions.Logging;
 using MovieGrpcClient;
 using UserServiceDataAccess.DatabaseHandlers.Specifications.UserSpecifications;
+using Grpc.Core;
+using Microsoft.Extensions.Configuration;
 
 namespace UserServiceApplication.Services
 {
@@ -23,7 +25,9 @@ namespace UserServiceApplication.Services
                             IValidator<User> validator,
                             IEmailService emailService,
                             ILogger<UserService> logger,
-                            MovieService.MovieServiceClient client) : BaseService<User>(validator, logger), IUserService
+                            MovieService.MovieServiceClient client, 
+                            IConfiguration configuration,
+                            IBackgroundJobClient backgroundJobClient) : BaseService<User>(validator, logger), IUserService
     {
         private readonly IUserUnitOfWork _unitOfWork = unitOfWork;
         private readonly ITokenService _tokenService = tokenService;
@@ -32,6 +36,8 @@ namespace UserServiceApplication.Services
         private readonly IPasswordHasher _passwordHasher = passwordHasher;
         private readonly MovieService.MovieServiceClient _client = client;
         private readonly ILogger<UserService> _logger = logger;
+        private readonly IConfiguration _configuration = configuration;
+        private readonly IBackgroundJobClient _backgroundJobClient = backgroundJobClient;
 
         public async Task<(string, string)> LoginAsync(LoginRequest loginRequest, CancellationToken cancellationToken)
         {
@@ -74,11 +80,11 @@ namespace UserServiceApplication.Services
                 throw new ConflictException("User already exists");
             }
 
-            registerRequest.Password = _passwordHasher.Generate(registerRequest.Password);
-
             cancellationToken.ThrowIfCancellationRequested();
             var user = _mapper.Map<User>(registerRequest);
             Validate(user);
+
+            user.Password = _passwordHasher.Generate(user.Password);
 
             var addedUserId = await _unitOfWork.UserRepository.AddAsync(user, cancellationToken);
             user.Id = addedUserId;
@@ -90,13 +96,23 @@ namespace UserServiceApplication.Services
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var createProfileAndWatchlistRequest = new CreateProfileAndWatchlistRequest
+            try
             {
-                AccountId = addedUserId.ToString(),
-                Username = user.Username
-            };
+                var createProfileAndWatchlistRequest = new CreateProfileAndWatchlistRequest
+                {
+                    AccountId = addedUserId.ToString(),
+                    Username = user.Username
+                };
 
-            await _client.CreateProfileAndWatchlistAsync(createProfileAndWatchlistRequest);
+                int.TryParse(_configuration["GrpcDeadline"], out var time); 
+                var callOptions = new CallOptions(deadline: DateTime.UtcNow.AddSeconds(time));
+                
+                await _client.CreateProfileAndWatchlistAsync(createProfileAndWatchlistRequest, callOptions);
+            }
+            catch (RpcException ex) when (ex.StatusCode == StatusCode.Unavailable || ex.StatusCode == StatusCode.DeadlineExceeded)
+            {
+                _logger.LogWarning(ex, "Grpc server unavailable, skipping user profile creation");
+            }
 
             _logger.LogInformation("Register attempt completed successfully for {Email}", registerRequest.Email);
 
@@ -142,9 +158,19 @@ namespace UserServiceApplication.Services
             cancellationToken.ThrowIfCancellationRequested();
             _unitOfWork.UserRepository.Delete(candidate, cancellationToken);
 
-            var deleteProfileAndWatchlistRequest = new DeleteProfileAndWatchlistRequest { AccountId = candidate.Id.ToString() };
+            try
+            {
+                var deleteProfileAndWatchlistRequest = new DeleteProfileAndWatchlistRequest { AccountId = candidate.Id.ToString() };
 
-            await _client.DeleteProfileAndWatchlistAsync(deleteProfileAndWatchlistRequest);
+                int.TryParse(_configuration["GrpcDeadline"], out var time);
+                var callOptions = new CallOptions(deadline: DateTime.UtcNow.AddSeconds(time));
+
+                await _client.DeleteProfileAndWatchlistAsync(deleteProfileAndWatchlistRequest, callOptions);
+            }
+            catch (RpcException ex) when (ex.StatusCode == StatusCode.Unavailable || ex.StatusCode == StatusCode.DeadlineExceeded)
+            {
+                _logger.LogWarning(ex, "Grpc server unavailable, skipping user profile deletion");
+            }
 
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -194,6 +220,7 @@ namespace UserServiceApplication.Services
 
             return userDto;
         }
+
         public async Task<UserDto> GetUserByTokenAsync(string? accessToken, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Get user by id attempt started");
@@ -233,7 +260,7 @@ namespace UserServiceApplication.Services
             cancellationToken.ThrowIfCancellationRequested();
             confirmToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(confirmToken));
 
-            BackgroundJob.Enqueue(() => SendEmail(email, confirmToken, "Confirm Email", callbackUrl, cancellationToken));
+            _backgroundJobClient.Enqueue(() => SendEmail(email, confirmToken, "Confirm Email", callbackUrl, cancellationToken));
 
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -278,7 +305,7 @@ namespace UserServiceApplication.Services
             cancellationToken.ThrowIfCancellationRequested();
             resetToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(resetToken));
 
-            BackgroundJob.Enqueue(() => SendEmail(email, resetToken, "Reset Password", callbackUrl, cancellationToken));
+            _backgroundJobClient.Enqueue(() => SendEmail(email, resetToken, "Reset Password", callbackUrl, cancellationToken));
 
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -298,7 +325,7 @@ namespace UserServiceApplication.Services
             cancellationToken.ThrowIfCancellationRequested();
             resetToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(resetToken));
 
-            BackgroundJob.Enqueue(() => SendEmail(email, resetToken, "Reset Password", callbackUrl, cancellationToken));
+            _backgroundJobClient.Enqueue(() => SendEmail(email, resetToken, "Reset Password", callbackUrl, cancellationToken));
 
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
