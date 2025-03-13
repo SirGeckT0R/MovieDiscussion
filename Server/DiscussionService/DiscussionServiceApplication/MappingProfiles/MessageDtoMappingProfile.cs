@@ -8,7 +8,9 @@ namespace DiscussionServiceApplication.MappingProfiles
     {
         public MessageDtoMappingProfile()
         {
-            CreateMap<Message, MessageDto>().ReverseMap();
+            CreateMap<Message, MessageDto>()
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(source => source.SentBy))
+                .ReverseMap();
         }
     }
 }

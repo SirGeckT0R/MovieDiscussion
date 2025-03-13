@@ -3,5 +3,5 @@ using MediatR;
 
 namespace DiscussionServiceApplication.UseCases.Discussions.Commands.CreateDiscussionCommand
 {
-    public record CreateDiscussionCommand(string Title, string Description, DateTime StartAt, Guid CreatedBy) : ICommand<Unit>;
+    public record CreateDiscussionCommand(Guid? CreatedBy, string Title, string Description, DateTime StartAt) : ICommand<Unit>;
 }

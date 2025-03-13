@@ -2,6 +2,8 @@
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using MovieServiceApplication.Behaviors;
+using MovieServiceApplication.Interfaces.UseCases.Helpers;
+using MovieServiceApplication.UseCases.Movies.Helpers;
 using System.Reflection;
 
 namespace MovieServiceApplication.Extensions
@@ -19,6 +21,11 @@ namespace MovieServiceApplication.Extensions
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        }
+
+        public static void AddHelpers(this IServiceCollection services)
+        {
+            services.AddScoped<IDetailedMovieHelper, DetailedMovieHelper>();
         }
     }
 }

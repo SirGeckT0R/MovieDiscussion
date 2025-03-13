@@ -87,6 +87,52 @@ namespace UserServiceApplication.Services
             return (tokenValue, userClaims.Email);
         }
 
+        public async Task<string> GenerateResetTokenAsync(string email, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Generate reset token attempt started");
+
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                _logger.LogError("Generate reset token attempt failed: email is not valid");
+
+                throw new TokenException("Email is not valid");
+            }
+
+            var user = await _unitOfWork.UserRepository.GetByEmailAsync(email, cancellationToken);
+
+            if (user == null)
+            {
+                _logger.LogError("Generate reset token attempt failed: user not found");
+
+                throw new NotFoundException("User not found");
+            }
+
+            var userClaims = new UserClaimsDto(user.Id, user.Email, user.Role);
+
+            cancellationToken.ThrowIfCancellationRequested();
+            var specification = new UserIdAndTypeSpecification(TokenType.ResetPassword, userClaims.Id);
+            var candidates = await _unitOfWork.TokenRepository.GetWithSpecificationAsync(specification, cancellationToken);
+            var candidateToken = candidates?.SingleOrDefault();
+
+            if (candidateToken != null)
+            {
+                _logger.LogInformation("Deleting already existing token from database");
+
+                _unitOfWork.TokenRepository.Delete(candidateToken, cancellationToken);
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+            var tokenId = Guid.NewGuid();
+            var (tokenValue, expiresTime) = _jwtProvider.GenerateToken(userClaims, TokenType.ResetPassword, tokenId);
+
+            var token = new Token(tokenId, TokenType.ResetPassword, userClaims.Id, tokenValue, expiresTime);
+            await _unitOfWork.TokenRepository.AddAsync(token, cancellationToken);
+
+            _logger.LogInformation("Generate reset token attempt completed successfully");
+
+            return tokenValue;
+        }
+
         public async Task FindAndDeleteTokenAsync(string? confirmToken, TokenType tokenType, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Find and delete token attempt started");

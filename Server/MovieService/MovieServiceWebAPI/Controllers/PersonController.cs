@@ -16,11 +16,11 @@ namespace MovieServiceWebAPI.Controllers
         private readonly ILogger<PersonController> _logger = logger;
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        public async Task<IActionResult> Get([FromQuery] GetPeopleQuery query, CancellationToken cancellationToken)
         {
-            var people = await _mediator.Send(new GetAllPeopleQuery(), cancellationToken);
+            var people = await _mediator.Send(query, cancellationToken);
 
-            _logger.LogInformation("Returning all people");
+            _logger.LogInformation("Returning people by query parameters");
 
             return Ok(people);
         }

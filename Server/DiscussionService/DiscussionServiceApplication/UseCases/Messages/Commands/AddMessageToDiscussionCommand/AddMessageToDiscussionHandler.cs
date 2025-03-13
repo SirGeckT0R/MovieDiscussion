@@ -1,4 +1,5 @@
-﻿using DiscussionServiceApplication.Dto;
+﻿using AutoMapper;
+using DiscussionServiceApplication.Dto;
 using DiscussionServiceApplication.Interfaces.UseCases;
 using DiscussionServiceDataAccess.Interfaces.UnitOfWork;
 using DiscussionServiceDomain.Exceptions;
@@ -9,13 +10,17 @@ using System.Text.Json;
 
 namespace DiscussionServiceApplication.UseCases.Messages.Commands.AddMessageToDiscussionCommand
 {
-    public class AddMessageToDiscussionHandler(IUnitOfWork unitOfWork, IDistributedCache cache, ILogger<AddMessageToDiscussionHandler> logger) : ICommandHandler<AddMessageToDiscussionCommand, UserConnection>
+    public class AddMessageToDiscussionHandler(IUnitOfWork unitOfWork, 
+                                               IDistributedCache cache, 
+                                               ILogger<AddMessageToDiscussionHandler> logger,
+                                               IMapper mapper) : ICommandHandler<AddMessageToDiscussionCommand, (UserConnection, MessageDto)>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IDistributedCache _cache = cache;
         private readonly ILogger<AddMessageToDiscussionHandler> _logger = logger;
+        private readonly IMapper _mapper = mapper;
 
-        public async Task<UserConnection> Handle(AddMessageToDiscussionCommand request, CancellationToken cancellationToken)
+        public async Task<(UserConnection, MessageDto)> Handle(AddMessageToDiscussionCommand request, CancellationToken cancellationToken)
         {
             var stringConnection = await _cache.GetStringAsync(request.ConnectionId, cancellationToken);
 
@@ -46,13 +51,15 @@ namespace DiscussionServiceApplication.UseCases.Messages.Commands.AddMessageToDi
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-            var message = new Message(userConnection.DiscussionId, request.Text, userConnection.AccountId);
+            var message = new Message(userConnection.DiscussionId, request.Text, userConnection.AccountId, userConnection.Username);
             await _unitOfWork.Messages.AddAsync(message, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return userConnection;
+            var messageDto = _mapper.Map<MessageDto>(message);
+
+            return (userConnection, messageDto);
         }
     }
 }

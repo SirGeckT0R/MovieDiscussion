@@ -16,7 +16,7 @@ namespace MovieServiceApplication.UseCases.Watchlists.Commands.ManageMovieInWatc
 
         public async Task<Unit> Handle(ManageMovieInWatchlistCommand request, CancellationToken cancellationToken)
         {
-            var profileSpecification = new UserProfileByAccountIdSpecification(request.AccountId);
+            var profileSpecification = new UserProfileByAccountIdSpecification(request.AccountId ?? Guid.Empty);
             var candidates = await _unitOfWork.UserProfiles.GetWithSpecificationAsync(profileSpecification, cancellationToken);
             var candidateProfile = candidates.SingleOrDefault();
 

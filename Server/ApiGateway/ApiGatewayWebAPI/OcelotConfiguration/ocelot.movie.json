@@ -46,9 +46,9 @@
       "SwaggerKey": "Movie"
     },
     {
-      "UpstreamPathTemplate": "/api/genres/{id}",
+      "UpstreamPathTemplate": "/api/genres/{Id}",
       "UpstreamHttpMethod": [ "PUT", "DELETE" ],
-      "DownstreamPathTemplate": "/api/genres/{id}",
+      "DownstreamPathTemplate": "/api/genres/{Id}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -78,6 +78,25 @@
       "SwaggerKey": "Movie"
     },
     {
+      "UpstreamPathTemplate": "/api/movies/not-approved",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamPathTemplate": "/api/movies/not-approved",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 5002
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Admin"
+      },
+      "SwaggerKey": "Movie"
+    },
+    {
       "UpstreamPathTemplate": "/api/movies",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/api/movies",
@@ -90,6 +109,25 @@
       ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
+      },
+      "SwaggerKey": "Movie"
+    },
+    {
+      "UpstreamPathTemplate": "/api/movies/not-approved/{Id}",
+      "UpstreamHttpMethod": [ "PUT" ],
+      "DownstreamPathTemplate": "/api/movies/not-approved/{Id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 5002
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Admin"
       },
       "SwaggerKey": "Movie"
     },
@@ -188,7 +226,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/reviews",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [ "GET", "POST" ],
       "DownstreamPathTemplate": "/api/reviews",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -232,9 +270,9 @@
       "SwaggerKey": "Movie"
     },
     {
-      "UpstreamPathTemplate": "/api/reviews/movie/{MovieId}",
+      "UpstreamPathTemplate": "/api/reviews/movie",
       "UpstreamHttpMethod": [ "GET" ],
-      "DownstreamPathTemplate": "/api/reviews/movie/{MovieId}",
+      "DownstreamPathTemplate": "/api/reviews/movie",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -259,7 +297,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/profiles",
-      "UpstreamHttpMethod": [ "POST", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "DownstreamPathTemplate": "/api/profiles",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -288,7 +326,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/watchlists",
-      "UpstreamHttpMethod": [ "POST", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "DownstreamPathTemplate": "/api/watchlists",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -304,7 +342,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/watchlists/{AccountId}",
-      "UpstreamHttpMethod": [ "GET"],
+      "UpstreamHttpMethod": [ "GET" ],
       "DownstreamPathTemplate": "/api/watchlists/{AccountId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using MovieServiceApplication.UseCases.Movies.Commands.AddMovieCommand;
 using MovieServiceApplication.UseCases.Movies.Commands.DeleteMovieCommand;
+using MovieServiceApplication.UseCases.Movies.Commands.ManageNotApprovedMovieCommand;
 using MovieServiceApplication.UseCases.Movies.Commands.UpdateMovieCommand;
 using MovieServiceApplication.UseCases.Movies.Queries.GetAllMoviesQuery;
 using MovieServiceApplication.UseCases.Movies.Queries.GetMovieByIdQuery;
+using MovieServiceApplication.UseCases.Movies.Queries.GetNotApprovedMoviesQuery;
 using MovieServiceWebAPI.Helpers;
 
 namespace MovieServiceWebAPI.Controllers
@@ -17,24 +19,51 @@ namespace MovieServiceWebAPI.Controllers
         private readonly ILogger<MovieController> _logger = logger;
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        public async Task<IActionResult> Get([FromQuery] GetMoviesQuery query, CancellationToken cancellationToken)
         {
-            var movies = await _mediator.Send(new GetAllMoviesQuery(), cancellationToken);
+            var movies = await _mediator.Send(query, cancellationToken);
 
-            _logger.LogInformation("Returning all movies");
+            _logger.LogInformation("Returning movies");
+
+            return Ok(movies);
+        }
+
+        [HttpGet("not-approved")]
+        public async Task<IActionResult> GetNotApproved(CancellationToken cancellationToken)
+        {
+            var query = new GetNotApprovedMoviesQuery();
+            var movies = await _mediator.Send(query, cancellationToken);
+
+            _logger.LogInformation("Returning movies");
 
             return Ok(movies);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] AddMovieCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> Add([FromHeader] string? Filename, [FromForm] AddMovieCommand command, CancellationToken cancellationToken)
         {
             var accountId = ClaimHelper.GetAccountIdFromUser(HttpContext.User);
-            var newCommand = command with { AccountId = accountId };
+            var newCommand = command with { AccountId = accountId, Image = Filename };
 
             await _mediator.Send(newCommand, cancellationToken);
 
             _logger.LogInformation("Movie was created");
+
+            return Created();
+        }
+
+        [HttpPut("not-approved/{Id:Guid}")]
+        public async Task<IActionResult> ManageNotApprovedMovie(
+                                                                [FromRoute] Guid Id, 
+                                                                [FromBody] ManageNotApprovedMovieCommand command,
+                                                                CancellationToken cancellationToken
+                                                               )
+        {
+            var newCommand = command with { MovieId = Id};
+
+            await _mediator.Send(newCommand, cancellationToken);
+
+            _logger.LogInformation("Movie approval management was successful");
 
             return Created();
         }
@@ -50,9 +79,9 @@ namespace MovieServiceWebAPI.Controllers
         }
 
         [HttpPut("{Id:Guid}")]
-        public async Task<IActionResult> Update([FromRoute] Guid Id, [FromBody] UpdateMovieCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> Update([FromRoute] Guid Id, [FromHeader] string? Filename, [FromForm] UpdateMovieCommand command, CancellationToken cancellationToken)
         {
-            var newCommand = command with { Id = Id };
+            var newCommand = command with { Id = Id, Image = Filename ?? command.Image };
 
             await _mediator.Send(newCommand, cancellationToken);
 

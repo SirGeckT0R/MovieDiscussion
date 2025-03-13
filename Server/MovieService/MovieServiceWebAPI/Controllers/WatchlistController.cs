@@ -15,6 +15,19 @@ namespace MovieServiceWebAPI.Controllers
         private readonly IMediator _mediator = mediator;
         private readonly ILogger<WatchlistController> _logger = logger;
 
+        [HttpGet]
+        public async Task<ActionResult> Get(CancellationToken cancellationToken)
+        {
+            var accountId = ClaimHelper.GetAccountIdFromUser(HttpContext.User);
+            var query = new GetWatchlistByAccountIdQuery(accountId);
+
+            var watchlist = await _mediator.Send(query, cancellationToken);
+
+            _logger.LogInformation("Returning watchlist by account id");
+
+            return Ok(watchlist);
+        }
+
         [HttpPost]
         public async Task<ActionResult> Create(CancellationToken cancellationToken)
         {

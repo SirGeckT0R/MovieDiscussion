@@ -40,7 +40,14 @@ namespace MovieServiceApplication.UseCases.Watchlists.Queries.GetWatchlistByAcco
                 throw new NotFoundException("Watchlist not found");
             }
 
-            return _mapper.Map<WatchlistDto>(watchlist);
+            var watchlistDto =_mapper.Map<WatchlistDto>(watchlist);
+
+            cancellationToken.ThrowIfCancellationRequested();
+            var movies = await _unitOfWork.Movies.GetFromListOfIdsAsync(watchlist.MovieIds, cancellationToken);
+            var moviesDto = _mapper.Map<ICollection<MovieDto>>(movies);
+            watchlistDto.Movies = moviesDto;
+
+            return watchlistDto;
         }
     }
 }

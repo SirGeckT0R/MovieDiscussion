@@ -182,7 +182,7 @@ services:
     - elastic
 
   rabbitmq:
-    image: rabbitmq:3.10.7-management
+    image: rabbitmq:3.10.7-management   
     hostname: rabbitmq
     restart: always
     environment:
@@ -195,6 +195,19 @@ services:
       - ${RABBITMQ_PORTS}
     networks:
       - elastic
+
+  react:
+   container_name: react
+   image: ${DOCKER_REGISTRY-}react
+   env_file:
+       - .env
+   build:
+     context: .
+     dockerfile: Client/reactclient/Dockerfile
+   ports:
+    - ${REACT_PORTS}
+   networks:
+    - elastic
   
 networks:
   elastic:

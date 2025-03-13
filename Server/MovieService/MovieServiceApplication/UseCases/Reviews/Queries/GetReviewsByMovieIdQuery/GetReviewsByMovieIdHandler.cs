@@ -6,17 +6,26 @@ using MovieServiceDataAccess.Specifications.ReviewSpecifications;
 
 namespace MovieServiceApplication.UseCases.Reviews.Queries.GetReviewsByMovieIdQuery
 {
-    public class GetReviewsByMovieIdHandler(IUnitOfWork unitOfWork, IMapper mapper) : IQueryHandler<GetReviewsByMovieIdQuery, ICollection<ReviewDto>>
+    public class GetReviewsByMovieIdHandler(IUnitOfWork unitOfWork, IMapper mapper) : IQueryHandler<GetReviewsByMovieIdQuery, PaginatedCollection<ReviewDto>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<ICollection<ReviewDto>> Handle(GetReviewsByMovieIdQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedCollection<ReviewDto>> Handle(GetReviewsByMovieIdQuery request, CancellationToken cancellationToken)
         {
             var reviewSpecification = new ReviewsByMovieIdSpecification(request.MovieId);
-            var reviews = await _unitOfWork.Reviews.GetWithSpecificationAsync(reviewSpecification, cancellationToken);
+            var (reviews, totalPages) = await _unitOfWork.Reviews.GetPaginatedWithSpecificationAsync(
+                                                                                                    reviewSpecification, 
+                                                                                                    request.PageIndex,
+                                                                                                    request.PageSize,
+                                                                                                    cancellationToken);
 
-            return _mapper.Map<ICollection<ReviewDto>>(reviews);
+            cancellationToken.ThrowIfCancellationRequested();
+            var mappedCollection = _mapper.Map<ICollection<ReviewDto>>(reviews);
+
+            var paginatedCollection = new PaginatedCollection<ReviewDto>(mappedCollection, request.PageIndex, totalPages);
+
+            return paginatedCollection;
         }
     }
 }

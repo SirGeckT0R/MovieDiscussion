@@ -4,6 +4,7 @@ using MovieServiceApplication.UseCases.Reviews.Commands.AddReviewCommand;
 using MovieServiceApplication.UseCases.Reviews.Commands.DeleteReviewCommand;
 using MovieServiceApplication.UseCases.Reviews.Commands.UpdateReviewCommand;
 using MovieServiceApplication.UseCases.Reviews.Queries.GetReviewByIdQuery;
+using MovieServiceApplication.UseCases.Reviews.Queries.GetReviewByMovieAndAccountIdQuery;
 using MovieServiceApplication.UseCases.Reviews.Queries.GetReviewsByAccountIdQuery;
 using MovieServiceApplication.UseCases.Reviews.Queries.GetReviewsByMovieIdQuery;
 using MovieServiceWebAPI.Helpers;
@@ -30,6 +31,19 @@ namespace MovieServiceWebAPI.Controllers
             return Created();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetById([FromQuery] GetReviewByMovieAndAccountIdQuery query, CancellationToken cancellationToken)
+        {
+            var accountId = ClaimHelper.GetAccountIdFromUser(HttpContext.User);
+            var newQuery = query with { AccountId = accountId };
+
+            var review = await _mediator.Send(newQuery, cancellationToken);
+
+            _logger.LogInformation("Returning review by id");
+
+            return Ok(review);
+        }
+
         [HttpGet("{Id:Guid}")]
         public async Task<IActionResult> GetById([FromRoute] GetReviewByIdQuery query, CancellationToken cancellationToken)
         {
@@ -40,8 +54,8 @@ namespace MovieServiceWebAPI.Controllers
             return Ok(review);
         }
 
-        [HttpGet("movie/{MovieId:Guid}")]
-        public async Task<IActionResult> GetByMovie([FromRoute] GetReviewsByMovieIdQuery query, CancellationToken cancellationToken)
+        [HttpGet("movie")]
+        public async Task<IActionResult> GetByMovie([FromQuery] GetReviewsByMovieIdQuery query, CancellationToken cancellationToken)
         {
             var review = await _mediator.Send(query, cancellationToken);
 

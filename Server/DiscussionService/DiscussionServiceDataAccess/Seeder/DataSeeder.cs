@@ -40,13 +40,13 @@ namespace DiscussionServiceDataAccess.Seeder
 
             List<Message> messages =
                 [
-                    new Message(discussions[0].Id, "Really cool movie", Guid.Parse("f530fc7e-fa6d-4b64-b813-04650f61be29")) { Id = Guid.NewGuid() },
-                    new Message(discussions[0].Id, "I didn't get the main theme though", Guid.Parse("2de57bf5-c74e-4d2f-b803-0ea8e6dc63ce")) { Id = Guid.NewGuid() },
-                    new Message(discussions[0].Id, "It's okay", Guid.Parse("f530fc7e-fa6d-4b64-b813-04650f61be29")) { Id = Guid.NewGuid() },
+                    new Message(discussions[0].Id, "Really cool movie", Guid.Parse("f530fc7e-fa6d-4b64-b813-04650f61be29"),"Jake") { Id = Guid.NewGuid() },
+                    new Message(discussions[0].Id, "I didn't get the main theme though", Guid.Parse("2de57bf5-c74e-4d2f-b803-0ea8e6dc63ce"),"Victor") { Id = Guid.NewGuid() },
+                    new Message(discussions[0].Id, "It's okay", Guid.Parse("f530fc7e-fa6d-4b64-b813-04650f61be29"),"Jake") { Id = Guid.NewGuid() },
 
-                    new Message(discussions[1].Id, "I like the 5th one better", Guid.Parse("f530fc7e-fa6d-4b64-b813-04650f61be29")) { Id = Guid.NewGuid() },
-                    new Message(discussions[1].Id, "Me too", Guid.Parse("2de57bf5-c74e-4d2f-b803-0ea8e6dc63ce")) { Id = Guid.NewGuid() },
-                    new Message(discussions[1].Id, "I need to rewatch it next", Guid.Parse("f530fc7e-fa6d-4b64-b813-04650f61be29")) { Id = Guid.NewGuid() },
+                    new Message(discussions[1].Id, "I like the 5th one better", Guid.Parse("f530fc7e-fa6d-4b64-b813-04650f61be29"),"Jake") { Id = Guid.NewGuid() },
+                    new Message(discussions[1].Id, "Me too", Guid.Parse("2de57bf5-c74e-4d2f-b803-0ea8e6dc63ce"),"Victor") { Id = Guid.NewGuid() },
+                    new Message(discussions[1].Id, "I need to rewatch it next", Guid.Parse("f530fc7e-fa6d-4b64-b813-04650f61be29"),"Jake") { Id = Guid.NewGuid() },
                 ];
 
             _context.Database.AutoTransactionBehavior = Microsoft.EntityFrameworkCore.AutoTransactionBehavior.Never;

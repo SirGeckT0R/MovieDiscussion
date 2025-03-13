@@ -78,8 +78,9 @@ namespace MovieServiceDataAccess.DataSeeder
                                 new CrewMember(people[6].Id, CrewRole.Director),
                                 new CrewMember(people[7].Id, CrewRole.Producer),
                                 new CrewMember(people[8].Id, CrewRole.Screenwriter),
-                            ]
-                            ) { Id = Guid.NewGuid()},
+                            ],
+                            "images\\movies\\2ae32035-99c5-4492-9469-5a34665db46f.jpg"
+                            ) { Id = Guid.NewGuid(), IsApproved = true},
                     new Movie("Memento",
                             "Leonard Shelby, an insurance investigator, suffers from anterograde amnesia and uses notes and tattoos to hunt for the man he thinks killed his wife, which is the last thing he remembers.",
                             DateTime.Parse("2000-09-05"),
@@ -94,8 +95,9 @@ namespace MovieServiceDataAccess.DataSeeder
                                 new CrewMember(people[9].Id, CrewRole.Actor),
                                 new CrewMember(people[10].Id, CrewRole.Director),
                                 new CrewMember(people[11].Id, CrewRole.Screenwriter),
-                            ]
-                            ) { Id = Guid.NewGuid()},
+                            ],
+                            "images\\movies\\75624a4f-ff7f-49e0-8d3a-88db1ca82191.jpg"
+                            ) { Id = Guid.NewGuid(), IsApproved = true},
 
                 ];
 
