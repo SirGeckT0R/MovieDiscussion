@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using Microsoft.AspNetCore.Routing.Matching;
 using Microsoft.Extensions.Logging;
 using UserServiceApplication.Interfaces.Services;
 using UserServiceDataAccess.DatabaseHandlers.Specifications.TokenSpecifications;
@@ -95,7 +94,7 @@ namespace UserServiceApplication.Services
             {
                 _logger.LogError("Generate reset token attempt failed: email is not valid");
 
-                throw new TokenException("Email is not valid");
+                throw new BadRequestException("Email is not valid");
             }
 
             var user = await _unitOfWork.UserRepository.GetByEmailAsync(email, cancellationToken);
@@ -208,9 +207,19 @@ namespace UserServiceApplication.Services
             _logger.LogError("Delete token attempt completed successfully for {Id}", tokenId);
         }
 
-        public void UpdateToken(Token token, CancellationToken cancellationToken)
+        public async Task UpdateTokenAsync(Token token, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Update token attempt started for {Id}", token.Id);
+
+            cancellationToken.ThrowIfCancellationRequested();
+            var candidate = await GetTokenAsync(token.Id, cancellationToken);
+
+            if (candidate == null)
+            {
+                _logger.LogError("Update token attempt failed for {Id}: no token was found", token.Id);
+
+                throw new NotFoundException("No token was found");
+            }
 
             cancellationToken.ThrowIfCancellationRequested();
             Validate(token);

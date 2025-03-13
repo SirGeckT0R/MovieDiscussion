@@ -27,6 +27,11 @@ namespace UserServiceApplication.RabbitMQ.Consumer
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
+            if (_channel == null)
+            {
+                return;
+            }
+
             await _channel.CloseAsync(cancellationToken);
         }
     }
