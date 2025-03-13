@@ -1,10 +1,8 @@
 import { UserProfile } from '../types/profile';
 import { axiosInstance } from './global';
 
-export async function fetchProfile() {
-  const response: UserProfile = await axiosInstance
-    .get(`/api/profiles`)
-    .then((response) => response?.data);
+export async function fetchProfile(): Promise<UserProfile> {
+  const { data } = await axiosInstance.get(`/api/profiles`);
 
-  return response;
+  return data;
 }

@@ -21,7 +21,7 @@ export function Chat() {
 
   const messagesQuery = getMessagesQuery(id);
   const { data: history, isSuccess } = useQuery(messagesQuery);
-  const [messages, setMessages] = useState<Array<Message>>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
 
   const [connection, setConnection] = useState<signalR.HubConnection | null>(
     null
@@ -63,6 +63,11 @@ export function Chat() {
           ]);
         }
       );
+
+      return () => {
+        connection.off('ReceiveMessage');
+        connection.stop();
+      };
     }
   }, [connection, id]);
 

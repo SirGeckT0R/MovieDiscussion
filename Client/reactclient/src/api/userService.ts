@@ -2,78 +2,63 @@ import {
   ForgotPasswordRequest,
   LoginRequest,
   ResetPasswordRequest,
-  User,
 } from '../types/user';
 import { axiosInstance } from './global';
 
 export const fetchLogin = async (body: LoginRequest) => {
-  const response = await axiosInstance
-    .postForm('/api/auth/login', body)
-    .then((response) => response?.data);
+  const { data } = await axiosInstance.postForm('/api/auth/login', body);
 
-  return response;
+  return data;
 };
 
 export const fetchRegister = async (body: LoginRequest) => {
-  const response = await axiosInstance
-    .postForm('/api/auth/register', body)
-    .then((response) => response?.data);
+  const { data } = await axiosInstance.postForm('/api/auth/register', body);
 
-  return response;
+  return data;
 };
 
 export async function fetchUser() {
-  const response: User = await axiosInstance
-    .get('/api/user')
-    .then((response) => response?.data);
+  const { data } = await axiosInstance.get('/api/user');
 
-  return response;
+  return data;
 }
 
 export async function sendConfirmationEmail() {
-  const response = await axiosInstance
-    .post('/api/auth/confirm')
-    .then((response) => response?.data);
+  const { data } = await axiosInstance.post('/api/auth/confirm');
 
-  return response;
+  return data;
 }
 
 export async function forgotPassword(body: ForgotPasswordRequest) {
-  const response = await axiosInstance
-    .postForm('/api/auth/forgot', body)
-    .then((response) => response?.data);
+  const { data } = await axiosInstance.postForm('/api/auth/forgot', body);
 
-  return response;
+  return data;
 }
 
 export async function changePassword() {
-  const response = await axiosInstance
-    .post('/api/auth/change')
-    .then((response) => response?.data);
+  const { data } = await axiosInstance.post('/api/auth/change');
 
-  return response;
+  return data;
 }
 
 export async function resetPassword(body: ResetPasswordRequest) {
-  const response = await axiosInstance
-    .postForm('/api/auth/reset', body)
-    .then((response) => response?.data);
+  const { data } = await axiosInstance.postForm('/api/auth/reset', body);
 
-  return response;
+  return data;
 }
 
 export async function confirmEmail(email: string | null, token: string | null) {
-  const response = await axiosInstance
-    .get(`/api/auth/confirm?email=${email}&token=${token}`)
-    .then((response) => response?.data);
+  const { data } = await axiosInstance.get(
+    `/api/auth/confirm?email=${email}&token=${token}`
+  );
 
-  return response;
+  return data;
 }
 
 export async function fetchLogout() {
-  const response = await axiosInstance.post('/api/auth/logout');
+  const { data } = await axiosInstance.post('/api/auth/logout');
 
-  return response;
+  return data;
 }
 
 axiosInstance.interceptors.response.use(

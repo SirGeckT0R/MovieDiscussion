@@ -5,7 +5,7 @@ export const globalLoader =
   (
     queryClient: QueryClient,
     fetcher: (id: string | undefined) => {
-      queryKey: Array<string>;
+      queryKey: string[];
       queryFn: () => Promise<unknown>;
     }
   ) =>
@@ -18,7 +18,7 @@ export const emptyLoader =
   (
     queryClient: QueryClient,
     fetcher: () => {
-      queryKey: Array<string>;
+      queryKey: string[];
       queryFn: () => Promise<unknown>;
     }
   ) =>

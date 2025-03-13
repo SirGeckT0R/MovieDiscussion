@@ -14,38 +14,32 @@ export const fetchMovies = async (
   pageIndex: number = 1,
   filters: MovieFilters | null = null
 ): Promise<PaginatedMovies> => {
-  const movies: PaginatedMovies = await axiosInstance
-    .get('/api/movies', {
-      params: {
-        'Filters.Name': filters?.name?.trim() ?? '',
-        'Filters.Genres': filters?.genres ?? [],
-        'Filters.CrewMember': filters?.crewMember ?? '',
-        PageIndex: pageIndex,
-        PageSize: 6,
-      },
-      paramsSerializer: {
-        indexes: null,
-      },
-    })
-    .then((response) => response.data);
+  const { data } = await axiosInstance.get('/api/movies', {
+    params: {
+      'Filters.Name': filters?.name?.trim() ?? '',
+      'Filters.Genres': filters?.genres ?? [],
+      'Filters.CrewMember': filters?.crewMember ?? '',
+      PageIndex: pageIndex,
+      PageSize: 6,
+    },
+    paramsSerializer: {
+      indexes: null,
+    },
+  });
 
-  return movies;
+  return data;
 };
 
 export const fetchMovie = async (movieId: string): Promise<Movie> => {
-  const movie: Movie = await axiosInstance
-    .get(`/api/movies/${movieId}`)
-    .then((response) => response.data);
+  const { data } = await axiosInstance.get(`/api/movies/${movieId}`);
 
-  return movie;
+  return data;
 };
 
 export const fetchNotApprovedMovies = async (): Promise<Movie[]> => {
-  const movies: Movie[] = await axiosInstance
-    .get(`/api/movies/not-approved`)
-    .then((response) => response.data);
+  const { data } = await axiosInstance.get(`/api/movies/not-approved`);
 
-  return movies;
+  return data;
 };
 
 export const createMovie = async (
@@ -58,11 +52,9 @@ export const createMovie = async (
     body.file = image;
   }
 
-  const response = await axiosInstance
-    .postForm('/api/movies', body)
-    .then((response) => response.data);
+  const { data } = await axiosInstance.postForm('/api/movies', body);
 
-  return response;
+  return data;
 };
 
 export const updateMovie = async (
@@ -75,25 +67,24 @@ export const updateMovie = async (
     body.file = image;
   }
 
-  const response = await axiosInstance
-    .putForm(`/api/movies/${body.id}`, body)
-    .then((response) => response.data);
+  const { data } = await axiosInstance.putForm(`/api/movies/${body.id}`, body);
 
-  return response;
+  return data;
 };
 
 export const deleteMovie = async (body: DeleteMovieRequest) => {
-  const response = await axiosInstance
-    .delete(`/api/movies/${body.id}`, { data: { image: body.image } })
-    .then((response) => response.data);
+  const { data } = await axiosInstance.delete(`/api/movies/${body.id}`, {
+    data: { image: body.image },
+  });
 
-  return response;
+  return data;
 };
 
 export const manageMovieApproval = async (body: ManageMovieApprovalRequest) => {
-  const response = await axiosInstance
-    .put(`/api/movies/not-approved/${body.movieId}`, body)
-    .then((response) => response.data);
+  const { data } = await axiosInstance.put(
+    `/api/movies/not-approved/${body.movieId}`,
+    body
+  );
 
-  return response;
+  return data;
 };

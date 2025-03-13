@@ -1,20 +1,21 @@
 import { MutationCache, QueryCache, QueryClient } from '@tanstack/react-query';
-import axios, { AxiosError } from 'axios';
-import { ApiError } from '../types/global';
+import axios, { isAxiosError } from 'axios';
 import toast from 'react-hot-toast';
 
 const handleGlobalError = (error: unknown) => {
-  const axiosError = error as AxiosError<ApiError>;
+  const isAxios = isAxiosError(error);
 
-  const message = `${axiosError.response?.data.detail ?? axiosError.message}`;
+  const message = isAxios ? error.response?.data.detail : error;
 
   toast.error(message);
 };
 
+const staleTime = 1000 * 1;
+
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 1,
+      staleTime,
     },
   },
   queryCache: new QueryCache({

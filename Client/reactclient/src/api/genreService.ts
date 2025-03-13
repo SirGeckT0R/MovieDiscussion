@@ -7,33 +7,25 @@ import {
 import { axiosInstance } from './global';
 
 export const fetchGenres = async (): Promise<Genre[]> => {
-  const genres: Genre[] = await axiosInstance
-    .get('/api/genres')
-    .then((response) => response.data);
+  const { data } = await axiosInstance.get('/api/genres');
 
-  return genres;
+  return data;
 };
 
 export const createGenre = async (body: CreateGenreRequest) => {
-  const response = await axiosInstance
-    .postForm('/api/genres', body)
-    .then((response) => response.data);
+  const { data } = await axiosInstance.postForm('/api/genres', body);
 
-  return response;
+  return data;
 };
 
 export const updateGenre = async (body: UpdateGenreRequest) => {
-  const response = await axiosInstance
-    .putForm(`/api/genres/${body.id}`, body)
-    .then((response) => response.data);
+  const { data } = await axiosInstance.putForm(`/api/genres/${body.id}`, body);
 
-  return response;
+  return data;
 };
 
 export const deleteGenre = async (body: DeleteGenreRequest) => {
-  const response = await axiosInstance
-    .delete(`/api/genres/${body.id}`)
-    .then((response) => response.data);
+  const { data } = await axiosInstance.delete(`/api/genres/${body.id}`);
 
-  return response;
+  return data;
 };

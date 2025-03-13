@@ -7,63 +7,41 @@ import {
 import { axiosInstance } from './global';
 
 export const fetchListOfDiscussions = async (): Promise<Discussion[]> => {
-  const discussions: Discussion[] = await axiosInstance
-    .get('/api/discussions')
-    .then((response) => {
-      return response.data;
-    });
+  const { data } = await axiosInstance.get('/api/discussions');
 
-  return discussions;
+  return data;
 };
 
 export const fetchDiscussion = async (id: string): Promise<Discussion> => {
-  const discussion: Discussion = await axiosInstance
-    .get(`/api/discussions/${id}`)
-    .then((response) => {
-      return response.data;
-    });
+  const { data } = await axiosInstance.get(`/api/discussions/${id}`);
 
-  return discussion;
+  return data;
 };
 
 export const createDiscussion = async (body: CreateDiscussionRequest) => {
   body.createdBy = null;
-  const response = await axiosInstance
-    .post('/api/discussions', body)
-    .then((response) => {
-      return response.data;
-    });
+  const { data } = await axiosInstance.post('/api/discussions', body);
 
-  return response;
+  return data;
 };
 
 export const updateDiscussion = async (body: UpdateDiscussionRequest) => {
   body.updatedBy = null;
-  const response = await axiosInstance
-    .put(`/api/discussions/${body.id}`, body)
-    .then((response) => {
-      return response.data;
-    });
+  const { data } = await axiosInstance.put(`/api/discussions/${body.id}`, body);
 
-  return response;
+  return data;
 };
 
 export const deleteDiscussion = async (body: DeleteDiscussionRequest) => {
-  const response = await axiosInstance
-    .delete(`/api/discussions/${body.id}`)
-    .then((response) => {
-      return response.data;
-    });
+  const { data } = await axiosInstance.delete(`/api/discussions/${body.id}`);
 
-  return response;
+  return data;
 };
 
 export const subscribeToDiscussion = async (id: string) => {
-  const response = await axiosInstance
-    .post(`/api/discussions/${id}/subscribers`)
-    .then((response) => {
-      return response.data;
-    });
+  const { data } = await axiosInstance.post(
+    `/api/discussions/${id}/subscribers`
+  );
 
-  return response;
+  return data;
 };

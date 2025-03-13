@@ -3,7 +3,7 @@ import { Control, Controller } from 'react-hook-form';
 import { MovieGenresView } from '../MovieFieldsView/MovieGenresView';
 
 type Props = {
-  options?: Array<{ id: string; name: string }>;
+  options?: { id: string; name: string }[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<any, any>;
   inputName: string;

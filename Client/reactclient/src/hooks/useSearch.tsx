@@ -6,7 +6,7 @@ export function useSearch(
   searchFetch: (
     name: string,
     pageSize: number
-  ) => Promise<Array<{ id: string; name: string }>>,
+  ) => Promise<{ id: string; name: string }[]>,
   pageSize: number = 3
 ) {
   return useQuery({

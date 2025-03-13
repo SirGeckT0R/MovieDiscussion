@@ -18,7 +18,7 @@ export function RegisterPage() {
 
   const onRegister = (formBody: RegisterRequest) => {
     mutateAsync(formBody)
-      .then(async () => await authenticate())
+      .then(() => authenticate())
       .then(() => navigate('/movies'));
   };
 

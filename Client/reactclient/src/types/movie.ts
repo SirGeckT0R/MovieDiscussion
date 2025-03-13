@@ -6,8 +6,8 @@ export interface Movie {
   description: string;
   releaseDate: string;
   rating: number;
-  genres: Array<Genre>;
-  crewMembers: Array<CrewMember>;
+  genres: Genre[];
+  crewMembers: CrewMember[];
   image: string;
 }
 
@@ -29,8 +29,8 @@ export interface CreateMovieRequest {
   title: string;
   description: string;
   releaseDate: string;
-  genres: Array<string>;
-  crewMembers: Array<CrewMember>;
+  genres: string[];
+  crewMembers: CrewMember[];
   file: Blob | null;
   image: string | null;
 }
@@ -40,8 +40,8 @@ export interface UpdateMovieRequest {
   title: string;
   description: string;
   releaseDate: string;
-  genres: Array<string>;
-  crewMembers: Array<CrewMember>;
+  genres: string[];
+  crewMembers: CrewMember[];
   file: Blob | null;
   image: string | null;
 }

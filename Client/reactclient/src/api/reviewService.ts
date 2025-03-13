@@ -8,51 +8,41 @@ import {
 import { axiosInstance } from './global';
 
 export const fetchReviews = async (
-  movieId: string | undefined,
+  movieId?: string,
   pageIndex: number = 1
 ): Promise<PaginatedReview> => {
-  const reviews: PaginatedReview = await axiosInstance
-    .get(
-      `/api/reviews/movie?MovieId=${
-        movieId ?? ''
-      }&PageIndex=${pageIndex}&PageSize=2`
-    )
-    .then((response) => response.data);
+  const { data } = await axiosInstance.get(
+    `/api/reviews/movie?MovieId=${
+      movieId ?? ''
+    }&PageIndex=${pageIndex}&PageSize=2`
+  );
 
-  return reviews;
+  return data;
 };
 
 export const fetchReviewByMovieAndUser = async (
   movieId: string
 ): Promise<Review> => {
-  const review: Review = await axiosInstance
-    .get(`/api/reviews?MovieId=${movieId}`)
-    .then((response) => response.data);
+  const { data } = await axiosInstance.get(`/api/reviews?MovieId=${movieId}`);
 
-  return review;
+  return data;
 };
 
 export const createReview = async (body: CreateReviewRequest) => {
   body.accountId = null;
-  const response = await axiosInstance
-    .post('/api/reviews', body)
-    .then((response) => response.data);
+  const { data } = await axiosInstance.post('/api/reviews', body);
 
-  return response;
+  return data;
 };
 
 export const updateReview = async (body: UpdateReviewRequest) => {
-  const response = await axiosInstance
-    .put(`/api/reviews/${body.id}`, body)
-    .then((response) => response.data);
+  const { data } = await axiosInstance.put(`/api/reviews/${body.id}`, body);
 
-  return response;
+  return data;
 };
 
 export const deleteReview = async (body: DeleteReviewRequest) => {
-  const response = await axiosInstance
-    .delete(`/api/reviews/${body.id}`)
-    .then((response) => response.data);
+  const { data } = await axiosInstance.delete(`/api/reviews/${body.id}`);
 
-  return response;
+  return data;
 };

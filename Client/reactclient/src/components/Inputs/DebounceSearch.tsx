@@ -14,10 +14,10 @@ type Props = {
   searchData: {
     key: string;
     searchFetch: (name: string) => Promise<
-      Array<{
+      {
         id: string;
         name: string;
-      }>
+      }[]
     >;
   };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -4,7 +4,7 @@ export const getReviewsQuery = (
   movieId: string | undefined = '',
   pageIndex: number
 ) => ({
-  queryKey: ['reviews', movieId + '' + pageIndex],
+  queryKey: ['reviews', `${movieId}${pageIndex}`],
   queryFn: async () => await fetchReviews(movieId, pageIndex),
 });
 

@@ -1,19 +1,18 @@
-import { ManageMovieInWatchlist, Watchlist } from '../types/watchlist';
+import { ManageMovieInWatchlist } from '../types/watchlist';
 import { axiosInstance } from './global';
 
 export async function fetchWatchlist() {
-  const response: Watchlist = await axiosInstance
-    .get(`/api/watchlists`)
-    .then((response) => response?.data)
-    .catch(() => null);
+  try {
+    const { data } = await axiosInstance.get(`/api/watchlists`);
 
-  return response;
+    return data;
+  } catch {
+    return null;
+  }
 }
 
 export async function manageMovieInWatchlist(body: ManageMovieInWatchlist) {
-  const response = await axiosInstance
-    .put(`/api/watchlists`, body)
-    .then((response) => response?.data);
+  const { data } = await axiosInstance.put(`/api/watchlists`, body);
 
-  return response;
+  return data;
 }

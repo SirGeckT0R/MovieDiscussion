@@ -18,7 +18,7 @@ export function LoginPage() {
 
   const onLogin = (formBody: LoginRequest) => {
     mutateAsync(formBody)
-      .then(async () => await authenticate())
+      .then(() => authenticate())
       .then(() => navigate('/movies'));
   };
 
