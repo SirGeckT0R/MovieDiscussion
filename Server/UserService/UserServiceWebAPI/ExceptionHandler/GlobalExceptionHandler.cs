@@ -18,7 +18,7 @@ namespace UserServiceWebAPI.ExceptionHandler
 
             int status = exception switch
             {
-                ValidationException => StatusCodes.Status400BadRequest,
+                ValidationException or BadRequestException => StatusCodes.Status400BadRequest,
                 TokenException => StatusCodes.Status401Unauthorized,
                 NotFoundException => StatusCodes.Status404NotFound,
                 OperationCanceledException => StatusCodes.Status408RequestTimeout,

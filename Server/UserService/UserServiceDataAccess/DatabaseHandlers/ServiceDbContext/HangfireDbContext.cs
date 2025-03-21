@@ -6,6 +6,7 @@ namespace UserServiceDataAccess.DatabaseHandlers.ServiceDbContext
         public HangfireDbContext() { }
         public HangfireDbContext(DbContextOptions options) : base(options)
         {
+            Database.EnsureCreated();
         }
     }
 }
